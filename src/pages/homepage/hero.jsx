@@ -1,5 +1,5 @@
 import React from "react";
-import Topbar from "./component/topbar";
+import Topbar from "../component/topbar";
 
 const Hero = () => {
   return (
