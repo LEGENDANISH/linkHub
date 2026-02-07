@@ -1,6 +1,7 @@
+// Q1.jsx
 import React, { useState } from "react";
 
-const Q1 = () => {
+const Q1 = ({ onContinue, onSkip }) => {
   const [selected, setSelected] = useState(null);
 
   const options = [
@@ -24,20 +25,29 @@ const Q1 = () => {
     },
   ];
 
+  const handleContinue = () => {
+    if (selected) {
+      onContinue(selected);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#f5f5f5] flex flex-col">
       
       {/* Top bar */}
       <div className="w-full flex items-center justify-end px-6 py-4">
-        <button className="text-sm md:text-base font-semibold text-gray-600 hover:text-black transition">
+        <button 
+          onClick={onSkip}
+          className="text-sm md:text-base font-semibold text-gray-600 hover:text-black transition"
+        >
           Skip
         </button>
       </div>
 
       {/* Progress bar */}
-      <div className="w-full flex justify-center">
-        <div className="w-32 sm:w-40 h-1 bg-gray-300 rounded-full">
-          <div className="w-1/3 h-1 bg-purple-500 rounded-full"></div>
+      <div className="w-full flex justify-center mb-2">
+        <div className="w-48 h-2 bg-gray-200 rounded-full overflow-hidden">
+          <div className="w-1/3 h-full bg-gradient-to-r from-purple-600 to-pink-500 rounded-full transition-all duration-300"></div>
         </div>
       </div>
 
@@ -83,12 +93,13 @@ const Q1 = () => {
       {/* Continue Button */}
       <div className="flex justify-center">
         <button
+          onClick={handleContinue}
           disabled={!selected}
           className={`mt-10 sm:mt-12 mb-12 px-8 sm:px-10 py-3 sm:py-4 
           rounded-full text-base sm:text-lg font-semibold transition
           ${
             selected
-              ? "bg-gray-800 text-white"
+              ? "bg-gray-800 text-white hover:bg-gray-900"
               : "bg-gray-300 text-gray-500 cursor-not-allowed"
           }`}
         >

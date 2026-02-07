@@ -1,6 +1,7 @@
+// Q2.jsx
 import React, { useState } from "react";
 
-const Q2 = () => {
+const Q2 = ({ onContinue, onBack, onSkip }) => {
   const MAX_SELECT = 5;
 
   const platforms = [
@@ -27,15 +28,27 @@ const Q2 = () => {
     }
   };
 
+  const handleContinue = () => {
+    if (selected.length > 0) {
+      onContinue(selected);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex flex-col">
       
       {/* Top nav */}
       <div className="flex items-center justify-between px-6 py-5">
-        <button className="text-gray-700 font-medium hover:text-gray-900 transition">
+        <button 
+          onClick={onBack}
+          className="text-gray-700 font-medium hover:text-gray-900 transition"
+        >
           ← Back
         </button>
-        <button className="text-gray-500 font-medium hover:text-gray-700 transition">
+        <button 
+          onClick={onSkip}
+          className="text-gray-500 font-medium hover:text-gray-700 transition"
+        >
           Skip
         </button>
       </div>
@@ -43,7 +56,7 @@ const Q2 = () => {
       {/* Progress bar */}
       <div className="w-full flex justify-center mb-2">
         <div className="w-48 h-2 bg-gray-200 rounded-full overflow-hidden">
-          <div className="w-1/3 h-full bg-gradient-to-r from-purple-600 to-pink-500 rounded-full transition-all duration-300"></div>
+          <div className="w-2/3 h-full bg-gradient-to-r from-purple-600 to-pink-500 rounded-full transition-all duration-300"></div>
         </div>
       </div>
 
@@ -62,7 +75,7 @@ const Q2 = () => {
 
       {/* Grid */}
       <div className="mt-12 px-6 flex justify-center flex-1">
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 max-w-3xl w-full h-fit">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 max-w-lg w-full h-fit">
           
           {platforms.map((item) => {
             const isActive = selected.includes(item.id);
@@ -109,12 +122,13 @@ const Q2 = () => {
       {/* Continue button */}
       <div className="flex justify-center py-10 px-6">
         <button
+          onClick={handleContinue}
           disabled={selected.length === 0}
           className={`px-16 py-4 rounded-full text-base font-semibold transition-all duration-200
             shadow-lg
             ${
               selected.length > 0
-                ? "bg-gradient-to-r from-purple-600 to-pink-500 text-white hover:shadow-2xl hover:scale-105 active:scale-100"
+                ? "bg-gradient-to-r from-purple-600 to-purple-700 text-white hover:shadow-2xl hover:scale-105 active:scale-100"
                 : "bg-gray-200 text-gray-400 cursor-not-allowed shadow-none"
             }`}
         >

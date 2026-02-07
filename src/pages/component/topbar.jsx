@@ -44,12 +44,11 @@ const Topbar = () => {
         </div>
 
         {/* Desktop Menu */}
-        <nav className="hidden md:flex items-center gap-6 lg:gap-8 
+        <nav className="hidden md:flex items-center gap-6 lg:gap-20 
                         text-sm lg:text-base font-semibold text-gray-700">
           <a href="#">Products</a>
           <a href="#">Templates</a>
-          <a href="#">Marketplace</a>
-          <a href="#">Learn</a>
+
           <a href="#">Pricing</a>
         </nav>
 
