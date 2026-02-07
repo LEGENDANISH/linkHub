@@ -3,7 +3,7 @@ import React from 'react'
 const Section3 = () => {
   return (
     <div>
-         <div className="flex flex-col lg:flex-row bg-[#780016] items-center justify-center min-h-screen px-6 md:px-12 pt-28 lg:pt-0">
+         <div className="flex flex-col h-[100vh] lg:flex-row bg-[#780016] items-center justify-center min-h-screen px-6 md:px-12 pt-28 lg:pt-0">
         
         {/* Left section */}
         <div className="flex flex-col justify-center w-full lg:w-1/2">

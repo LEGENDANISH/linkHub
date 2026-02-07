@@ -3,6 +3,7 @@ import Hero from "./pages/homepage/hero";
 import Section2 from "./pages/homepage/Section2";
 import Section3 from "./pages/homepage/Section3";
 import Section4 from "./pages/homepage/Section4";
+import Section5 from "./pages/homepage/Section5";
 import Pricing from "./pages/Pricing/Pricing";
 import OnboardingFlow from "./pages/startingpages/Q";
 import Q1 from "./pages/startingpages/Q1";
@@ -15,8 +16,9 @@ function App() {
     {/* <Hero/>
     <Section2/>
     <Section3/>
-    <Section4/> */}
-    <Pricing/>  
+    <Section4/>
+    <Pricing/> */}
+    <Section5/>  
    </div>
   );
 }
