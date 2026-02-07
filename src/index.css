@@ -11,6 +11,9 @@
     transform: translateY(0) translateX(-50%);
   }
 }
+html {
+  scroll-behavior: smooth;
+}
 
 .animate-fadeIn {
   animation: fadeIn 0.25s ease forwards;

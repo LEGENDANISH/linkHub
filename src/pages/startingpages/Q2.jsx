@@ -149,7 +149,7 @@ const Q2 = ({ onContinue, onBack, onSkip, direction = 1 }) => {
         <div className="w-48 h-2 bg-gray-200 rounded-full overflow-hidden">
           <div 
             ref={progressRef}
-            className="w-2/3 h-full bg-gradient-to-r from-purple-600 to-pink-500 rounded-full origin-left"
+            className="w-2/4 h-full bg-gradient-to-r from-purple-600 to-pink-500 rounded-full origin-left"
           />
         </div>
       </div>

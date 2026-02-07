@@ -229,11 +229,11 @@ const Q3 = ({ selectedPlatforms = [], onContinue, onBack, onSkip, direction = 1 
       </motion.div>
 
       {/* Progress bar */}
-      <div className="w-full flex justify-center mb-2">
+   <div className="w-full flex justify-center mb-2">
         <div className="w-48 h-2 bg-gray-200 rounded-full overflow-hidden">
           <div 
             ref={progressRef}
-            className="w-full h-full bg-gradient-to-r from-purple-600 to-pink-500 rounded-full origin-left"
+            className="w-3/4 h-full bg-gradient-to-r from-purple-600 to-pink-500 rounded-full origin-left"
           />
         </div>
       </div>
