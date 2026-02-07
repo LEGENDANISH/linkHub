@@ -13,11 +13,11 @@ import Q3 from "./pages/startingpages/Q3";
 function App() {
   return (
    <div>
-    {/* <Hero/>
+    <Hero/>
     <Section2/>
     <Section3/>
     <Section4/>
-    <Pricing/> */}
+    <Pricing/>
     <Section5/>  
    </div>
   );

@@ -1,20 +1,19 @@
 import React, { useState, useEffect } from "react";
+import ProductsDropdown from "./ProductsDropdown";
 
 const Topbar = () => {
   const [open, setOpen] = useState(false);
   const [showBar, setShowBar] = useState(true);
   const [lastScroll, setLastScroll] = useState(0);
+  const [showProducts, setShowProducts] = useState(false);
 
-  // Scroll detection
   useEffect(() => {
     const handleScroll = () => {
       const currentScroll = window.scrollY;
 
       if (currentScroll > lastScroll && currentScroll > 80) {
-        // scrolling down
         setShowBar(false);
       } else {
-        // scrolling up
         setShowBar(true);
       }
 
@@ -45,11 +44,24 @@ const Topbar = () => {
 
         {/* Desktop Menu */}
         <nav className="hidden md:flex items-center gap-6 lg:gap-20 
-                        text-sm lg:text-base font-semibold text-gray-700">
-          <a href="#">Products</a>
-          <a href="#">Templates</a>
+                       text-sm lg:text-base font-semibold text-gray-700">
+          <div 
+            className="relative"
+            onMouseEnter={() => setShowProducts(true)}
+            onMouseLeave={() => setShowProducts(false)}
+          >
+            <span className="cursor-pointer">Products</span>
+            
+            {/* Invisible bridge to prevent gap */}
+            {showProducts && (
+              <div className="absolute top-full left-0 w-full h-10" />
+            )}
+            
+            {showProducts && <ProductsDropdown />}
+          </div>
 
-          <a href="#">Pricing</a>
+          <a href="#">Templates</a>
+          <a href="#pricing">Pricing</a>
         </nav>
 
         {/* Desktop Buttons */}
