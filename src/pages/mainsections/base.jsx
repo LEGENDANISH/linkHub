@@ -6,7 +6,7 @@ export default function LinktreeDashboard() {
       const [open, setOpen] = useState(true);
 
   return (
-    <div className="w-full min-h-screen bg-[#f5f6f8] flex">
+<div className="w-full h-screen bg-[#f5f6f8] flex overflow-hidden">
 
       {/* Sidebar */}
       <aside className="w-64 bg-white border-r px-4 py-6">
