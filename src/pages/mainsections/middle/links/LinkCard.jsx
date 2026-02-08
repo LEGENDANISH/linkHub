@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { GripVertical, Pencil, Share2, LayoutGrid, Image, Star, Lock, BarChart3, Trash2, Calendar } from 'lucide-react';
-import { useSelectionManager } from './SelectionManager';
+import { useSelection } from './Selectionmanager';
 import LayoutSection from './sections/LayoutSection';
 import ThumbnailSection from './sections/ThumbnailSection';
 import AnimateSection from './sections/AnimateSection';
@@ -29,7 +29,7 @@ const LinkCard = ({ link: initialLink, onUpdate, onDelete }) => {
   const [editUrl, setEditUrl] = useState(link.url);
 
   // Get SelectionManager to sync selections
-  const { syncLink, getLink } = useSelectionManager();
+const { syncLink, getLink } = useSelection();
 
   // Sync this link to SelectionManager whenever it changes
   useEffect(() => {

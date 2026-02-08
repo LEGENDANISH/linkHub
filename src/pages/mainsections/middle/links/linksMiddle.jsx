@@ -1,47 +1,35 @@
 import React, { useState, useEffect } from 'react';
 import AddLinkModal from "./AddLinkModal";
 import LinkCard from "./LinkCard";
-import { useSelectionManager } from './SelectionManager';
+// import { useSelectionManager } from './SelectionManager';
+import { useSelection } from './SelectionManager';
 
 const Middle = () => {
   const [openModal, setOpenModal] = useState(false);
-  const [links, setLinks] = useState([
-    { id: 1, name: 'Instagram', url: 'instagram.com/anish', clicks: 0, active: true }
-  ]);
 
-  // Get SelectionManager (works silently in background)
-  const { syncLinks, syncLink } = useSelectionManager();
+const { links, syncLink, deleteLink } = useSelection();
 
-  // Sync initial links to SelectionManager
-  useEffect(() => {
-    syncLinks(links);
-  }, []);
 
-  // Sync whenever links change
-  useEffect(() => {
-    syncLinks(links);
-  }, [links]);
 
-  const handleAddLink = (linkName) => {
-    const newLink = {
-      id: Date.now(),
-      name: linkName,
-      url: `${linkName.toLowerCase().replace(/\s+/g, '')}.com`,
-      clicks: 0,
-      active: false
-    };
-    setLinks([...links, newLink]);
+const handleAddLink = (linkName) => {
+  const newLink = {
+    id: Date.now(),
+    name: linkName,
+    url: `${linkName.toLowerCase().replace(/\s+/g, '')}.com`,
+    clicks: 0,
+    active: false
   };
 
-  const toggleLinkActive = (id) => {
-    setLinks(links.map(link => 
-      link.id === id ? { ...link, active: !link.active } : link
-    ));
-  };
+  syncLink(newLink);
+};
 
-  const deleteLink = (id) => {
-    setLinks(links.filter(link => link.id !== id));
-  };
+
+
+
+
+const deleteLinkHandler = (id) => {
+  deleteLink(id);
+};
 
   return (
     <main className="flex-1 p-6 bg-gray-50 overflow-y-auto">
@@ -71,12 +59,12 @@ const Middle = () => {
 
         <div className="space-y-4">
           {links.map((link) => (
-            <LinkCard 
-              key={link.id} 
-              link={link} 
-              onToggleActive={toggleLinkActive}
-              onDelete={deleteLink}
-            />
+        <LinkCard 
+  key={link.id} 
+  link={link}
+  onDelete={deleteLinkHandler}
+/>
+
           ))}
         </div>
       </div>

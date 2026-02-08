@@ -1,5 +1,5 @@
 import React from 'react';
-import { useSelectionManager } from './SelectionManager';
+import { useSelectionManager } from './Selectionmanager';
 
 /**
  * MobilePreview - Example preview component
