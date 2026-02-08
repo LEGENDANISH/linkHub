@@ -30,10 +30,10 @@ const Middle = () => {
   };
 
   return (
-    <main className="flex-1 p-8 bg-gray-50 overflow-y-auto">
+    <main className="flex-1 p-6 bg-gray-50 overflow-y-auto">
       <h1 className="text-2xl font-semibold mb-6 pb-4 border-b-2 border-gray-200">Links</h1>
-
-      <div className="flex items-center gap-4 mb-6">
+<div className='px-15'>
+      <div className="flex items-center gap-4 mb-6 ">
         <div className="w-16 h-16 rounded-full bg-gradient-to-br from-purple-400 to-pink-500" />
         <div>
           <p className="font-semibold text-lg">anish</p>
@@ -63,6 +63,7 @@ const Middle = () => {
             onDelete={deleteLink}
           />
         ))}
+      </div>
       </div>
     </main>
   );
