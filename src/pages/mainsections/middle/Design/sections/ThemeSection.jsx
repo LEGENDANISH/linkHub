@@ -10,7 +10,7 @@ const themes = [
   { id: "blocks", label: "Blocks" },
 ];
 
-const ThemeSection = ({ state, setState }) => {
+const ThemeSection = ({ state, updateDesign }) => {
   return (
     <div className="px-1">
       {/* Heading */}
@@ -31,7 +31,7 @@ const ThemeSection = ({ state, setState }) => {
         {themes.map((theme) => (
           <div
             key={theme.id}
-            onClick={() => setState((prev) => ({ ...prev, theme: theme.id }))}
+            onClick={() => updateDesign("theme", theme.id)}
             className={`rounded-2xl border bg-white cursor-pointer transition-all hover:shadow-sm
               ${
                 state.theme === theme.id

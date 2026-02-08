@@ -22,9 +22,6 @@ const tabs = [
 const DesignSidebar = ({ activeTab, setActiveTab }) => {
   return (
     <aside className="w-64 bg-[#F3F4F6] border-r border-gray-200 h-full">
-      {/* Title */}
-
-
       {/* Tabs */}
       <div className="p-4 space-y-2">
         {tabs.map((tab) => {
