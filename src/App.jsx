@@ -5,6 +5,8 @@ import Section3 from "./pages/homepage/Section3";
 import Section4 from "./pages/homepage/Section4";
 import Section5 from "./pages/homepage/Section5";
 import LinktreeDashboard from "./pages/mainsections/base";
+import { DesignProvider } from "./pages/mainsections/middle/Design/DesignSelectionManager";
+import { SelectionProvider } from "./pages/mainsections/middle/links/Selectionmanager";
 import Pricing from "./pages/Pricing/Pricing";
 import OnboardingFlow from "./pages/startingpages/Q";
 import Q1 from "./pages/startingpages/Q1";
@@ -22,7 +24,14 @@ function App() {
     <Pricing/>
     <Section5/>   */}
     {/* <OnboardingFlow/> */}
-<LinktreeDashboard/>
+
+<DesignProvider>
+  <SelectionProvider>
+
+    <LinktreeDashboard />
+
+  </SelectionProvider>
+</DesignProvider>
    </div>
   );
 }
