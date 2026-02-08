@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { GripVertical, Pencil, Share2, LayoutGrid, Image, Star, Lock, BarChart3, Trash2, Calendar } from 'lucide-react';
+import { useSelectionManager } from './SelectionManager';
 import LayoutSection from './sections/LayoutSection';
 import ThumbnailSection from './sections/ThumbnailSection';
 import AnimateSection from './sections/AnimateSection';
@@ -26,6 +27,28 @@ const LinkCard = ({ link: initialLink, onUpdate, onDelete }) => {
   const [isEditingUrl, setIsEditingUrl] = useState(false);
   const [editName, setEditName] = useState(link.name);
   const [editUrl, setEditUrl] = useState(link.url);
+
+  // Get SelectionManager to sync selections
+  const { syncLink, getLink } = useSelectionManager();
+
+  // Sync this link to SelectionManager whenever it changes
+  useEffect(() => {
+    syncLink(link);
+  }, [link]);
+
+  // Update from SelectionManager if available (for section changes)
+  useEffect(() => {
+    const storedLink = getLink(link.id);
+    if (storedLink) {
+      // Only update if SelectionManager has newer data
+      if (storedLink.layout !== link.layout || 
+          storedLink.animation !== link.animation ||
+          storedLink.thumbnail !== link.thumbnail ||
+          storedLink.locked !== link.locked) {
+        setLink(prev => ({ ...prev, ...storedLink }));
+      }
+    }
+  }, []);
 
   const toggleSection = (section) => {
     setExpandedSection(expandedSection === section ? null : section);
