@@ -61,4 +61,4 @@ const ThumbnailSection = ({ link, onClose, onUpdate }) => {
   );
 };
 
-export default ThumbnailSection;  
+export default ThumbnailSection;

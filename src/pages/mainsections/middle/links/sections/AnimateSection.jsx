@@ -23,7 +23,7 @@ const AnimateSection = ({ link, onClose, onUpdate }) => {
           : 'border-gray-300 hover:border-brand-sand hover:animate-pop';
       case 'swipe':
         return isSelected
-          ? 'border-brand-concrete bg-swipe font-semibold animate-swipe'
+          ? 'border-brand-concrete bg-gray-100 font-semibold'
           : 'border-gray-300 hover:border-brand-concrete hover:bg-swipe hover:animate-swipe';
       default:
         return '';
@@ -76,7 +76,7 @@ const AnimateSection = ({ link, onClose, onUpdate }) => {
           </div>
         </div>
 
-        {/* Spotlight Option - UNCHANGED */}
+        {/* Spotlight Option */}
         <button
           onClick={() => handleAnimationChange('spotlight')}
           className={`w-full mb-4 p-4 rounded-xl border-2 transition-all bg-white ${
@@ -96,7 +96,7 @@ const AnimateSection = ({ link, onClose, onUpdate }) => {
           </div>
         </button>
 
-        {/* No Animation Option - UNCHANGED */}
+        {/* No Animation Option */}
         <button
           onClick={() => handleAnimationChange('none')}
           className={`w-full p-4 rounded-xl border-2 transition-all bg-white ${

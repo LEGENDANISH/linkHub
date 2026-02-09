@@ -8,10 +8,8 @@ const LayoutSection = ({ link, onClose, onUpdate }) => {
 
   return (
     <div className="p-6">
-      <div className="flex justify-between mb-2 bg-[#E0E2D9] w">
-        <div className='items-center justify-center text-lg font-semibold '>
-          Layout
-        </div>
+      <div className="flex justify-between items-center mb-6">
+        <h3 className="text-xl font-semibold">Layout</h3>
         <button onClick={onClose} className="p-1 hover:bg-gray-200 rounded-full">
           <X className="w-5 h-5" />
         </button>

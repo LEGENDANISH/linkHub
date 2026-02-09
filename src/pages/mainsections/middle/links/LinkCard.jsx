@@ -10,10 +10,10 @@ import RedirectSection from './sections/RedirectSection';
 import DeleteSection from './sections/DeleteSection';
 
 const LinkCard = ({ link: initialLink, onUpdate, onDelete }) => {
-  const { updateLink: updateLinkStore } = useSelection();
+  const { updateLink: updateLinkStore, getLink } = useSelection();
   
-  // Use prop as source of truth
-  const link = initialLink;
+  // Always get fresh link from store
+  const link = getLink(initialLink.id) || initialLink;
 
   const [expandedSection, setExpandedSection] = useState(null);
   const [isEditingName, setIsEditingName] = useState(false);
@@ -26,9 +26,8 @@ const LinkCard = ({ link: initialLink, onUpdate, onDelete }) => {
   };
 
   const handleToggleActive = () => {
-    const updated = { ...link, active: !link.active };
     updateLinkStore(link.id, { active: !link.active });
-    onUpdate?.(updated);
+    onUpdate?.({ ...link, active: !link.active });
   };
 
   const handleSaveName = () => {
