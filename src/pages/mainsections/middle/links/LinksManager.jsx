@@ -1,23 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import LinkCard from "./LinkCard";
 import AddLinkModal from "./AddLinkModal";
+import { useSelection } from "./Selectionmanager";
 
 const LinksManager = () => {
-  const [links, setLinks] = useState([]);
   const [openModal, setOpenModal] = useState(false);
-
-  // LOAD from localStorage on first render
-  useEffect(() => {
-    const savedLinks = localStorage.getItem("links");
-    if (savedLinks) {
-      setLinks(JSON.parse(savedLinks));
-    }
-  }, []);
-
-  // SAVE to localStorage whenever links change
-  useEffect(() => {
-    localStorage.setItem("links", JSON.stringify(links));
-  }, [links]);
+  const { links, addLink, updateLink, deleteLink } = useSelection();
 
   // ADD LINK
   const handleAddLink = (name) => {
@@ -33,21 +21,17 @@ const LinksManager = () => {
       locked: false
     };
 
-    setLinks(prev => [newLink, ...prev]);
+    addLink(newLink);
   };
 
   // UPDATE LINK
   const handleUpdateLink = (updatedLink) => {
-    setLinks(prev =>
-      prev.map(link =>
-        link.id === updatedLink.id ? updatedLink : link
-      )
-    );
+    updateLink(updatedLink.id, updatedLink);
   };
 
   // DELETE LINK
   const handleDeleteLink = (id) => {
-    setLinks(prev => prev.filter(link => link.id !== id));
+    deleteLink(id);
   };
 
   return (

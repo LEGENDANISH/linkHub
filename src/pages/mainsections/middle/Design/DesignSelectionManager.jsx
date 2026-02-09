@@ -1,6 +1,5 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
-
-const DesignContext = createContext();
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 
 // Default design state with all possible options
 const defaultDesignState = {
@@ -36,70 +35,42 @@ const defaultDesignState = {
   accentColor: "#000000",
 };
 
-export const DesignProvider = ({ children }) => {
-  const [design, setDesign] = useState(() => {
-    try {
-      const saved = localStorage.getItem("linkhub_design");
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        // Merge with defaults to ensure all keys exist
-        return { ...defaultDesignState, ...parsed };
-      }
-      return defaultDesignState;
-    } catch (error) {
-      console.error("Error loading design from localStorage:", error);
-      return defaultDesignState;
+export const useDesign = create(
+  persist(
+    (set, get) => ({
+      design: defaultDesignState,
+
+      // Update single design property
+      updateDesign: (key, value) =>
+        set((state) => ({
+          design: {
+            ...state.design,
+            [key]: value,
+          },
+        })),
+
+      // Batch update multiple design properties
+      updateDesignBatch: (updates) =>
+        set((state) => ({
+          design: {
+            ...state.design,
+            ...updates,
+          },
+        })),
+
+      // Reset design to defaults
+      resetDesign: () =>
+        set({
+          design: defaultDesignState,
+        }),
+
+      // Get specific design value
+      getDesignValue: (key) => {
+        return get().design[key];
+      },
+    }),
+    {
+      name: 'linkhub_design', // localStorage key (same as your original)
     }
-  });
-
-  // Save to localStorage whenever design changes
-  useEffect(() => {
-    try {
-      localStorage.setItem("linkhub_design", JSON.stringify(design));
-    } catch (error) {
-      console.error("Error saving design to localStorage:", error);
-    }
-  }, [design]);
-
-  // Update single design property
-  const updateDesign = (key, value) => {
-    setDesign((prev) => ({ ...prev, [key]: value }));
-  };
-
-  // Batch update multiple design properties
-  const updateDesignBatch = (updates) => {
-    setDesign((prev) => ({ ...prev, ...updates }));
-  };
-
-  // Reset design to defaults
-  const resetDesign = () => {
-    setDesign(defaultDesignState);
-  };
-
-  // Get specific design value
-  const getDesignValue = (key) => {
-    return design[key];
-  };
-
-  return (
-    <DesignContext.Provider
-      value={{
-        design,
-        updateDesign,
-        updateDesignBatch,
-        resetDesign,
-        getDesignValue,
-      }}
-    >
-      {children}
-    </DesignContext.Provider>
-  );
-};
-
-export const useDesign = () => {
-  const context = useContext(DesignContext);
-  if (!context) {
-    throw new Error("useDesign must be used within a DesignProvider");
-  }
-  return context;
-};
+  )
+);

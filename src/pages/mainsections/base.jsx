@@ -1,9 +1,7 @@
   import React, { useState } from "react";
   import ProfileDropdown from "./components/ProfileDropdown";
   import Middle from "./middle/links/linksMiddle";
-  import { SelectionProvider } from "./middle/links/Selectionmanager";
   import DesignMiddle from "./middle/Design/DesignMiddle";
-  import { DesignProvider } from "./middle/Design/DesignSelectionManager";
   import MobilePreview from "../RightSide/MobilePreview";
 
   export default function LinktreeDashboard() {
@@ -118,15 +116,10 @@
         </aside>
 
         {/* Main Content */}
-        <SelectionProvider>
           {activeSection === "links" && <Middle />}
-        </SelectionProvider>
+        
+{activeSection === "design" && <DesignMiddle />}
 
-        {activeSection === "design" && (
-          <DesignProvider>
-            <DesignMiddle />
-          </DesignProvider>
-        )}
 
         {/* Mobile Preview */}
         <MobilePreview />

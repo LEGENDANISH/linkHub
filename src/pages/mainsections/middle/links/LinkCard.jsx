@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { GripVertical, Pencil, Share2, LayoutGrid, Image, Star, Lock, BarChart3, Trash2, Calendar } from 'lucide-react';
 import { useSelection } from './Selectionmanager';
 import LayoutSection from './sections/LayoutSection';
@@ -10,17 +10,10 @@ import RedirectSection from './sections/RedirectSection';
 import DeleteSection from './sections/DeleteSection';
 
 const LinkCard = ({ link: initialLink, onUpdate, onDelete }) => {
-  const [link, setLink] = useState(initialLink || {
-    id: 1,
-    name: 'YouTube',
-    url: 'https://www.youtube.com/@DevXAnish',
-    active: true,
-    clicks: 0,
-    layout: 'classic',
-    thumbnail: null,
-    animation: 'buzz',
-    locked: false
-  });
+  const { updateLink: updateLinkStore } = useSelection();
+  
+  // Use prop as source of truth
+  const link = initialLink;
 
   const [expandedSection, setExpandedSection] = useState(null);
   const [isEditingName, setIsEditingName] = useState(false);
@@ -28,56 +21,31 @@ const LinkCard = ({ link: initialLink, onUpdate, onDelete }) => {
   const [editName, setEditName] = useState(link.name);
   const [editUrl, setEditUrl] = useState(link.url);
 
-  // Get SelectionManager to sync selections
-const { syncLink, getLink } = useSelection();
-
-  // Sync this link to SelectionManager whenever it changes
-  useEffect(() => {
-    syncLink(link);
-  }, [link]);
-
-  // Update from SelectionManager if available (for section changes)
-  useEffect(() => {
-    const storedLink = getLink(link.id);
-    if (storedLink) {
-      // Only update if SelectionManager has newer data
-      if (storedLink.layout !== link.layout || 
-          storedLink.animation !== link.animation ||
-          storedLink.thumbnail !== link.thumbnail ||
-          storedLink.locked !== link.locked) {
-        setLink(prev => ({ ...prev, ...storedLink }));
-      }
-    }
-  }, []);
-
   const toggleSection = (section) => {
     setExpandedSection(expandedSection === section ? null : section);
   };
 
   const handleToggleActive = () => {
     const updated = { ...link, active: !link.active };
-    setLink(updated);
+    updateLinkStore(link.id, { active: !link.active });
     onUpdate?.(updated);
   };
 
   const handleSaveName = () => {
-    const updated = { ...link, name: editName };
-    setLink(updated);
+    updateLinkStore(link.id, { name: editName });
+    onUpdate?.({ ...link, name: editName });
     setIsEditingName(false);
-    onUpdate?.(updated);
   };
 
   const handleSaveUrl = () => {
-    const updated = { ...link, url: editUrl };
-    setLink(updated);
+    updateLinkStore(link.id, { url: editUrl });
+    onUpdate?.({ ...link, url: editUrl });
     setIsEditingUrl(false);
-    onUpdate?.(updated);
   };
 
-  const updateLink = (updates) => {
-    const updated = { ...link, ...updates };
-    setLink(updated);
-    onUpdate?.(updated);
+  const updateLinkLocal = (updates) => {
+    updateLinkStore(link.id, updates);
+    onUpdate?.({ ...link, ...updates });
   };
 
   return (
@@ -211,7 +179,7 @@ const { syncLink, getLink } = useSelection();
             <Calendar className="w-5 h-5" />
           </button>
           <button
-            onClick={() => updateLink({ locked: !link.locked })}
+            onClick={() => updateLinkLocal({ locked: !link.locked })}
             className="p-2 hover:bg-purple-100 rounded-lg transition-colors group"
             title="Lock"
           >
@@ -249,7 +217,7 @@ const { syncLink, getLink } = useSelection();
             <LayoutSection 
               link={link}
               onClose={() => setExpandedSection(null)}
-              onUpdate={updateLink}
+              onUpdate={updateLinkLocal}
             />
           )}
           
@@ -257,7 +225,7 @@ const { syncLink, getLink } = useSelection();
             <ThumbnailSection 
               link={link}
               onClose={() => setExpandedSection(null)}
-              onUpdate={updateLink}
+              onUpdate={updateLinkLocal}
             />
           )}
           
@@ -265,7 +233,7 @@ const { syncLink, getLink } = useSelection();
             <AnimateSection 
               link={link}
               onClose={() => setExpandedSection(null)}
-              onUpdate={updateLink}
+              onUpdate={updateLinkLocal}
             />
           )}
           
