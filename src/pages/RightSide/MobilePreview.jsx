@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useMemo } from "react";
 import { useDesign } from "../mainsections/middle/Design/DesignSelectionManager";
 import { useSelection } from "../mainsections/middle/links/Selectionmanager";
+import { Link as LinkIcon } from 'lucide-react';
 
 export default function MobilePreview() {
   const { design } = useDesign();
@@ -30,7 +31,7 @@ export default function MobilePreview() {
     }
   }, [design.backgroundVideo]);
 
-  // ✅ FIXED: Use useMemo to make background style reactive
+  // Background style
   const backgroundStyle = useMemo(() => {
     const baseStyle = {
       color: design.pageTextColor || "#ffffff",
@@ -125,6 +126,26 @@ export default function MobilePreview() {
     }
 
     return baseStyle;
+  };
+
+  const getCroppedImageStyle = (crop) => {
+    if (!crop) return {};
+    
+    const { x, y, scale } = crop;
+    return {
+      transform: `translate(${-x}px, ${-y}px) scale(${scale})`,
+      transformOrigin: '0 0'
+    };
+  };
+
+  // Get favicon/icon for auto icon type
+  const getAutoIcon = (url) => {
+    try {
+      const domain = new URL(url).hostname;
+      return `https://www.google.com/s2/favicons?domain=${domain}&sz=128`;
+    } catch {
+      return null;
+    }
   };
 
   // Title styles
@@ -320,7 +341,7 @@ export default function MobilePreview() {
         )}
 
         {/* Content Layer (above background effects) */}
-        <div className="relative z-10 flex flex-col items-center w-full h-full overflow-y-auto">
+        <div className="relative z-10 flex flex-col items-center w-full h-full overflow-y-auto scrollbar-hide">
           {/* Profile Image */}
           {design.profileLayout === "classic" && (
             <div
@@ -392,7 +413,8 @@ export default function MobilePreview() {
               </div>
             ) : (
               activeLinks.map((link) => {
-                if (link.layout === "classic") {
+                // Classic Layout
+                if (link.layout === 'classic') {
                   return (
                     <a
                       key={link.id}
@@ -404,18 +426,104 @@ export default function MobilePreview() {
                       onClick={(e) => e.preventDefault()}
                     >
                       {link.thumbnail && (
-                        <img
-                          src={link.thumbnail}
-                          alt={link.name}
-                          className="w-6 h-6 rounded"
-                        />
+                        <div className="w-6 h-6 rounded overflow-hidden">
+                          <img
+                            src={link.thumbnail}
+                            alt={link.name}
+                            className="w-full h-full object-cover"
+                            style={getCroppedImageStyle(link.thumbnailCrop)}
+                          />
+                        </div>
                       )}
                       <span>{link.name}</span>
                     </a>
                   );
                 }
 
-                if (link.layout === "featured") {
+                // Pill Layout
+                if (link.layout === 'pill') {
+                  const pillPosition = link.pillPosition || 'left';
+                  const iconType = link.iconType || 'thumbnail';
+                  const autoIcon = iconType === 'auto' ? getAutoIcon(link.url) : null;
+
+                  return (
+                    <a
+                      key={link.id}
+                      href={link.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full rounded-full overflow-hidden transition-transform hover:scale-105"
+                      style={{
+                        ...getButtonStyle(link),
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        padding: '0.5rem 1rem',
+                        minHeight: '3.5rem'
+                      }}
+                      onClick={(e) => e.preventDefault()}
+                    >
+                      {pillPosition === 'left' ? (
+                        <>
+                          <div className="flex items-center gap-3">
+                            <div className="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center overflow-hidden flex-shrink-0">
+                              {link.thumbnail ? (
+                                <div className="w-full h-full relative overflow-hidden">
+                                  <img 
+                                    src={link.thumbnail} 
+                                    alt=""
+                                    className="w-full h-full object-cover"
+                                    style={getCroppedImageStyle(link.thumbnailCrop)}
+                                  />
+                                </div>
+                              ) : autoIcon ? (
+                                <img 
+                                  src={autoIcon} 
+                                  alt=""
+                                  className="w-6 h-6"
+                                />
+                              ) : (
+                                <LinkIcon className="w-5 h-5" style={{ color: design.buttonTextColor || '#ffffff' }} />
+                              )}
+                            </div>
+                            <span className="font-medium">{link.name}</span>
+                          </div>
+                          <div className="text-xl">⋯</div>
+                        </>
+                      ) : (
+                        <>
+                          <div className="text-xl">⋯</div>
+                          <div className="flex items-center gap-3">
+                            <span className="font-medium">{link.name}</span>
+                            <div className="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center overflow-hidden flex-shrink-0">
+                              {link.thumbnail ? (
+                                <div className="w-full h-full relative overflow-hidden">
+                                  <img 
+                                    src={link.thumbnail} 
+                                    alt=""
+                                    className="w-full h-full object-cover"
+                                    style={getCroppedImageStyle(link.thumbnailCrop)}
+                                  />
+                                </div>
+                              ) : autoIcon ? (
+                                <img 
+                                  src={autoIcon} 
+                                  alt=""
+                                  className="w-6 h-6"
+                                />
+                              ) : (
+                                <LinkIcon className="w-5 h-5" style={{ color: design.buttonTextColor || '#ffffff' }} />
+                              )}
+                            </div>
+                          </div>
+                        </>
+                      )}
+                    </a>
+                  );
+                }
+
+                // Featured Layout
+                if (link.layout === 'featured') {
                   return (
                     <a
                       key={link.id}
@@ -428,11 +536,14 @@ export default function MobilePreview() {
                     >
                       {link.thumbnail ? (
                         <div className="relative h-32">
-                          <img
-                            src={link.thumbnail}
-                            alt={link.name}
-                            className="w-full h-full object-cover"
-                          />
+                          <div className="absolute inset-0 overflow-hidden">
+                            <img
+                              src={link.thumbnail}
+                              alt={link.name}
+                              className="w-full h-full object-cover"
+                              style={getCroppedImageStyle(link.thumbnailCrop)}
+                            />
+                          </div>
                           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                           <div className="absolute bottom-2 left-3 text-white">
                             <p className="font-semibold text-sm">{link.name}</p>
@@ -455,6 +566,7 @@ export default function MobilePreview() {
                   );
                 }
 
+                // Fallback
                 return (
                   <a
                     key={link.id}
@@ -498,6 +610,17 @@ export default function MobilePreview() {
             </div>
           )}
         </div>
+
+        {/* Hide scrollbar with CSS */}
+        <style jsx>{`
+          .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+          }
+          .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+          }
+        `}</style>
       </div>  
     </aside>
   );
