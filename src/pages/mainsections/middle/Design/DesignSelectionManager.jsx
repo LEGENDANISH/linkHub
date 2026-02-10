@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { persist, createJSONStorage } from 'zustand/middleware';
 
 // Default design state with all possible options
 const defaultDesignState = {
@@ -11,27 +11,37 @@ const defaultDesignState = {
   titleSize: "small",
   titleFont: "Inter",
   titleColor: "#000000",
-  
+
   // Theme
   theme: "custom",
-  
+
   // Wallpaper
-  wallpaper: "fill",
+  wallpaperStyle: "fill",
   backgroundColor: "#7F2AEB",
-  
+  gradientStyle: "custom",
+  gradientColor: "#666666",
+  gradientDirection: "linear-down",
+  pattern: "grid",
+  imageEffect: "none",
+  imageTint: 0,
+  noise: false,
+  backgroundImage: null,
+  backgroundVideo: null,
+
   // Text
   pageTextColor: "#ffffff",
-  
+
   // Buttons
   buttonColor: "#E058D6",
   buttonTextColor: "#000000",
-  buttonStyle: "rounded",
-  buttonShadow: false,
-  
+  buttonStyle: "fill",
+  cornerRoundness: "round",
+  buttonShadow: "none",
+
   // Footer
   footerText: "",
-  
-  // Colors (additional)
+
+  // Other
   accentColor: "#000000",
 };
 
@@ -41,22 +51,26 @@ export const useDesign = create(
       design: defaultDesignState,
 
       // Update single design property
-      updateDesign: (key, value) =>
+      updateDesign: (key, value) => {
+        console.log(`🔧 Zustand updateDesign called:`, key, '=', value);
         set((state) => ({
           design: {
             ...state.design,
             [key]: value,
           },
-        })),
+        }));
+      },
 
       // Batch update multiple design properties
-      updateDesignBatch: (updates) =>
+      updateDesignBatch: (updates) => {
+        console.log('🔧 Zustand updateDesignBatch called:', updates);
         set((state) => ({
           design: {
             ...state.design,
             ...updates,
           },
-        })),
+        }));
+      },
 
       // Reset design to defaults
       resetDesign: () =>
@@ -70,7 +84,8 @@ export const useDesign = create(
       },
     }),
     {
-      name: 'linkhub_design', // localStorage key (same as your original)
+      name: 'linkhub_design',
+      storage: createJSONStorage(() => localStorage), // ← THIS WAS MISSING!
     }
   )
 );

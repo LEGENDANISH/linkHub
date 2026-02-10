@@ -3,6 +3,7 @@
   import Middle from "./middle/links/linksMiddle";
   import DesignMiddle from "./middle/Design/DesignMiddle";
   import MobilePreview from "../RightSide/MobilePreview";
+import DesignDebugger from "./middle/Design/Designdebugger";
 
   export default function LinktreeDashboard() {
     const [open, setOpen] = useState(true);
@@ -122,6 +123,8 @@
 
 
         {/* Mobile Preview */}
+        {/* <DesignDebugger /> */}
+
         <MobilePreview />
 
       </div>

@@ -1,10 +1,58 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useDesign } from "../DesignSelectionManager";
 
-const WallpaperSection = ({ state, updateDesign }) => {
+const WallpaperSection = () => {
+  // ✅ FIXED: Use Zustand directly instead of props
+  const { design, updateDesign } = useDesign();
+  
   const [showColorPicker, setShowColorPicker] = useState(false);
   const [showGradientColorPicker, setShowGradientColorPicker] = useState(false);
-  const [showImageUpload, setShowImageUpload] = useState(false);
-  const [showVideoUpload, setShowVideoUpload] = useState(false);
+
+  // Initialize default values when component mounts or wallpaper style changes
+  useEffect(() => {
+    // Set default wallpaper style if not set
+    if (!design.wallpaperStyle) {
+      updateDesign("wallpaperStyle", "fill");
+    }
+
+    // Set default background color if not set
+    if (!design.backgroundColor) {
+      updateDesign("backgroundColor", "#000000");
+    }
+
+    // Set defaults for gradient
+    if (design.wallpaperStyle === "gradient") {
+      if (!design.gradientStyle) {
+        updateDesign("gradientStyle", "custom");
+      }
+      if (!design.gradientDirection) {
+        updateDesign("gradientDirection", "linear-down");
+      }
+      if (!design.gradientColor) {
+        updateDesign("gradientColor", "#666666");
+      }
+    }
+
+    // Set defaults for pattern
+    if (design.wallpaperStyle === "pattern" && !design.pattern) {
+      updateDesign("pattern", "grid");
+    }
+
+    // Set defaults for image
+    if (design.wallpaperStyle === "image" && !design.imageEffect) {
+      updateDesign("imageEffect", "none");
+    }
+
+    // Set default for noise
+    if (design.noise === undefined) {
+      updateDesign("noise", false);
+    }
+
+    // Set default for image tint
+    if (design.imageTint === undefined) {
+      updateDesign("imageTint", 0);
+    }
+  }, [design.wallpaperStyle]);
 
   // Suggested colors
   const suggestedColors = ["#000000", "#1a1a1a", "#7F2AEB", "#FF6B6B"];
@@ -20,18 +68,34 @@ const WallpaperSection = ({ state, updateDesign }) => {
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      updateDesign("backgroundImage", imageUrl);
-      setShowImageUpload(false);
+      // Check file size (max 5MB for localStorage)
+      if (file.size > 5 * 1024 * 1024) {
+        alert("Image is too large (max 5MB). Please use a smaller image.");
+        return;
+      }
+      
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        updateDesign("backgroundImage", reader.result);
+      };
+      reader.readAsDataURL(file);
     }
   };
 
   const handleVideoUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
-      const videoUrl = URL.createObjectURL(file);
-      updateDesign("backgroundVideo", videoUrl);
-      setShowVideoUpload(false);
+      // Check file size (max 5MB for localStorage)
+      if (file.size > 5 * 1024 * 1024) {
+        alert("Video is too large (max 5MB). Please use a smaller video.");
+        return;
+      }
+      
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        updateDesign("backgroundVideo", reader.result);
+      };
+      reader.readAsDataURL(file);
     }
   };
 
@@ -39,6 +103,7 @@ const WallpaperSection = ({ state, updateDesign }) => {
   const WallpaperStyleOption = ({ value, label, icon, isPro, isSelected, onClick }) => (
     <div className="flex flex-col items-center">
       <button
+        type="button"
         onClick={onClick}
         className={`relative w-full aspect-square rounded-2xl transition-all ${
           isSelected
@@ -63,6 +128,7 @@ const WallpaperSection = ({ state, updateDesign }) => {
   const PatternOption = ({ value, label, isPro, isSelected, onClick }) => (
     <div className="flex flex-col items-center">
       <button
+        type="button"
         onClick={onClick}
         className={`relative w-full aspect-square rounded-2xl transition-all overflow-hidden ${
           isSelected
@@ -106,6 +172,7 @@ const WallpaperSection = ({ state, updateDesign }) => {
   const EffectOption = ({ value, label, icon, isSelected, onClick }) => (
     <div className="flex flex-col items-center">
       <button
+        type="button"
         onClick={onClick}
         className={`relative px-8 py-3 rounded-full transition-all ${
           isSelected
@@ -134,8 +201,10 @@ const WallpaperSection = ({ state, updateDesign }) => {
             <WallpaperStyleOption
               value="fill"
               label="Fill"
-              isSelected={state.wallpaperStyle === "fill"}
-              onClick={() => updateDesign("wallpaperStyle", "fill")}
+              isSelected={design.wallpaperStyle === "fill"}
+              onClick={() => {
+                updateDesign("wallpaperStyle", "fill");
+              }}
               icon={
                 <div className="w-16 h-16 bg-black rounded-xl" />
               }
@@ -143,8 +212,16 @@ const WallpaperSection = ({ state, updateDesign }) => {
             <WallpaperStyleOption
               value="gradient"
               label="Gradient"
-              isSelected={state.wallpaperStyle === "gradient"}
-              onClick={() => updateDesign("wallpaperStyle", "gradient")}
+              isSelected={design.wallpaperStyle === "gradient"}
+              onClick={() => {
+                updateDesign("wallpaperStyle", "gradient");
+                // Set defaults if not already set
+                setTimeout(() => {
+                  if (!design.gradientStyle) updateDesign("gradientStyle", "custom");
+                  if (!design.gradientDirection) updateDesign("gradientDirection", "linear-down");
+                  if (!design.gradientColor) updateDesign("gradientColor", "#666666");
+                }, 0);
+              }}
               icon={
                 <div className="w-16 h-16 bg-gradient-to-br from-gray-800 to-gray-400 rounded-xl" />
               }
@@ -152,7 +229,7 @@ const WallpaperSection = ({ state, updateDesign }) => {
             <WallpaperStyleOption
               value="blur"
               label="Blur"
-              isSelected={state.wallpaperStyle === "blur"}
+              isSelected={design.wallpaperStyle === "blur"}
               onClick={() => updateDesign("wallpaperStyle", "blur")}
               icon={
                 <div className="w-16 h-16 bg-gradient-to-br from-black to-gray-600 rounded-xl blur-sm" />
@@ -161,8 +238,13 @@ const WallpaperSection = ({ state, updateDesign }) => {
             <WallpaperStyleOption
               value="pattern"
               label="Pattern"
-              isSelected={state.wallpaperStyle === "pattern"}
-              onClick={() => updateDesign("wallpaperStyle", "pattern")}
+              isSelected={design.wallpaperStyle === "pattern"}
+              onClick={() => {
+                updateDesign("wallpaperStyle", "pattern");
+                setTimeout(() => {
+                  if (!design.pattern) updateDesign("pattern", "grid");
+                }, 0);
+              }}
               icon={
                 <div className="w-16 h-16 grid grid-cols-2 gap-1">
                   <div className="border-2 border-black rounded" />
@@ -175,13 +257,15 @@ const WallpaperSection = ({ state, updateDesign }) => {
             <WallpaperStyleOption
               value="image"
               label="Image"
-              isSelected={state.wallpaperStyle === "image"}
+              isSelected={design.wallpaperStyle === "image"}
               onClick={() => {
                 updateDesign("wallpaperStyle", "image");
-                setShowImageUpload(true);
+                setTimeout(() => {
+                  if (!design.imageEffect) updateDesign("imageEffect", "none");
+                }, 0);
               }}
               icon={
-                <div className="w-16 h-16 bg-gradient-to-br from-purple-900 via-blue-900 to-teal-600 rounded-xl flex items-center justify-center">
+                <div className="w-16 h-16 bg-gradient-to-br from-purple-900 via-blue-900 to-teal-600 rounded-xl flex items-center justify-center relative">
                   <div className="w-6 h-6 bg-white/30 rounded-full blur-md absolute top-2 right-2" />
                   <div className="w-4 h-4 bg-white/50 rounded-full blur-sm absolute bottom-3 left-3" />
                 </div>
@@ -191,10 +275,9 @@ const WallpaperSection = ({ state, updateDesign }) => {
             <WallpaperStyleOption
               value="video"
               label="Video"
-              isSelected={state.wallpaperStyle === "video"}
+              isSelected={design.wallpaperStyle === "video"}
               onClick={() => {
                 updateDesign("wallpaperStyle", "video");
-                setShowVideoUpload(true);
               }}
               icon={
                 <div className="w-16 h-16 bg-gray-200 rounded-xl flex items-center justify-center">
@@ -210,15 +293,16 @@ const WallpaperSection = ({ state, updateDesign }) => {
         </section>
 
         {/* Gradient Style (only show when gradient is selected) */}
-        {state.wallpaperStyle === "gradient" && (
+        {design.wallpaperStyle === "gradient" && (
           <section>
             <label className="block text-sm font-semibold mb-4">Gradient style</label>
 
             <div className="grid grid-cols-2 gap-3 sm:gap-4">
               <button
+                type="button"
                 onClick={() => updateDesign("gradientStyle", "custom")}
                 className={`px-6 py-3 rounded-full font-medium transition-all ${
-                  state.gradientStyle === "custom"
+                  design.gradientStyle === "custom"
                     ? "bg-white border-2 border-black"
                     : "bg-[#F1F0EE] border-2 border-transparent hover:bg-gray-200"
                 }`}
@@ -226,9 +310,10 @@ const WallpaperSection = ({ state, updateDesign }) => {
                 Custom
               </button>
               <button
+                type="button"
                 onClick={() => updateDesign("gradientStyle", "premade")}
                 className={`px-6 py-3 rounded-full font-medium transition-all relative ${
-                  state.gradientStyle === "premade"
+                  design.gradientStyle === "premade"
                     ? "bg-white border-2 border-black"
                     : "bg-[#F1F0EE] border-2 border-transparent hover:bg-gray-200"
                 }`}
@@ -243,7 +328,7 @@ const WallpaperSection = ({ state, updateDesign }) => {
         )}
 
         {/* Gradient Color (only show when gradient is selected and custom) */}
-        {state.wallpaperStyle === "gradient" && state.gradientStyle === "custom" && (
+        {design.wallpaperStyle === "gradient" && design.gradientStyle === "custom" && (
           <section>
             <label className="block text-sm font-semibold mb-4">Gradient color</label>
 
@@ -252,15 +337,16 @@ const WallpaperSection = ({ state, updateDesign }) => {
                 <input
                   className="flex-1 border border-gray-300 rounded-xl p-3 sm:p-4 text-sm sm:text-base focus:ring-2 focus:ring-black focus:outline-none bg-white uppercase"
                   type="text"
-                  placeholder="#000000"
-                  value={state.gradientColor || "#000000"}
+                  placeholder="#666666"
+                  value={design.gradientColor || "#666666"}
                   onChange={(e) => handleColorChange(e.target.value, "gradient")}
                 />
 
                 <button
+                  type="button"
                   onClick={() => setShowGradientColorPicker(!showGradientColorPicker)}
                   className="w-12 h-12 sm:w-14 sm:h-14 rounded-full border-2 border-gray-300 cursor-pointer hover:border-gray-400 transition-colors flex-shrink-0"
-                  style={{ backgroundColor: state.gradientColor || "#000000" }}
+                  style={{ backgroundColor: design.gradientColor || "#666666" }}
                 />
               </div>
 
@@ -278,7 +364,7 @@ const WallpaperSection = ({ state, updateDesign }) => {
                       <div className="relative w-full h-48 rounded-xl overflow-hidden mb-3 cursor-crosshair">
                         <input
                           type="color"
-                          value={state.gradientColor || "#000000"}
+                          value={design.gradientColor || "#666666"}
                           onChange={(e) => handleColorChange(e.target.value, "gradient")}
                           className="absolute inset-0 w-full h-full cursor-crosshair opacity-0"
                         />
@@ -290,7 +376,7 @@ const WallpaperSection = ({ state, updateDesign }) => {
                               rgba(255,255,255,0) 50%, 
                               rgba(0,0,0,1) 100%),
                               linear-gradient(to right, 
-                              ${state.gradientColor || "#000000"} 0%, 
+                              ${design.gradientColor || "#666666"} 0%, 
                               rgba(255,255,255,0.5) 100%)`,
                           }}
                         />
@@ -320,10 +406,10 @@ const WallpaperSection = ({ state, updateDesign }) => {
                       <div className="flex items-center gap-2 mb-4">
                         <input
                           type="text"
-                          value={state.gradientColor || "#000000"}
+                          value={design.gradientColor || "#666666"}
                           onChange={(e) => handleColorChange(e.target.value, "gradient")}
                           className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-black focus:outline-none uppercase"
-                          placeholder="#000000"
+                          placeholder="#666666"
                         />
                       </div>
 
@@ -333,6 +419,7 @@ const WallpaperSection = ({ state, updateDesign }) => {
                           {suggestedColors.map((color) => (
                             <button
                               key={color}
+                              type="button"
                               onClick={() => handleColorChange(color, "gradient")}
                               className="w-10 h-10 rounded-full border-2 border-gray-300 hover:border-gray-400 transition-colors"
                               style={{ backgroundColor: color }}
@@ -349,16 +436,17 @@ const WallpaperSection = ({ state, updateDesign }) => {
         )}
 
         {/* Gradient Direction (only show when gradient is selected and custom) */}
-        {state.wallpaperStyle === "gradient" && state.gradientStyle === "custom" && (
+        {design.wallpaperStyle === "gradient" && design.gradientStyle === "custom" && (
           <section>
             <label className="block text-sm font-semibold mb-4">Gradient direction</label>
 
             <div className="grid grid-cols-3 gap-3 sm:gap-4">
               <div className="flex flex-col items-center">
                 <button
+                  type="button"
                   onClick={() => updateDesign("gradientDirection", "linear-up")}
                   className={`w-full aspect-square rounded-2xl transition-all flex items-center justify-center ${
-                    state.gradientDirection === "linear-up"
+                    design.gradientDirection === "linear-up"
                       ? "border-2 border-black bg-white"
                       : "border-2 border-transparent bg-[#F1F0EE] hover:bg-gray-200"
                   }`}
@@ -372,9 +460,10 @@ const WallpaperSection = ({ state, updateDesign }) => {
 
               <div className="flex flex-col items-center">
                 <button
+                  type="button"
                   onClick={() => updateDesign("gradientDirection", "linear-down")}
                   className={`w-full aspect-square rounded-2xl transition-all flex items-center justify-center ${
-                    state.gradientDirection === "linear-down"
+                    design.gradientDirection === "linear-down"
                       ? "border-2 border-black bg-white"
                       : "border-2 border-transparent bg-[#F1F0EE] hover:bg-gray-200"
                   }`}
@@ -388,9 +477,10 @@ const WallpaperSection = ({ state, updateDesign }) => {
 
               <div className="flex flex-col items-center">
                 <button
+                  type="button"
                   onClick={() => updateDesign("gradientDirection", "radial")}
                   className={`w-full aspect-square rounded-2xl transition-all flex items-center justify-center relative ${
-                    state.gradientDirection === "radial"
+                    design.gradientDirection === "radial"
                       ? "border-2 border-black bg-white"
                       : "border-2 border-transparent bg-[#F1F0EE] hover:bg-gray-200"
                   }`}
@@ -413,7 +503,7 @@ const WallpaperSection = ({ state, updateDesign }) => {
         {/* Background Color (always show) */}
         <section>
           <label className="block text-sm font-semibold mb-4">
-            {state.wallpaperStyle === "gradient" ? "Background color" : "Background color"}
+            {design.wallpaperStyle === "gradient" ? "Background color" : "Background color"}
           </label>
 
           <div className="relative">
@@ -422,14 +512,15 @@ const WallpaperSection = ({ state, updateDesign }) => {
                 className="flex-1 border border-gray-300 rounded-xl p-3 sm:p-4 text-sm sm:text-base focus:ring-2 focus:ring-black focus:outline-none bg-white uppercase"
                 type="text"
                 placeholder="#000000"
-                value={state.backgroundColor || "#000000"}
+                value={design.backgroundColor || "#000000"}
                 onChange={(e) => handleColorChange(e.target.value, "background")}
               />
 
               <button
+                type="button"
                 onClick={() => setShowColorPicker(!showColorPicker)}
                 className="w-12 h-12 sm:w-14 sm:h-14 rounded-full border-2 border-gray-300 cursor-pointer hover:border-gray-400 transition-colors flex-shrink-0"
-                style={{ backgroundColor: state.backgroundColor || "#000000" }}
+                style={{ backgroundColor: design.backgroundColor || "#000000" }}
               />
             </div>
 
@@ -447,7 +538,7 @@ const WallpaperSection = ({ state, updateDesign }) => {
                     <div className="relative w-full h-48 rounded-xl overflow-hidden mb-3 cursor-crosshair">
                       <input
                         type="color"
-                        value={state.backgroundColor || "#000000"}
+                        value={design.backgroundColor || "#000000"}
                         onChange={(e) => handleColorChange(e.target.value, "background")}
                         className="absolute inset-0 w-full h-full cursor-crosshair opacity-0"
                       />
@@ -459,7 +550,7 @@ const WallpaperSection = ({ state, updateDesign }) => {
                             rgba(255,255,255,0) 50%, 
                             rgba(0,0,0,1) 100%),
                             linear-gradient(to right, 
-                            ${state.backgroundColor || "#000000"} 0%, 
+                            ${design.backgroundColor || "#000000"} 0%, 
                             rgba(255,255,255,0.5) 100%)`,
                         }}
                       />
@@ -489,7 +580,7 @@ const WallpaperSection = ({ state, updateDesign }) => {
                     <div className="flex items-center gap-2 mb-4">
                       <input
                         type="text"
-                        value={state.backgroundColor || "#000000"}
+                        value={design.backgroundColor || "#000000"}
                         onChange={(e) => handleColorChange(e.target.value, "background")}
                         className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-black focus:outline-none uppercase"
                         placeholder="#000000"
@@ -502,6 +593,7 @@ const WallpaperSection = ({ state, updateDesign }) => {
                         {suggestedColors.map((color) => (
                           <button
                             key={color}
+                            type="button"
                             onClick={() => handleColorChange(color, "background")}
                             className="w-10 h-10 rounded-full border-2 border-gray-300 hover:border-gray-400 transition-colors"
                             style={{ backgroundColor: color }}
@@ -517,7 +609,7 @@ const WallpaperSection = ({ state, updateDesign }) => {
         </section>
 
         {/* Pattern (only show when pattern is selected) */}
-        {state.wallpaperStyle === "pattern" && (
+        {design.wallpaperStyle === "pattern" && (
           <section>
             <label className="block text-sm font-semibold mb-4">Pattern</label>
 
@@ -525,26 +617,26 @@ const WallpaperSection = ({ state, updateDesign }) => {
               <PatternOption
                 value="grid"
                 label="Grid"
-                isSelected={state.pattern === "grid"}
+                isSelected={design.pattern === "grid"}
                 onClick={() => updateDesign("pattern", "grid")}
               />
               <PatternOption
                 value="morph"
                 label="Morph"
-                isSelected={state.pattern === "morph"}
+                isSelected={design.pattern === "morph"}
                 onClick={() => updateDesign("pattern", "morph")}
               />
               <PatternOption
                 value="organic"
                 label="Organic"
-                isSelected={state.pattern === "organic"}
+                isSelected={design.pattern === "organic"}
                 onClick={() => updateDesign("pattern", "organic")}
               />
               <PatternOption
                 value="matrix"
                 label="Matrix"
                 isPro={true}
-                isSelected={state.pattern === "matrix"}
+                isSelected={design.pattern === "matrix"}
                 onClick={() => updateDesign("pattern", "matrix")}
               />
             </div>
@@ -552,48 +644,51 @@ const WallpaperSection = ({ state, updateDesign }) => {
         )}
 
         {/* Background Image (only show when image is selected) */}
-        {state.wallpaperStyle === "image" && (
+        {design.wallpaperStyle === "image" && (
           <section>
             <label className="block text-sm font-semibold mb-4">Background image</label>
 
-            <div className="flex items-center gap-4">
-              {state.backgroundImage && (
-                <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-gray-200">
+            <div className="flex flex-col gap-4">
+              {design.backgroundImage && (
+                <div className="w-full h-40 rounded-xl overflow-hidden border-2 border-gray-200">
                   <img
-                    src={state.backgroundImage}
+                    src={design.backgroundImage}
                     alt="Background"
                     className="w-full h-full object-cover"
                   />
                 </div>
               )}
 
-              <label className="border-2 border-gray-300 px-5 py-2.5 bg-white text-gray-700 rounded-full cursor-pointer font-medium hover:bg-gray-50 transition-colors text-sm sm:text-base flex items-center gap-2">
-                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                </svg>
-                Edit
-                <input
-                  type="file"
-                  className="hidden"
-                  accept="image/*"
-                  onChange={handleImageUpload}
-                />
-              </label>
+              <div className="flex items-center gap-3">
+                <label className="flex-1 border-2 border-gray-300 px-5 py-2.5 bg-white text-gray-700 rounded-full cursor-pointer font-medium hover:bg-gray-50 transition-colors text-sm sm:text-base flex items-center justify-center gap-2">
+                  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  {design.backgroundImage ? "Change Image" : "Upload Image"}
+                  <input
+                    type="file"
+                    className="hidden"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                  />
+                </label>
 
-              {state.backgroundImage && (
-                <button
-                  onClick={() => updateDesign("backgroundImage", null)}
-                  className="border-2 border-gray-300 px-5 py-2.5 bg-white text-gray-700 rounded-full cursor-pointer font-medium hover:bg-gray-50 transition-colors text-sm sm:text-base"
-                >
-                  Remove
-                </button>
-              )}
+                {design.backgroundImage && (
+                  <button
+                    type="button"
+                    onClick={() => updateDesign("backgroundImage", null)}
+                    className="border-2 border-red-300 px-5 py-2.5 bg-white text-red-600 rounded-full cursor-pointer font-medium hover:bg-red-50 transition-colors text-sm sm:text-base"
+                  >
+                    Remove
+                  </button>
+                )}
+              </div>
             </div>
           </section>
         )}
 
         {/* Effect (only show when image is selected) */}
-        {state.wallpaperStyle === "image" && (
+        {design.wallpaperStyle === "image" && (
           <section>
             <label className="block text-sm font-semibold mb-4">Effect</label>
 
@@ -601,7 +696,7 @@ const WallpaperSection = ({ state, updateDesign }) => {
               <EffectOption
                 value="none"
                 label="None"
-                isSelected={state.imageEffect === "none"}
+                isSelected={design.imageEffect === "none"}
                 onClick={() => updateDesign("imageEffect", "none")}
                 icon={
                   <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -613,7 +708,7 @@ const WallpaperSection = ({ state, updateDesign }) => {
               <EffectOption
                 value="mono"
                 label="Mono"
-                isSelected={state.imageEffect === "mono"}
+                isSelected={design.imageEffect === "mono"}
                 onClick={() => updateDesign("imageEffect", "mono")}
                 icon={
                   <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -625,7 +720,7 @@ const WallpaperSection = ({ state, updateDesign }) => {
               <EffectOption
                 value="blur"
                 label="Blur"
-                isSelected={state.imageEffect === "blur"}
+                isSelected={design.imageEffect === "blur"}
                 onClick={() => updateDesign("imageEffect", "blur")}
                 icon={
                   <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -636,7 +731,7 @@ const WallpaperSection = ({ state, updateDesign }) => {
               <EffectOption
                 value="halftone"
                 label="Halftone"
-                isSelected={state.imageEffect === "halftone"}
+                isSelected={design.imageEffect === "halftone"}
                 onClick={() => updateDesign("imageEffect", "halftone")}
                 icon={
                   <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -653,7 +748,7 @@ const WallpaperSection = ({ state, updateDesign }) => {
         )}
 
         {/* Tint (only show when image is selected) */}
-        {state.wallpaperStyle === "image" && (
+        {design.wallpaperStyle === "image" && (
           <section>
             <label className="block text-sm font-semibold mb-2">Tint</label>
             <p className="text-xs text-gray-600 mb-4">
@@ -661,7 +756,7 @@ const WallpaperSection = ({ state, updateDesign }) => {
             </p>
 
             <div className="flex items-center gap-4">
-              <svg className="w-5 h-5 text-gray-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <svg className="w-5 h-5 text-gray-600 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
               </svg>
 
@@ -669,15 +764,12 @@ const WallpaperSection = ({ state, updateDesign }) => {
                 type="range"
                 min="0"
                 max="100"
-                value={state.imageTint || 0}
+                value={design.imageTint || 0}
                 onChange={(e) => updateDesign("imageTint", parseInt(e.target.value))}
-                className="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
-                style={{
-                  background: `linear-gradient(to right, #000 0%, #fff ${state.imageTint || 0}%, #e5e7eb ${state.imageTint || 0}%, #e5e7eb 100%)`,
-                }}
+                className="flex-1"
               />
 
-              <svg className="w-5 h-5 text-gray-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <svg className="w-5 h-5 text-gray-600 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <circle cx="12" cy="12" r="5" />
                 <line x1="12" y1="1" x2="12" y2="3" />
                 <line x1="12" y1="21" x2="12" y2="23" />
@@ -688,6 +780,56 @@ const WallpaperSection = ({ state, updateDesign }) => {
                 <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
                 <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
               </svg>
+
+              <span className="text-sm font-medium w-12 text-right">{design.imageTint || 0}%</span>
+            </div>
+          </section>
+        )}
+
+        {/* Background Video (only show when video is selected) */}
+        {design.wallpaperStyle === "video" && (
+          <section>
+            <label className="block text-sm font-semibold mb-4">Background video</label>
+
+            <div className="flex flex-col gap-4">
+              {design.backgroundVideo && (
+                <div className="w-full h-40 rounded-xl overflow-hidden border-2 border-gray-200">
+                  <video
+                    src={design.backgroundVideo}
+                    className="w-full h-full object-cover"
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                  />
+                </div>
+              )}
+
+              <div className="flex items-center gap-3">
+                <label className="flex-1 border-2 border-gray-300 px-5 py-2.5 bg-white text-gray-700 rounded-full cursor-pointer font-medium hover:bg-gray-50 transition-colors text-sm sm:text-base flex items-center justify-center gap-2">
+                  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <rect x="2" y="2" width="20" height="20" rx="2" />
+                    <polygon points="10 8 16 12 10 16 10 8" fill="currentColor" />
+                  </svg>
+                  {design.backgroundVideo ? "Change Video" : "Upload Video"}
+                  <input
+                    type="file"
+                    className="hidden"
+                    accept="video/*"
+                    onChange={handleVideoUpload}
+                  />
+                </label>
+
+                {design.backgroundVideo && (
+                  <button
+                    type="button"
+                    onClick={() => updateDesign("backgroundVideo", null)}
+                    className="border-2 border-red-300 px-5 py-2.5 bg-white text-red-600 rounded-full cursor-pointer font-medium hover:bg-red-50 transition-colors text-sm sm:text-base"
+                  >
+                    Remove
+                  </button>
+                )}
+              </div>
             </div>
           </section>
         )}
@@ -704,84 +846,13 @@ const WallpaperSection = ({ state, updateDesign }) => {
               <input
                 type="checkbox"
                 className="sr-only peer"
-                checked={state.noise || false}
+                checked={design.noise || false}
                 onChange={(e) => updateDesign("noise", e.target.checked)}
               />
               <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-black rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-black"></div>
             </label>
           </div>
         </section>
-
-        {/* Video Upload Modal */}
-        {showVideoUpload && (
-          <>
-            <div
-              className="fixed inset-0 bg-black bg-opacity-50 z-40"
-              onClick={() => setShowVideoUpload(false)}
-            />
-            <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
-              <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <button
-                    onClick={() => setShowVideoUpload(false)}
-                    className="w-8 h-8 flex items-center justify-center hover:bg-gray-100 rounded-full transition-colors"
-                  >
-                    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M15 18l-6-6 6-6" />
-                    </svg>
-                  </button>
-                  <h3 className="text-lg font-semibold">Upload video</h3>
-                  <button
-                    onClick={() => setShowVideoUpload(false)}
-                    className="w-8 h-8 flex items-center justify-center hover:bg-gray-100 rounded-full transition-colors"
-                  >
-                    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M18 6L6 18M6 6l12 12" />
-                    </svg>
-                  </button>
-                </div>
-
-                <div className="aspect-video bg-gray-100 rounded-xl mb-4 flex items-center justify-center border-2 border-dashed border-gray-300">
-                  {state.backgroundVideo ? (
-                    <video
-                      src={state.backgroundVideo}
-                      className="w-full h-full object-cover rounded-xl"
-                      autoPlay
-                      loop
-                      muted
-                    />
-                  ) : (
-                    <div className="text-center">
-                      <svg className="w-16 h-16 mx-auto text-gray-400 mb-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <rect x="2" y="2" width="20" height="20" rx="2" />
-                        <polygon points="10 8 16 12 10 16 10 8" fill="currentColor" />
-                      </svg>
-                      <p className="text-sm text-gray-600">Upload a video</p>
-                    </div>
-                  )}
-                </div>
-
-                <label className="w-full border-2 border-gray-300 px-6 py-3 bg-white text-gray-700 rounded-full cursor-pointer font-medium hover:bg-gray-50 transition-colors text-center block">
-                  Choose video
-                  <input
-                    type="file"
-                    className="hidden"
-                    accept="video/*"
-                    onChange={handleVideoUpload}
-                  />
-                </label>
-
-                <button
-                  onClick={() => setShowVideoUpload(false)}
-                  className="w-full mt-3 border-2 border-black px-6 py-3 bg-black text-white rounded-full font-medium hover:bg-gray-800 transition-colors"
-                  disabled={!state.backgroundVideo}
-                >
-                  Save
-                </button>
-              </div>
-            </div>
-          </>
-        )}
       </div>
     </div>
   );

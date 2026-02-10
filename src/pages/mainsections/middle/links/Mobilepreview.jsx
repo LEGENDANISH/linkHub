@@ -1,47 +1,69 @@
-import React from "react";
+import React, { useEffect, useRef, useMemo } from "react";
 import { useDesign } from "../mainsections/middle/Design/DesignSelectionManager";
 import { useSelection } from "../mainsections/middle/links/Selectionmanager";
 
 export default function MobilePreview() {
   const { design } = useDesign();
   const { getActiveLinks } = useSelection();
+  const videoRef = useRef(null);
 
   // Active links from Zustand
   const activeLinks = getActiveLinks() || [];
 
-  // Generate background style based on wallpaper settings
-  const getBackgroundStyle = () => {
+  // Debug log - see what's updating
+  useEffect(() => {
+    console.log("🎨 Design updated in preview:", {
+      wallpaperStyle: design.wallpaperStyle,
+      backgroundColor: design.backgroundColor,
+      gradientColor: design.gradientColor,
+      gradientDirection: design.gradientDirection,
+      pattern: design.pattern,
+      noise: design.noise,
+    });
+  }, [design]);
+
+  // Ensure video plays when updated
+  useEffect(() => {
+    if (videoRef.current && design.backgroundVideo) {
+      videoRef.current.load();
+      videoRef.current.play().catch(e => console.log("Video autoplay prevented:", e));
+    }
+  }, [design.backgroundVideo]);
+
+  // ✅ FIXED: Use useMemo to make background style reactive
+  const backgroundStyle = useMemo(() => {
     const baseStyle = {
-      color: design.pageTextColor,
+      color: design.pageTextColor || "#ffffff",
       position: "relative",
       overflow: "hidden",
     };
 
-    // Apply wallpaper style
-    if (design.wallpaperStyle === "fill") {
-      baseStyle.backgroundColor = design.backgroundColor || "#000000";
-    } else if (design.wallpaperStyle === "gradient") {
-      const direction =
-        design.gradientDirection === "linear-up"
-          ? "to top"
-          : design.gradientDirection === "linear-down"
-          ? "to bottom"
-          : "circle";
+    const wallpaperStyle = design.wallpaperStyle || "fill";
 
-      baseStyle.background =
-        direction === "circle"
-          ? `radial-gradient(${design.backgroundColor || "#000000"}, ${
-              design.gradientColor || "#666666"
-            })`
-          : `linear-gradient(${direction}, ${design.backgroundColor || "#000000"}, ${
-              design.gradientColor || "#666666"
-            })`;
-    } else if (design.wallpaperStyle === "blur") {
+    console.log("🖼️ Generating background for:", wallpaperStyle);
+
+    // Apply wallpaper style
+    if (wallpaperStyle === "fill") {
       baseStyle.backgroundColor = design.backgroundColor || "#000000";
-      baseStyle.backdropFilter = "blur(10px)";
-    } else if (design.wallpaperStyle === "pattern") {
+    } else if (wallpaperStyle === "gradient") {
+      const bgColor = design.backgroundColor || "#000000";
+      const gradColor = design.gradientColor || "#666666";
+      const direction = design.gradientDirection || "linear-down";
+      
+      if (direction === "linear-up") {
+        baseStyle.background = `linear-gradient(to top, ${bgColor}, ${gradColor})`;
+      } else if (direction === "linear-down") {
+        baseStyle.background = `linear-gradient(to bottom, ${bgColor}, ${gradColor})`;
+      } else if (direction === "radial") {
+        baseStyle.background = `radial-gradient(circle, ${bgColor}, ${gradColor})`;
+      } else {
+        baseStyle.background = `linear-gradient(to bottom, ${bgColor}, ${gradColor})`;
+      }
+    } else if (wallpaperStyle === "blur") {
       baseStyle.backgroundColor = design.backgroundColor || "#000000";
-    } else if (design.wallpaperStyle === "image") {
+    } else if (wallpaperStyle === "pattern") {
+      baseStyle.backgroundColor = design.backgroundColor || "#000000";
+    } else if (wallpaperStyle === "image") {
       if (design.backgroundImage) {
         baseStyle.backgroundImage = `url(${design.backgroundImage})`;
         baseStyle.backgroundSize = "cover";
@@ -50,22 +72,31 @@ export default function MobilePreview() {
       } else {
         baseStyle.backgroundColor = design.backgroundColor || "#000000";
       }
-    } else if (design.wallpaperStyle === "video") {
+    } else if (wallpaperStyle === "video") {
+      baseStyle.backgroundColor = design.backgroundColor || "#000000";
+    } else {
       baseStyle.backgroundColor = design.backgroundColor || "#000000";
     }
 
     return baseStyle;
-  };
+  }, [
+    design.wallpaperStyle,
+    design.backgroundColor,
+    design.gradientColor,
+    design.gradientDirection,
+    design.backgroundImage,
+    design.pageTextColor,
+  ]);
 
   // Button styles from design manager
   const getButtonStyle = (link) => {
     const baseStyle = {
       backgroundColor:
-        design.buttonStyle === "outline" ? "transparent" : design.buttonColor,
-      color: design.buttonTextColor,
+        design.buttonStyle === "outline" ? "transparent" : design.buttonColor || "#000000",
+      color: design.buttonTextColor || "#ffffff",
       border:
         design.buttonStyle === "outline"
-          ? `2px solid ${design.buttonColor}`
+          ? `2px solid ${design.buttonColor || "#000000"}`
           : "none",
     };
 
@@ -98,7 +129,7 @@ export default function MobilePreview() {
 
   // Title styles
   const titleStyle = {
-    color: design.titleColor,
+    color: design.titleColor || "#ffffff",
     fontSize:
       design.titleSize === "small"
         ? "1.125rem"
@@ -119,24 +150,47 @@ export default function MobilePreview() {
   return (
     <aside className="w-[360px] bg-white border-l flex justify-center items-center">
       <div
-        className="w-[280px] h-[560px] rounded-[30px] p-6 flex flex-col items-center relative overflow-y-auto"
-        style={getBackgroundStyle()}
+        className="w-[280px] h-[560px] rounded-[30px] p-6 flex flex-col items-center relative overflow-hidden"
+        style={backgroundStyle}
+        key={`preview-${design.wallpaperStyle}-${design.backgroundColor}`}
       >
         {/* Background Video Layer */}
         {design.wallpaperStyle === "video" && design.backgroundVideo && (
           <video
-            src={design.backgroundVideo}
-            className="absolute inset-0 w-full h-full object-cover rounded-[30px]"
+            ref={videoRef}
+            key={design.backgroundVideo}
+            className="absolute inset-0 w-full h-full object-cover rounded-[30px] z-0"
             autoPlay
             loop
             muted
             playsInline
-          />
+          >
+            <source src={design.backgroundVideo} />
+          </video>
+        )}
+
+        {/* Blur Effect Layer */}
+        {design.wallpaperStyle === "blur" && (
+          <div 
+            className="absolute inset-0 z-0 rounded-[30px]"
+            style={{
+              backgroundColor: design.backgroundColor || "#000000",
+              backdropFilter: "blur(20px)",
+              WebkitBackdropFilter: "blur(20px)",
+            }}
+          >
+            <div 
+              className="absolute inset-0 opacity-30"
+              style={{
+                background: `radial-gradient(circle at 30% 30%, rgba(255,255,255,0.1), transparent 50%)`,
+              }}
+            />
+          </div>
         )}
 
         {/* Pattern Layer */}
-        {design.wallpaperStyle === "pattern" && (
-          <div className="absolute inset-0 pointer-events-none">
+        {design.wallpaperStyle === "pattern" && design.pattern && (
+          <div className="absolute inset-0 pointer-events-none z-0 rounded-[30px] overflow-hidden">
             {design.pattern === "grid" && (
               <div className="w-full h-full grid grid-cols-8 gap-2 p-4 opacity-20">
                 {[...Array(64)].map((_, i) => (
@@ -149,7 +203,7 @@ export default function MobilePreview() {
               </div>
             )}
             {design.pattern === "morph" && (
-              <div className="w-full h-full flex items-center justify-center opacity-30">
+              <div className="w-full h-full flex items-center justify-center opacity-30 relative">
                 {[...Array(3)].map((_, i) => (
                   <div
                     key={i}
@@ -161,6 +215,7 @@ export default function MobilePreview() {
                       borderRadius: "40% 60% 70% 30% / 60% 30% 70% 40%",
                       opacity: 0.3 - i * 0.1,
                       animationDelay: `${i * 0.5}s`,
+                      animationDuration: "3s",
                     }}
                   />
                 ))}
@@ -171,6 +226,7 @@ export default function MobilePreview() {
                 className="w-full h-full opacity-20"
                 viewBox="0 0 280 560"
                 fill="none"
+                preserveAspectRatio="none"
               >
                 {[...Array(5)].map((_, i) => (
                   <path
@@ -189,20 +245,24 @@ export default function MobilePreview() {
             )}
             {design.pattern === "matrix" && (
               <div
-                className="w-full h-full opacity-40"
+                className="w-full h-full opacity-30"
                 style={{
-                  background: `repeating-linear-gradient(
-                    90deg,
-                    ${design.gradientColor || "#666666"} 0px,
-                    transparent 1px,
-                    transparent 20px
-                  ),
-                  repeating-linear-gradient(
-                    0deg,
-                    ${design.gradientColor || "#666666"} 0px,
-                    transparent 1px,
-                    transparent 20px
-                  )`,
+                  background: `
+                    repeating-linear-gradient(
+                      90deg,
+                      ${design.gradientColor || "#666666"} 0px,
+                      ${design.gradientColor || "#666666"} 1px,
+                      transparent 1px,
+                      transparent 20px
+                    ),
+                    repeating-linear-gradient(
+                      0deg,
+                      ${design.gradientColor || "#666666"} 0px,
+                      ${design.gradientColor || "#666666"} 1px,
+                      transparent 1px,
+                      transparent 20px
+                    )
+                  `,
                 }}
               />
             )}
@@ -211,14 +271,17 @@ export default function MobilePreview() {
 
         {/* Image Effects Layer */}
         {design.wallpaperStyle === "image" && design.backgroundImage && (
-          <div className="absolute inset-0 pointer-events-none rounded-[30px] overflow-hidden">
+          <div className="absolute inset-0 pointer-events-none rounded-[30px] overflow-hidden z-0">
             {design.imageEffect === "mono" && (
-              <div className="absolute inset-0 bg-black opacity-40 mix-blend-saturation" />
+              <div className="absolute inset-0 bg-black opacity-40 mix-blend-saturation" 
+                   style={{ filter: "grayscale(100%)" }} />
             )}
             {design.imageEffect === "blur" && (
               <div
-                className="absolute inset-0 backdrop-blur-md"
+                className="absolute inset-0"
                 style={{
+                  backdropFilter: "blur(8px)",
+                  WebkitBackdropFilter: "blur(8px)",
                   background: `linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.1))`,
                 }}
               />
@@ -234,11 +297,11 @@ export default function MobilePreview() {
               />
             )}
             {/* Tint overlay */}
-            {design.imageTint > 0 && (
+            {(design.imageTint || 0) > 0 && (
               <div
                 className="absolute inset-0"
                 style={{
-                  background: `rgba(0, 0, 0, ${design.imageTint / 100})`,
+                  background: `rgba(0, 0, 0, ${(design.imageTint || 0) / 100})`,
                 }}
               />
             )}
@@ -248,15 +311,16 @@ export default function MobilePreview() {
         {/* Noise Layer */}
         {design.noise && (
           <div
-            className="absolute inset-0 pointer-events-none opacity-10"
+            className="absolute inset-0 pointer-events-none opacity-10 z-[5] rounded-[30px]"
             style={{
               backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+              backgroundRepeat: "repeat",
             }}
           />
         )}
 
         {/* Content Layer (above background effects) */}
-        <div className="relative z-10 flex flex-col items-center w-full h-full">
+        <div className="relative z-10 flex flex-col items-center w-full h-full overflow-y-auto">
           {/* Profile Image */}
           {design.profileLayout === "classic" && (
             <div
@@ -377,11 +441,11 @@ export default function MobilePreview() {
                       ) : (
                         <div
                           className="relative h-32 flex items-center justify-center"
-                          style={{ backgroundColor: design.buttonColor }}
+                          style={{ backgroundColor: design.buttonColor || "#000000" }}
                         >
                           <p
                             className="font-semibold text-sm"
-                            style={{ color: design.buttonTextColor }}
+                            style={{ color: design.buttonTextColor || "#ffffff" }}
                           >
                             {link.name}
                           </p>
@@ -411,30 +475,30 @@ export default function MobilePreview() {
           {/* Footer */}
           {design.footerText ? (
             <p
-              className="text-xs opacity-70 mt-2 text-center"
-              style={{ color: design.pageTextColor }}
+              className="text-xs opacity-70 mt-2 text-center flex-shrink-0"
+              style={{ color: design.pageTextColor || "#ffffff" }}
             >
               {design.footerText}
             </p>
           ) : (
-            <>
+            <div className="flex-shrink-0 flex flex-col items-center mt-auto">
               <button
-                className="mt-auto bg-white px-5 py-2 rounded-full font-medium"
-                style={{ color: design.backgroundColor }}
+                className="bg-white px-5 py-2 rounded-full font-medium mb-3"
+                style={{ color: design.backgroundColor || "#000000" }}
               >
                 Join {design.title || "anish"} on Linktree
               </button>
 
               <p
-                className="text-xs opacity-70 mt-3"
-                style={{ color: design.pageTextColor }}
+                className="text-xs opacity-70"
+                style={{ color: design.pageTextColor || "#ffffff" }}
               >
                 Report • Privacy
               </p>
-            </>
+            </div>
           )}
         </div>
-      </div>
+      </div>  
     </aside>
   );
 }
