@@ -4,7 +4,7 @@
   import HeaderSection from "./sections/Headersection/HeaderSection";
   import ThemeSection from "./sections/ThemeSection/ThemeSection";
   import WallpaperSection from "./sections/WallpaperSection";
-  import TextSection from "./sections/TextSection";
+  import TextSection from "./sections/TextSection/TextSection";
   import ButtonsSection from "./sections/Buttonsection/ButtonsSection";
   import ColorsSection from "./sections/ColorsSection";
   import FooterSection from "./sections/FooterSection";

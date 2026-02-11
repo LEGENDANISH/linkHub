@@ -1,0 +1,1 @@
+export const suggestedColors = ["#000000", "#1a1a1a"];
