@@ -16,8 +16,8 @@ import {
   TextTitle,
   LogoTitle,
 } from "./ProfileSection";
-import { LinksSection } from "./LinksSection";
-import { FooterSection } from "./FooterSection";
+import { LinksSection } from "./Linkssection";
+import { FooterSection } from "./Footersection";
 
 export default function MobilePreview() {
   const { design } = useDesign();

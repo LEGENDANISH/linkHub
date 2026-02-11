@@ -4,7 +4,7 @@ import {
   PillLinkLayout,
   FeaturedLinkLayout,
   FallbackLinkLayout,
-} from "./LinkLayouts";
+} from "./Linklayouts";
 import { getButtonStyle } from "./utils";
 
 /**
