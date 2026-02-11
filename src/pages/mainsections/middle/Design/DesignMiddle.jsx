@@ -2,7 +2,7 @@
   import DesignSidebar from "./DesignSidebar";
 
   import HeaderSection from "./sections/Headersection/HeaderSection";
-  import ThemeSection from "./sections/ThemeSection";
+  import ThemeSection from "./sections/ThemeSection/ThemeSection";
   import WallpaperSection from "./sections/WallpaperSection";
   import TextSection from "./sections/TextSection";
   import ButtonsSection from "./sections/Buttonsection/ButtonsSection";
