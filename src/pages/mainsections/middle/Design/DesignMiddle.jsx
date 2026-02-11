@@ -1,11 +1,11 @@
   import React, { useState } from "react";
   import DesignSidebar from "./DesignSidebar";
 
-  import HeaderSection from "./sections/HeaderSection";
+  import HeaderSection from "./sections/Headersection/HeaderSection";
   import ThemeSection from "./sections/ThemeSection";
   import WallpaperSection from "./sections/WallpaperSection";
   import TextSection from "./sections/TextSection";
-  import ButtonsSection from "./sections/ButtonsSection";
+  import ButtonsSection from "./sections/Buttonsection/ButtonsSection";
   import ColorsSection from "./sections/ColorsSection";
   import FooterSection from "./sections/FooterSection";
 
