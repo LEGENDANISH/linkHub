@@ -21,110 +21,109 @@ export default function LinktreeDashboard() {
     return () => mediaQuery.removeEventListener("change", handler);
   }, []);
 const NavItem = ({ label, icon, active, onClick }) => (
-  <button
-    onClick={onClick}
-    className={`flex flex-col items-center justify-center gap-1 px-3 py-1 rounded-xl transition ${
-      active ? "text-purple-600" : "text-gray-500"
-    }`}
-  >
-    <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      {icon}
-    </svg>
-    <span className="text-[11px] font-medium">{label}</span>
-  </button>
-);
+    <button
+      onClick={onClick}
+      className={`flex flex-col items-center justify-center gap-1 px-4 py-2 rounded-xl transition-all ${
+        active ? "bg-purple-100 text-purple-600" : "bg-white text-gray-500 hover:bg-gray-50"
+      }`}
+    >
+      <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
+        active ? "bg-purple-600" : "bg-gray-100"
+      }`}>
+        <svg xmlns="http://www.w3.org/2000/svg" className={`w-5 h-5 ${active ? "text-white" : "text-gray-600"}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          {icon}
+        </svg>
+      </div>
+      <span className="text-[10px] font-medium">{label}</span>
+    </button>
+  );
 
   // On mobile: always show MobilePreview as main view
  // MOBILE APP EXPERIENCE
 if (isMobile) {
-  return (
-    <div className="h-screen w-full bg-[#f6f7fb] flex flex-col overflow-hidden">
+    return (
+      <div className="h-screen w-full bg-[#f6f7fb] flex flex-col overflow-y-hidden">
+        {/* ---------- MOBILE HEADER ---------- */}
+        <div className="bg-white/80 backdrop-blur-md border-b px-4 py-3 flex items-center justify-between shadow-sm z-20">
+          <button
+            onClick={() => setOpen(!open)}
+            className="p-2 rounded-xl hover:bg-gray-100 transition"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
 
-      {/* ---------- MOBILE HEADER ---------- */}
-      <div className="bg-white/80 backdrop-blur-md border-b px-4 py-3 flex items-center justify-between shadow-sm">
-        <button
-          onClick={() => setOpen(!open)}
-          className="p-2 rounded-xl hover:bg-gray-100 transition"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
-        </button>
+          <h1 className="font-semibold text-gray-900 text-lg tracking-tight">
+            {activeSection === "links" ? "Links" : "Design"}
+          </h1>
 
-        <h1 className="font-semibold text-gray-900 text-lg tracking-tight">
-          {activeSection === "links" ? "Links" : "Design"}
-        </h1>
-
-        <div className="w-8" />
-      </div>
-
-
-      {/* ---------- PREVIEW AREA ---------- */}
-      <div className="flex-1 relative overflow-hidden">
-
-        {/* Mobile preview always behind */}
-        <div className="absolute inset-0 z-0">
-          <MobilePreview activeSection={activeSection} />
+          <div className="w-8" />
         </div>
 
-        {/* Editor panel floating above preview */}
-        <div className="absolute inset-0 z-10 bg-white/95 backdrop-blur-xl">
-          {activeSection === "links" && <Middle />}
-          {activeSection === "design" && <DesignMiddle />}
+        {/* ---------- SCROLLABLE PREVIEW AREA ---------- */}
+        <div className="flex-1 relative overflow-hidden">
+          {/* Background preview (non-scrolling) */}
+          <div className="absolute inset-0 z-0">
+            <MobilePreview activeSection={activeSection} />
+          </div>
+
+          {/* Scrollable editor panel */}
+          <div className="absolute inset-0 z-10 bg-white/95 backdrop-blur-xl overflow-y-auto">
+            {activeSection === "links" && <Middle />}
+            {activeSection === "design" && <DesignMiddle />}
+          </div>
         </div>
 
-      </div>
+        {/* ---------- FLOATING BOTTOM NAV ---------- */}
+        <div className="px-4 pb-4 pt-2"> {/* Spacing wrapper */}
+          <div className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-lg border border-gray-200/50 flex justify-around px-3 py-3">
+            <NavItem
+              label="Links"
+              active={activeSection === "links"}
+              onClick={() => setActiveSection("links")}
+              icon={
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 11.828a4 4 0 015.656 0l7 7a4 4 0 010 5.656l-7 7a4 4 0 01-5.656-5.656L15.656 12L13.828 10.172a4 4 0 010-5.656z" />
+              }
+            />
 
+            <NavItem
+              label="Design"
+              active={activeSection === "design"}
+              onClick={() => setActiveSection("design")}
+              icon={
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+              }
+            />
 
-      {/* ---------- BOTTOM NAV (APP STYLE) ---------- */}
-      <div className="bg-white/90 backdrop-blur-xl border-t px-2 py-2 shadow-[0_-5px_20px_rgba(0,0,0,0.05)]">
-        <div className="flex justify-around">
+            <NavItem
+              label="Preview"
+              active={false}
+              onClick={() => {}} // Add functionality later
+              icon={
+                <>
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                </>
+              }
+            />
 
-          <NavItem
-            label="Links"
-            active={activeSection === "links"}
-            onClick={() => setActiveSection("links")}
-            icon={
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 11.828a4 4 0 015.656 0l7 7a4 4 0 010 5.656l-7 7a4 4 0 01-5.656-5.656L15.656 12L13.828 10.172a4 4 0 010-5.656z" />
-            }
-          />
-
-          <NavItem
-            label="Design"
-            active={activeSection === "design"}
-            onClick={() => setActiveSection("design")}
-            icon={
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-            }
-          />
-
-          <NavItem
-            label="Preview"
-            active={false}
-            icon={
-              <>
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-              </>
-            }
-          />
-
-          <NavItem
-            label="Enhance"
-            active={false}
-            icon={
-              <>
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37a1.724 1.724 0 002.572-1.065z" />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-              </>
-            }
-          />
-
+            <NavItem
+              label="Enhance"
+              active={false}
+              onClick={() => {}} // Add functionality later
+              icon={
+                <>
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37a1.724 1.724 0 002.572-1.065z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </>
+              }
+            />
+          </div>
         </div>
       </div>
-    </div>
-  );
-}
+    );
+  }
 
 
   // Desktop layout (unchanged, but we’ll clean up extra comments)
