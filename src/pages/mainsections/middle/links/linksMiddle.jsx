@@ -7,66 +7,79 @@ import { useSelection } from './SelectionManager';
 const Middle = () => {
   const [openModal, setOpenModal] = useState(false);
 
-const { links, syncLink, deleteLink } = useSelection();
+  const { links, syncLink, deleteLink } = useSelection();
 
+  const handleAddLink = (linkName) => {
+    const newLink = {
+      id: Date.now(),
+      name: linkName,
+      url: `${linkName.toLowerCase().replace(/\s+/g, '')}.com`,
+      clicks: 0,
+      active: false
+    };
 
-
-const handleAddLink = (linkName) => {
-  const newLink = {
-    id: Date.now(),
-    name: linkName,
-    url: `${linkName.toLowerCase().replace(/\s+/g, '')}.com`,
-    clicks: 0,
-    active: false
+    syncLink(newLink);
   };
 
-  syncLink(newLink);
-};
-
-
-
-
-
-const deleteLinkHandler = (id) => {
-  deleteLink(id);
-};
+  const deleteLinkHandler = (id) => {
+    deleteLink(id);
+  };
 
   return (
-    <main className="flex-1 p-6 bg-gray-50 overflow-y-auto">
-      <h1 className="text-2xl font-semibold mb-6 pb-4 border-b-2 border-gray-200">Links</h1>
+    <main className="flex-1 bg-gray-50 overflow-y-auto">
+      {/* Header - sticky on mobile for better UX */}
+      <div className="sticky top-0 bg-gray-50 z-10 px-4 sm:px-6 pt-4 sm:pt-6 pb-4 border-b-2 border-gray-200">
+        <h1 className="text-xl sm:text-2xl font-semibold">Links</h1>
+      </div>
       
-      <div className='px-15'>
-        <div className="flex items-center gap-4 mb-6">
-          <div className="w-16 h-16 rounded-full bg-gradient-to-br from-purple-400 to-pink-500" />
-          <div>
-            <p className="font-semibold text-lg">anish</p>
+      {/* Scrollable Content */}
+      <div className="px-4 sm:px-6 md:px-8 lg:px-12 py-4 sm:py-6">
+        {/* Profile Section */}
+        <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
+          <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-gradient-to-br from-purple-400 to-pink-500 flex-shrink-0" />
+          <div className="min-w-0 flex-1">
+            <p className="font-semibold text-base sm:text-lg">anish</p>
             <div className="flex gap-2 mt-2">
               {['from-blue-400 to-blue-600', 'from-pink-400 to-pink-600', 'from-green-400 to-green-600', 'from-purple-400 to-purple-600'].map((color, i) => (
-                <div key={i} className={`w-8 h-8 bg-gradient-to-br ${color} rounded-full`} />
+                <div key={i} className={`w-7 h-7 sm:w-8 sm:h-8 bg-gradient-to-br ${color} rounded-full flex-shrink-0`} />
               ))}
             </div>
           </div>
         </div>
 
+        {/* Add Button */}
         <button 
           onClick={() => setOpenModal(true)} 
-          className="w-full bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white py-4 rounded-full font-medium mb-6 transition-all shadow-lg hover:shadow-xl transform hover:scale-[1.02]"
+          className="w-full bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white py-3 sm:py-4 rounded-full font-medium mb-4 sm:mb-6 transition-all shadow-lg hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98]"
         >
           + Add
         </button>
 
         {openModal && <AddLinkModal onClose={() => setOpenModal(false)} onAddLink={handleAddLink} />}
 
-        <div className="space-y-4">
+        {/* Links List */}
+        <div className="space-y-3 sm:space-y-4 pb-4 sm:pb-6">
           {links.map((link) => (
-        <LinkCard 
-  key={link.id} 
-  link={link}
-  onDelete={deleteLinkHandler}
-/>
-
+            <LinkCard 
+              key={link.id} 
+              link={link}
+              onDelete={deleteLinkHandler}
+            />
           ))}
         </div>
+
+        {/* Empty State */}
+        {links.length === 0 && (
+          <div className="text-center py-8 sm:py-12">
+            <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 rounded-full bg-gray-200 flex items-center justify-center">
+              <svg className="w-8 h-8 sm:w-10 sm:h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+              </svg>
+            </div>
+            <p className="text-gray-900 font-medium mb-1 text-sm sm:text-base">No links yet</p>
+            <p className="text-xs sm:text-sm text-gray-500">Click the "+ Add" button to create your first link</p>
+          </div>
+        )}
       </div>
     </main>
   );
