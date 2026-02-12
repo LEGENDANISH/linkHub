@@ -3,11 +3,22 @@ import ProfileDropdown from "./components/ProfileDropdown";
 import Middle from "./middle/links/linksMiddle";
 import DesignMiddle from "./middle/Design/DesignMiddle";
 import MobilePreview from "../RightSide/MobilePreview";
+import ThemeSection from "./middle/Design/sections/ThemeSection/ThemeSection";
+import HeaderSection from "./middle/Design/sections/Headersection/HeaderSection";
+import WallpaperSection from "./middle/Design/sections/WallpaperSection/WallpaperSection";
+import ColorsSection from "./middle/Design/sections/ColorsSection";
+import ButtonsSection from "./middle/Design/sections/Buttonsection/ButtonsSection";
+import TextSection from "./middle/Design/sections/TextSection/TextSection";
+
+// Import design sections (you'll need to provide these)
+
 
 export default function LinktreeDashboard() {
   const [open, setOpen] = useState(true);
   const [activeSection, setActiveSection] = useState("links");
   const [isMobile, setIsMobile] = useState(false);
+  const [activeDesignPanel, setActiveDesignPanel] = useState(null);
+  const [activeStyleTab, setActiveStyleTab] = useState("text"); // For Style section tabs
 
   // Detect mobile screen size
   useEffect(() => {
@@ -49,6 +60,74 @@ export default function LinktreeDashboard() {
       <span className="text-[11px] font-medium text-gray-700">{label}</span>
     </button>
   );
+
+  const handleDesignPanelOpen = (panel) => {
+    setActiveDesignPanel(panel);
+  };
+
+  const handleDesignPanelClose = () => {
+    setActiveDesignPanel(null);
+    setActiveStyleTab("text"); // Reset style tab when closing
+  };
+
+  // Render the appropriate design panel content
+  const renderDesignPanelContent = () => {
+    switch (activeDesignPanel) {
+      case "theme":
+        return <ThemeSection />;
+      case "header":
+        return <HeaderSection />;
+      case "wallpaper":
+        return <WallpaperSection />;
+      case "style":
+        return (
+          <div className="flex flex-col h-full">
+            {/* Style Tabs */}
+            <div className="flex gap-0 border-b border-gray-200 mb-4">
+              <button
+                onClick={() => setActiveStyleTab("text")}
+                className={`flex-1 py-3 text-sm font-medium transition-all ${
+                  activeStyleTab === "text"
+                    ? "text-gray-900 border-b-2 border-purple-600"
+                    : "text-gray-500"
+                }`}
+              >
+                Text
+              </button>
+              <button
+                onClick={() => setActiveStyleTab("buttons")}
+                className={`flex-1 py-3 text-sm font-medium transition-all ${
+                  activeStyleTab === "buttons"
+                    ? "text-gray-900 border-b-2 border-purple-600"
+                    : "text-gray-500"
+                }`}
+              >
+                Buttons
+              </button>
+              <button
+                onClick={() => setActiveStyleTab("colors")}
+                className={`flex-1 py-3 text-sm font-medium transition-all ${
+                  activeStyleTab === "colors"
+                    ? "text-gray-900 border-b-2 border-purple-600"
+                    : "text-gray-500"
+                }`}
+              >
+                Colors
+              </button>
+            </div>
+
+            {/* Tab Content */}
+            <div className="flex-1 overflow-y-auto">
+              {activeStyleTab === "text" && <TextSection />}
+              {activeStyleTab === "buttons" && <ButtonsSection />}
+              {activeStyleTab === "colors" && <ColorsSection />}
+            </div>
+          </div>
+        );
+      default:
+        return null;
+    }
+  };
 
   // MOBILE APP EXPERIENCE
   if (isMobile) {
@@ -92,19 +171,29 @@ export default function LinktreeDashboard() {
             </>
           ) : (
             <>
-              {/* Full screen MobilePreview as background */}
-              <div className="absolute inset-0 z-0 flex items-center justify-center bg-gradient-to-br from-purple-50 to-blue-50">
-                <div className="scale-[1.4] origin-center">
+              {/* MobilePreview Background - scales down when panel is open */}
+              <div 
+                className={`absolute inset-0 z-0 flex items-center justify-center bg-gradient-to-br from-purple-50 to-blue-50 transition-all duration-500 ease-in-out ${
+                  activeDesignPanel 
+                    ? 'scale-[0.85] -translate-y-12 opacity-50' 
+                    : 'scale-[1.4]'
+                }`}
+              >
+                <div className="origin-center">
                   <MobilePreview activeSection={activeSection} />
                 </div>
               </div>
 
-              {/* Design Navigation Buttons Overlay */}
-              <div className="absolute inset-x-0 bottom-24 z-20 px-6">
+              {/* Design Navigation Buttons - hide when panel is open */}
+              <div 
+                className={`absolute inset-x-0 bottom-24 z-20 px-6 transition-all duration-300 ${
+                  activeDesignPanel ? 'opacity-0 pointer-events-none translate-y-4' : 'opacity-100'
+                }`}
+              >
                 <div className="flex justify-center gap-3">
                   <DesignNavButton
                     label="Theme"
-                    onClick={() => {/* Add theme functionality */}}
+                    onClick={() => handleDesignPanelOpen("theme")}
                     icon={
                       <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
@@ -114,7 +203,7 @@ export default function LinktreeDashboard() {
                   
                   <DesignNavButton
                     label="Header"
-                    onClick={() => {/* Add header functionality */}}
+                    onClick={() => handleDesignPanelOpen("header")}
                     icon={
                       <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -124,7 +213,7 @@ export default function LinktreeDashboard() {
                   
                   <DesignNavButton
                     label="Wallpaper"
-                    onClick={() => {/* Add wallpaper functionality */}}
+                    onClick={() => handleDesignPanelOpen("wallpaper")}
                     icon={
                       <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -134,7 +223,7 @@ export default function LinktreeDashboard() {
                   
                   <DesignNavButton
                     label="Style"
-                    onClick={() => {/* Add style functionality */}}
+                    onClick={() => handleDesignPanelOpen("style")}
                     icon={
                       <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
@@ -143,17 +232,60 @@ export default function LinktreeDashboard() {
                   />
                 </div>
               </div>
+
+              {/* Slide-up Design Panel */}
+              <div 
+                className={`absolute inset-x-0 bottom-0 z-30 bg-white rounded-t-3xl shadow-2xl transition-all duration-500 ease-out ${
+                  activeDesignPanel 
+                    ? 'translate-y-0' 
+                    : 'translate-y-full'
+                }`}
+                style={{ height: '75vh' }}
+              >
+                {/* Panel Header */}
+                <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+                  <button
+                    onClick={handleDesignPanelClose}
+                    className="p-2 -ml-2 rounded-xl hover:bg-gray-100 transition"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                    </svg>
+                  </button>
+
+                  <h2 className="text-lg font-semibold text-gray-900 capitalize">
+                    {activeDesignPanel === "style" ? "Style" : activeDesignPanel}
+                  </h2>
+
+                  <button
+                    onClick={handleDesignPanelClose}
+                    className="p-2 -mr-2 rounded-xl hover:bg-gray-100 transition"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+
+                {/* Panel Content */}
+                <div className="h-[calc(75vh-73px)] overflow-y-auto px-6 py-4">
+                  {renderDesignPanelContent()}
+                </div>
+              </div>
             </>
           )}
         </div>
 
         {/* ---------- FLOATING BOTTOM NAV ---------- */}
-        <div className="px-4 pb-4 pt-2 z-30">
+        <div className="px-4 pb-4 pt-2 z-40">
           <div className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-lg border border-gray-200/50 flex justify-around px-3 py-3">
             <NavItem
               label="Links"
               active={activeSection === "links"}
-              onClick={() => setActiveSection("links")}
+              onClick={() => {
+                setActiveSection("links");
+                setActiveDesignPanel(null);
+              }}
               icon={
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
               }
@@ -162,7 +294,10 @@ export default function LinktreeDashboard() {
             <NavItem
               label="Design"
               active={activeSection === "design"}
-              onClick={() => setActiveSection("design")}
+              onClick={() => {
+                setActiveSection("design");
+                setActiveDesignPanel(null);
+              }}
               icon={
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
               }
