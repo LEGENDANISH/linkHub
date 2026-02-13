@@ -29,28 +29,28 @@ const Topbar = () => {
       className={`fixed left-1/2 -translate-x-1/2 z-50
                   transition-all duration-500 ease-in-out
                   ${showBar ? "top-4 sm:top-6 opacity-100" : "-top-32 opacity-0"}
-                  w-[94%] sm:w-[90%] md:w-[85%] lg:w-[70%]`}
+                  w-[94%] sm:w-[90%] md:w-[85%] lg:w-[70%] xl:w-[65%]`}
     >
       
       {/* Floating container */}
       <div className="bg-white/90 backdrop-blur-md shadow-lg rounded-full 
-                      px-4 sm:px-6 py-3 sm:py-4 
+                      px-3 sm:px-4 md:px-6 py-2.5 sm:py-3 md:py-4 
                       flex items-center justify-between">
 
         {/* Logo */}
-        <div className="text-lg sm:text-xl md:text-2xl font-bold">
+        <div className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold">
           linkHub
         </div>
 
         {/* Desktop Menu */}
-        <nav className="hidden md:flex items-center gap-6 lg:gap-20 
-                       text-sm lg:text-base font-semibold text-gray-700">
+        <nav className="hidden md:flex items-center gap-4 lg:gap-8 xl:gap-20 
+                       text-xs lg:text-sm xl:text-base font-semibold text-gray-700">
           <div 
             className="relative"
             onMouseEnter={() => setShowProducts(true)}
             onMouseLeave={() => setShowProducts(false)}
           >
-            <span className="cursor-pointer">Products</span>
+            <span className="cursor-pointer hover:text-black transition">Products</span>
             
             {/* Invisible bridge to prevent gap */}
             {showProducts && (
@@ -60,22 +60,26 @@ const Topbar = () => {
             {showProducts && <ProductsDropdown />}
           </div>
 
-          <a href="#">Templates</a>
-          <a href="#pricing">Pricing</a>
+          <a href="#" className="hover:text-black transition">Templates</a>
+          <a href="#pricing" className="hover:text-black transition">Pricing</a>
         </nav>
 
         {/* Desktop Buttons */}
-        <div className="hidden md:flex items-center gap-3">
-          <button className="bg-[#f3f3f1] px-4 py-2 rounded-xl text-sm font-semibold">
+        <div className="hidden md:flex items-center gap-2 lg:gap-3">
+          <button className="bg-[#f3f3f1] px-3 lg:px-4 py-2 rounded-xl text-xs lg:text-sm font-semibold hover:bg-gray-200 transition">
             Log in
           </button>
-          <button className="bg-[#1e293b] text-white px-5 py-2 rounded-full text-sm font-semibold">
+          <button className="bg-[#1e293b] text-white px-3 lg:px-5 py-2 rounded-full text-xs lg:text-sm font-semibold hover:bg-[#334155] transition">
             Sign up free
           </button>
         </div>
 
         {/* Mobile menu button */}
-        <button className="md:hidden text-2xl" onClick={() => setOpen(!open)}>
+        <button 
+          className="md:hidden text-xl sm:text-2xl p-1" 
+          onClick={() => setOpen(!open)}
+          aria-label="Toggle menu"
+        >
           ☰
         </button>
       </div>
@@ -83,18 +87,18 @@ const Topbar = () => {
       {/* Mobile dropdown */}
       {open && (
         <div className="md:hidden mt-3 bg-white shadow-xl rounded-2xl 
-                        p-5 flex flex-col gap-4 font-semibold text-gray-800">
-          <a href="#">Products</a>
-          <a href="#">Templates</a>
-          <a href="#">Marketplace</a>
-          <a href="#">Learn</a>
-          <a href="#">Pricing</a>
+                        p-4 sm:p-5 flex flex-col gap-3 sm:gap-4 font-semibold text-gray-800 text-sm sm:text-base">
+          <a href="#" className="hover:text-black transition">Products</a>
+          <a href="#" className="hover:text-black transition">Templates</a>
+          <a href="#" className="hover:text-black transition">Marketplace</a>
+          <a href="#" className="hover:text-black transition">Learn</a>
+          <a href="#" className="hover:text-black transition">Pricing</a>
 
-          <div className="flex flex-col gap-3 pt-2">
-            <button className="bg-gray-100 px-4 py-2 rounded-full text-left">
+          <div className="flex flex-col gap-3 pt-2 border-t border-gray-200">
+            <button className="bg-gray-100 px-4 py-2.5 rounded-full text-left hover:bg-gray-200 transition">
               Log in
             </button>
-            <button className="bg-black text-white px-4 py-2 rounded-full">
+            <button className="bg-black text-white px-4 py-2.5 rounded-full hover:bg-gray-800 transition">
               Sign up free
             </button>
           </div>

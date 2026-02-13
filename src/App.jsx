@@ -16,18 +16,18 @@ import Q4 from "./pages/startingpages/Q4";
 function App() {
   return (
    <div>
-    {/* <Hero/>
+    <Hero/>
     <Section2/>
     <Section3/>
     <Section4/>
     <Pricing/>
-    <Section5/>   */}
+    <Section5/>  
     {/* <OnboardingFlow/> */}
 {/* 
 <DesignProvider>
   <SelectionProvider> */}
-
-    <LinktreeDashboard />
+{/* 
+    <LinktreeDashboard /> */}
 {/* 
   </SelectionProvider>
 </DesignProvider> */}
