@@ -9,14 +9,16 @@ export default function SettingsDropdown({ onClose }) {
       document.body.style.overflow = 'unset';
     };
   }, []);
-
+useEffect(()=>{
+    console.log("hiii")
+})
   return (
-    <div className="fixed inset-0 bg-black/40 z-50 flex items-end">
+    <div className="fixed inset-0 bg-black/40 z-[500] flex items-end">
       {/* Backdrop - click to close */}
       <div className="absolute inset-0" onClick={onClose} />
       
       {/* Dropdown panel */}
-      <div className="relative w-full bg-white rounded-t-3xl shadow-2xl border border-gray-200 py-3 max-h-[85vh] overflow-y-auto transform transition-transform duration-300 ease-out">
+      <div className="relative w-full bg-white rounded-t-3xl shadow-2xl border border-gray-200 py-3 max-h-[85vh] overflow-y-auto">
         {/* Close button */}
         <button
           onClick={onClose}

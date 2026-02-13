@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import ProfileDropdown from "./components/ProfileDropdown";
-import SettingsDropdown from "./components/SettingsDropdown";
 import Middle from "./middle/links/linksMiddle";
 import DesignMiddle from "./middle/Design/DesignMiddle";
 import MobilePreview from "../RightSide/MobilePreview";
@@ -12,6 +11,9 @@ import ButtonsSection from "./middle/Design/sections/Buttonsection/ButtonsSectio
 import TextSection from "./middle/Design/sections/TextSection/TextSection";
 import { useDesign } from "./middle/Design/DesignSelectionManager";
 import { X, User, ArrowLeftRight, Plus, UserCircle, Zap, HelpCircle, BookOpen, MessageSquare, LogOut } from "lucide-react";
+import SettingsDropdown from "./components/SettingsDropdown";
+
+
 
 export default function LinktreeDashboard() {
   const [open, setOpen] = useState(true);
@@ -40,6 +42,11 @@ export default function LinktreeDashboard() {
   useEffect(() => {
     console.log('🎨 Design state changed:', design);
   }, [design]);
+
+  // Debug: Log settings state
+  useEffect(() => {
+    console.log('⚙️ Settings open:', showSettings);
+  }, [showSettings]);
 
   const NavItem = ({ label, icon, active, onClick }) => (
     <button
@@ -165,7 +172,10 @@ export default function LinktreeDashboard() {
           </h1>
 
           <button 
-            onClick={() => setShowSettings(true)}
+            onClick={() => {
+              console.log('Settings button clicked!');
+              setShowSettings(true);
+            }}
             className="p-2 rounded-xl hover:bg-gray-100 transition"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -334,17 +344,17 @@ export default function LinktreeDashboard() {
               }
             />
 
-            <NavItem
-              label="Enhance"
-              active={false}
-              onClick={() => {}}
-              icon={
-                <>
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37a1.724 1.724 0 002.572-1.065z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                </>
-              }
-            />
+           <NavItem
+  label="Enhance"
+  active={false}
+  onClick={() => setShowSettings(true)}  // Changed from {} to setShowSettings(true)
+  icon={
+    <>
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37a1.724 1.724 0 002.572-1.065z" />
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+    </>
+  }
+/>
           </div>
         </div>
 
@@ -367,102 +377,16 @@ export default function LinktreeDashboard() {
         )}
 
         {/* ---------- SETTINGS DROPDOWN ---------- */}
-      {/* ---------- SETTINGS DROPDOWN ---------- */}
-{showSettings && (
-  <div className="fixed inset-0 bg-black/40 z-50 flex items-end">
-    {/* Backdrop - click to close */}
-    <div className="absolute inset-0" onClick={() => setShowSettings(false)} />
-    
-    {/* Dropdown panel */}
-    <div className="relative w-full bg-white rounded-t-3xl shadow-2xl border border-gray-200 py-3 max-h-[85vh] overflow-y-auto">
-      {/* Close button */}
-      <button
-        onClick={() => setShowSettings(false)}
-        className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-100 transition z-10"
-      >
-        <X className="w-5 h-5 text-gray-700" />
-      </button>
-
-      {/* Profile header */}
-      <div className="flex items-center justify-between px-5 py-4 mb-2">
-        <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-full bg-gray-300 flex items-center justify-center">
-            <User className="w-6 h-6 text-gray-600" />
-          </div>
-          <div>
-            <p className="font-semibold text-gray-900 text-base">0504anish2</p>
-            <p className="text-sm text-gray-500">linktr.ee/0504anis...</p>
-          </div>
-        </div>
-
-        <span className="text-sm font-medium bg-gray-100 text-gray-700 px-3 py-1.5 rounded-full">
-          Free
-        </span>
-      </div>
-
-      {/* menu items */}
-      <div className="py-1">
-        <SettingsMenuItem 
-          icon={<ArrowLeftRight className="w-5 h-5" />} 
-          text="Switch Linktrees" 
-        />
-        <SettingsMenuItem 
-          icon={<Plus className="w-5 h-5" />} 
-          text="Create new Linktree" 
-        />
-
-        <div className="my-3 border-t border-gray-200" />
-
-        <SettingsMenuItem 
-          icon={<UserCircle className="w-5 h-5" />} 
-          text="Account" 
-        />
-        <SettingsMenuItem 
-          icon={<Zap className="w-5 h-5" />} 
-          text="Upgrade" 
-        />
-
-        <div className="my-3 border-t border-gray-200" />
-
-        <SettingsMenuItem 
-          icon={<HelpCircle className="w-5 h-5" />} 
-          text="Ask a question" 
-        />
-        <SettingsMenuItem 
-          icon={<BookOpen className="w-5 h-5" />} 
-          text="Help topics" 
-        />
-        <SettingsMenuItem 
-          icon={<MessageSquare className="w-5 h-5" />} 
-          text="Share feedback" 
-        />
-
-        <div className="my-3 border-t border-gray-200" />
-
-        <SettingsMenuItem 
-          icon={<LogOut className="w-5 h-5" />} 
-          text="Log out" 
-        />
-      </div>
-    </div>
-  </div>
-)}
-
+       {/* ---------- SETTINGS DROPDOWN ---------- */}
+{showSettings && <SettingsDropdown onClose={() => setShowSettings(false)} />}
       </div>
     );
   }
-function SettingsMenuItem({ icon, text }) {
-  return (
-    <div className="flex items-center gap-3 px-5 py-3 cursor-pointer hover:bg-gray-50 transition-colors active:bg-gray-100">
-      <span className="text-gray-700">{icon}</span>
-      <span className="text-[15px] font-medium text-gray-900">{text}</span>
-    </div>
-  );
-}
-  // Desktop layout
+
+  // Desktop layout (rest of the code stays the same...)
   return (
     <div className="w-full h-screen bg-[#f5f6f8] flex overflow-hidden">
-      {/* Sidebar */}
+      {/* ... rest of desktop code ... */}
       <aside className="w-64 bg-white border-r px-4 py-6">
         <div className="flex items-center justify-between mb-6">
           <ProfileDropdown />
@@ -486,7 +410,6 @@ function SettingsMenuItem({ icon, text }) {
         </div>
 
         <nav className="space-y-4">
-          {/* Dropdown header */}
           <div
             onClick={() => setOpen(!open)}
             className="flex items-center justify-between bg-gray-100 hover:bg-gray-200 text-md px-2 py-1 rounded-xl cursor-pointer"
@@ -515,7 +438,6 @@ function SettingsMenuItem({ icon, text }) {
             </svg>
           </div>
 
-          {/* Dropdown items */}
           {open && (
             <div className="ml-8 space-y-1">
               <div
@@ -541,31 +463,17 @@ function SettingsMenuItem({ icon, text }) {
             </div>
           )}
 
-          <p className="text-gray-400 text-sm uppercase mt-6">Tools</p>
-          <div className="px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg cursor-pointer">
-            Social planner
-          </div>
-          <div className="px-3 py-2 text-gray-700 hover:bg-gray-100 rounded-lg cursor-pointer">
-            Instagram auto-reply
-          </div>
+         
         </nav>
 
-        <div className="mt-10 p-4 bg-gray-50 rounded-xl">
-          <p className="text-sm text-gray-500">Your setup checklist</p>
-          <p className="font-semibold mt-1">1 of 6 complete</p>
-          <button className="mt-3 w-full bg-purple-600 text-white py-2 rounded-lg">
-            Finish setup
-          </button>
-        </div>
+    
       </aside>
 
-      {/* Main Content */}
       <main className="flex-1 overflow-auto">
         {activeSection === "links" && <Middle />}
         {activeSection === "design" && <DesignMiddle />}
       </main>
 
-      {/* Mobile Preview (desktop only) */}
       {!isMobile && <MobilePreview activeSection={activeSection} />}
     </div>
   );
