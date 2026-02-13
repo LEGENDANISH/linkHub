@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import ProfileDropdown from "./components/ProfileDropdown";
+import SettingsDropdown from "./components/SettingsDropdown";
 import Middle from "./middle/links/linksMiddle";
 import DesignMiddle from "./middle/Design/DesignMiddle";
 import MobilePreview from "../RightSide/MobilePreview";
@@ -9,16 +10,20 @@ import WallpaperSection from "./middle/Design/sections/WallpaperSection/Wallpape
 import ColorsSection from "./middle/Design/sections/ColorsSection";
 import ButtonsSection from "./middle/Design/sections/Buttonsection/ButtonsSection";
 import TextSection from "./middle/Design/sections/TextSection/TextSection";
-
-// Import design sections (you'll need to provide these)
-
+import { useDesign } from "./middle/Design/DesignSelectionManager";
+import { X, User, ArrowLeftRight, Plus, UserCircle, Zap, HelpCircle, BookOpen, MessageSquare, LogOut } from "lucide-react";
 
 export default function LinktreeDashboard() {
   const [open, setOpen] = useState(true);
   const [activeSection, setActiveSection] = useState("links");
   const [isMobile, setIsMobile] = useState(false);
   const [activeDesignPanel, setActiveDesignPanel] = useState(null);
-  const [activeStyleTab, setActiveStyleTab] = useState("text"); // For Style section tabs
+  const [activeStyleTab, setActiveStyleTab] = useState("text");
+  const [showPreview, setShowPreview] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+
+  // Use Zustand store instead of local state
+  const { design, updateDesign, updateDesignBatch } = useDesign();
 
   // Detect mobile screen size
   useEffect(() => {
@@ -30,6 +35,11 @@ export default function LinktreeDashboard() {
 
     return () => mediaQuery.removeEventListener("change", handler);
   }, []);
+
+  // Debug: Log design changes
+  useEffect(() => {
+    console.log('🎨 Design state changed:', design);
+  }, [design]);
 
   const NavItem = ({ label, icon, active, onClick }) => (
     <button
@@ -67,16 +77,22 @@ export default function LinktreeDashboard() {
 
   const handleDesignPanelClose = () => {
     setActiveDesignPanel(null);
-    setActiveStyleTab("text"); // Reset style tab when closing
+    setActiveStyleTab("text");
   };
 
   // Render the appropriate design panel content
   const renderDesignPanelContent = () => {
+    const sectionProps = {
+      state: design,
+      updateDesign,
+      updateDesignBatch,
+    };
+
     switch (activeDesignPanel) {
       case "theme":
-        return <ThemeSection />;
+        return <ThemeSection {...sectionProps} />;
       case "header":
-        return <HeaderSection />;
+        return <HeaderSection {...sectionProps} />;
       case "wallpaper":
         return <WallpaperSection />;
       case "style":
@@ -118,9 +134,9 @@ export default function LinktreeDashboard() {
 
             {/* Tab Content */}
             <div className="flex-1 overflow-y-auto">
-              {activeStyleTab === "text" && <TextSection />}
-              {activeStyleTab === "buttons" && <ButtonsSection />}
-              {activeStyleTab === "colors" && <ColorsSection />}
+              {activeStyleTab === "text" && <TextSection {...sectionProps} />}
+              {activeStyleTab === "buttons" && <ButtonsSection {...sectionProps} />}
+              {activeStyleTab === "colors" && <ColorsSection {...sectionProps} />}
             </div>
           </div>
         );
@@ -148,7 +164,10 @@ export default function LinktreeDashboard() {
             {activeSection === "links" ? "Links" : "Design"}
           </h1>
 
-          <button className="p-2 rounded-xl hover:bg-gray-100 transition">
+          <button 
+            onClick={() => setShowSettings(true)}
+            className="p-2 rounded-xl hover:bg-gray-100 transition"
+          >
             <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
             </svg>
@@ -306,7 +325,7 @@ export default function LinktreeDashboard() {
             <NavItem
               label="Preview"
               active={false}
-              onClick={() => {}} // Add functionality later
+              onClick={() => setShowPreview(true)}
               icon={
                 <>
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -318,7 +337,7 @@ export default function LinktreeDashboard() {
             <NavItem
               label="Enhance"
               active={false}
-              onClick={() => {}} // Add functionality later
+              onClick={() => {}}
               icon={
                 <>
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37a1.724 1.724 0 002.572-1.065z" />
@@ -328,11 +347,119 @@ export default function LinktreeDashboard() {
             />
           </div>
         </div>
+
+        {/* ---------- PREVIEW MODAL ---------- */}
+        {showPreview && (
+          <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+            <div className="relative bg-gradient-to-br from-purple-50 to-blue-50 rounded-3xl p-6 max-w-sm w-full">
+              <button
+                onClick={() => setShowPreview(false)}
+                className="absolute top-4 right-4 p-2 bg-white rounded-full shadow-lg hover:bg-gray-100 transition z-10"
+              >
+                <X className="w-5 h-5 text-gray-700" />
+              </button>
+              
+              <div className="flex items-center justify-center">
+                <MobilePreview activeSection={activeSection} />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ---------- SETTINGS DROPDOWN ---------- */}
+      {/* ---------- SETTINGS DROPDOWN ---------- */}
+{showSettings && (
+  <div className="fixed inset-0 bg-black/40 z-50 flex items-end">
+    {/* Backdrop - click to close */}
+    <div className="absolute inset-0" onClick={() => setShowSettings(false)} />
+    
+    {/* Dropdown panel */}
+    <div className="relative w-full bg-white rounded-t-3xl shadow-2xl border border-gray-200 py-3 max-h-[85vh] overflow-y-auto">
+      {/* Close button */}
+      <button
+        onClick={() => setShowSettings(false)}
+        className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-100 transition z-10"
+      >
+        <X className="w-5 h-5 text-gray-700" />
+      </button>
+
+      {/* Profile header */}
+      <div className="flex items-center justify-between px-5 py-4 mb-2">
+        <div className="flex items-center gap-3">
+          <div className="w-12 h-12 rounded-full bg-gray-300 flex items-center justify-center">
+            <User className="w-6 h-6 text-gray-600" />
+          </div>
+          <div>
+            <p className="font-semibold text-gray-900 text-base">0504anish2</p>
+            <p className="text-sm text-gray-500">linktr.ee/0504anis...</p>
+          </div>
+        </div>
+
+        <span className="text-sm font-medium bg-gray-100 text-gray-700 px-3 py-1.5 rounded-full">
+          Free
+        </span>
+      </div>
+
+      {/* menu items */}
+      <div className="py-1">
+        <SettingsMenuItem 
+          icon={<ArrowLeftRight className="w-5 h-5" />} 
+          text="Switch Linktrees" 
+        />
+        <SettingsMenuItem 
+          icon={<Plus className="w-5 h-5" />} 
+          text="Create new Linktree" 
+        />
+
+        <div className="my-3 border-t border-gray-200" />
+
+        <SettingsMenuItem 
+          icon={<UserCircle className="w-5 h-5" />} 
+          text="Account" 
+        />
+        <SettingsMenuItem 
+          icon={<Zap className="w-5 h-5" />} 
+          text="Upgrade" 
+        />
+
+        <div className="my-3 border-t border-gray-200" />
+
+        <SettingsMenuItem 
+          icon={<HelpCircle className="w-5 h-5" />} 
+          text="Ask a question" 
+        />
+        <SettingsMenuItem 
+          icon={<BookOpen className="w-5 h-5" />} 
+          text="Help topics" 
+        />
+        <SettingsMenuItem 
+          icon={<MessageSquare className="w-5 h-5" />} 
+          text="Share feedback" 
+        />
+
+        <div className="my-3 border-t border-gray-200" />
+
+        <SettingsMenuItem 
+          icon={<LogOut className="w-5 h-5" />} 
+          text="Log out" 
+        />
+      </div>
+    </div>
+  </div>
+)}
+
       </div>
     );
   }
-
-  // Desktop layout (unchanged)
+function SettingsMenuItem({ icon, text }) {
+  return (
+    <div className="flex items-center gap-3 px-5 py-3 cursor-pointer hover:bg-gray-50 transition-colors active:bg-gray-100">
+      <span className="text-gray-700">{icon}</span>
+      <span className="text-[15px] font-medium text-gray-900">{text}</span>
+    </div>
+  );
+}
+  // Desktop layout
   return (
     <div className="w-full h-screen bg-[#f5f6f8] flex overflow-hidden">
       {/* Sidebar */}

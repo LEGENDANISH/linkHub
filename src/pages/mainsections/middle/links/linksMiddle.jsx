@@ -38,12 +38,8 @@ const Middle = () => {
         <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
           <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-gradient-to-br from-purple-400 to-pink-500 flex-shrink-0" />
           <div className="min-w-0 flex-1">
-            <p className="font-semibold text-base sm:text-lg">anish</p>
-            <div className="flex gap-2 mt-2">
-              {['from-blue-400 to-blue-600', 'from-pink-400 to-pink-600', 'from-green-400 to-green-600', 'from-purple-400 to-purple-600'].map((color, i) => (
-                <div key={i} className={`w-7 h-7 sm:w-8 sm:h-8 bg-gradient-to-br ${color} rounded-full flex-shrink-0`} />
-              ))}
-            </div>
+            <p className="font-semibold text-base sm:text-lg">Anish</p>
+           
           </div>
         </div>
 
