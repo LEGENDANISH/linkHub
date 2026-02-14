@@ -387,26 +387,11 @@ export default function LinktreeDashboard() {
   return (
     <div className="w-full h-screen bg-[#f5f6f8] flex overflow-hidden">
       {/* ... rest of desktop code ... */}
-      <aside className="w-64 bg-white border-r px-4 py-6">
+      <aside className="w-64 bg-white border-r border-gray-200 px-4 py-6">
         <div className="flex items-center justify-between mb-6">
           <ProfileDropdown />
 
-          <div className="cursor-pointer">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="w-5 h-5 text-gray-700"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0a3 3 0 11-6 0"
-              />
-            </svg>
-          </div>
+         
         </div>
 
         <nav className="space-y-4">

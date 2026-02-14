@@ -156,10 +156,10 @@ export const videoThemes = [
     id: "floating-bubbles",
     label: "Floating Bubbles",
     preview: "video",
-    videoUrl: "https://cdn.pixabay.com/video/2022/11/07/138197-769264329_large.mp4",
+    videoUrl: "https://videos.pexels.com/video-files/20218494/20218494-uhd_2560_1440_24fps.mp4",
     settings: {
       wallpaperStyle: "video",
-      backgroundVideo: "https://cdn.pixabay.com/video/2022/11/07/138197-769264329_large.mp4",
+      backgroundVideo: "https://videos.pexels.com/video-files/20218494/20218494-uhd_2560_1440_24fps.mp4",
       backgroundColor: "#1a1a2e",
       buttonColor: "rgba(255, 255, 255, 0.25)",
       buttonTextColor: "#ffffff",
@@ -175,10 +175,10 @@ export const videoThemes = [
     id: "cosmic-waves",
     label: "Cosmic Waves",
     preview: "video",
-    videoUrl: "https://cdn.pixabay.com/video/2021/08/03/84380-586636620_large.mp4",
+    videoUrl: "https://videos.pexels.com/video-files/34697099/14706250_1920_1080_24fps.mp4",
     settings: {
       wallpaperStyle: "video",
-      backgroundVideo: "https://cdn.pixabay.com/video/2021/08/03/84380-586636620_large.mp4",
+      backgroundVideo: "https://videos.pexels.com/video-files/34697099/14706250_1920_1080_24fps.mp4",
       backgroundColor: "#000000",
       buttonColor: "rgba(147, 51, 234, 0.4)",
       buttonTextColor: "#ffffff",
@@ -194,10 +194,10 @@ export const videoThemes = [
     id: "fire-particles",
     label: "Fire Particles",
     preview: "video",
-    videoUrl: "https://cdn.pixabay.com/video/2022/05/04/116526-706004937_large.mp4",
+    videoUrl: "https://videos.pexels.com/video-files/29185897/12602486_2560_1440_24fps.mp4",
     settings: {
       wallpaperStyle: "video",
-      backgroundVideo: "https://cdn.pixabay.com/video/2022/05/04/116526-706004937_large.mp4",
+      backgroundVideo: "https://videos.pexels.com/video-files/29185897/12602486_2560_1440_24fps.mp4",
       backgroundColor: "#1a0000",
       buttonColor: "rgba(255, 87, 51, 0.3)",
       buttonTextColor: "#ffffff",
@@ -213,10 +213,10 @@ export const videoThemes = [
     id: "northern-lights",
     label: "Northern Lights",
     preview: "video",
-    videoUrl: "https://cdn.pixabay.com/video/2022/12/05/142608-778946634_large.mp4",
+    videoUrl: "https://videos.pexels.com/video-files/852435/852435-hd_1920_1080_30fps.mp4",
     settings: {
       wallpaperStyle: "video",
-      backgroundVideo: "https://cdn.pixabay.com/video/2022/12/05/142608-778946634_large.mp4",
+      backgroundVideo: "https://videos.pexels.com/video-files/852435/852435-hd_1920_1080_30fps.mp4",
       backgroundColor: "#0a192f",
       buttonColor: "rgba(134, 239, 172, 0.25)",
       buttonTextColor: "#ffffff",
@@ -232,10 +232,10 @@ export const videoThemes = [
     id: "neon-grid",
     label: "Neon Grid",
     preview: "video",
-    videoUrl: "https://cdn.pixabay.com/video/2022/01/18/104988-667500758_large.mp4",
+    videoUrl: "https://videos.pexels.com/video-files/28828724/12488183_1920_1080_30fps.mp4",
     settings: {
       wallpaperStyle: "video",
-      backgroundVideo: "https://cdn.pixabay.com/video/2022/01/18/104988-667500758_large.mp4",
+      backgroundVideo: "https://videos.pexels.com/video-files/28828724/12488183_1920_1080_30fps.mp4",
       backgroundColor: "#000000",
       buttonColor: "rgba(236, 72, 153, 0.3)",
       buttonTextColor: "#ffffff",
@@ -251,10 +251,10 @@ export const videoThemes = [
     id: "liquid-gold",
     label: "Liquid Gold",
     preview: "video",
-    videoUrl: "https://cdn.pixabay.com/video/2021/07/23/82747-578896226_large.mp4",
+    videoUrl: "https://videos.pexels.com/video-files/30248506/12967489_1920_1080_30fps.mp4",
     settings: {
       wallpaperStyle: "video",
-      backgroundVideo: "https://cdn.pixabay.com/video/2021/07/23/82747-578896226_large.mp4",
+      backgroundVideo: "https://videos.pexels.com/video-files/30248506/12967489_1920_1080_30fps.mp4",
       backgroundColor: "#1a1100",
       buttonColor: "rgba(251, 191, 36, 0.3)",
       buttonTextColor: "#ffffff",
@@ -266,6 +266,102 @@ export const videoThemes = [
       noise: false,
     }
   },
+
+  // ── New themes below ───────────────────────────────────────────────
+  {
+    id: "matrix-rain",
+    label: "Matrix Rain",
+    preview: "video",
+    videoUrl: "https://videos.pexels.com/video-files/11584395/11584395-uhd_2560_1440_60fps.mp4",
+    settings: {
+      wallpaperStyle: "video",
+      backgroundVideo: "https://videos.pexels.com/video-files/11584395/11584395-uhd_2560_1440_60fps.mp4",
+      backgroundColor: "#000000",
+      buttonColor: "rgba(0, 255, 0, 0.25)",
+      buttonTextColor: "#00ff41",
+      pageTextColor: "#00ff41",
+      titleColor: "#00ff41",
+      buttonStyle: "glass",
+      cornerRoundness: "round",
+      buttonShadow: "hard",
+      noise: true,
+    }
+  },
+  {
+    id: "galaxy-stars",
+    label: "Galaxy Stars",
+    preview: "video",
+    videoUrl: "https://videos.pexels.com/video-files/34697099/14706250_1920_1080_24fps.mp4",  // Vibrant purple space with stars/nebula drift
+    settings: {
+      wallpaperStyle: "video",
+      backgroundVideo: "https://videos.pexels.com/video-files/34697099/14706250_1920_1080_24fps.mp4",
+      backgroundColor: "#0a0015",
+      buttonColor: "rgba(138, 43, 226, 0.35)",
+      buttonTextColor: "#ffffff",
+      pageTextColor: "#d8bfd8",
+      titleColor: "#ffffff",
+      buttonStyle: "glass",
+      cornerRoundness: "rounder",
+      buttonShadow: "soft",
+      noise: false,
+    }
+  },
+  {
+    id: "blue-energy",
+    label: "Blue Energy Waves",
+    preview: "video",
+    videoUrl: "https://videos.pexels.com/video-files/30247830/12967147_1920_1080_30fps.mp4",
+    settings: {
+      wallpaperStyle: "video",
+      backgroundVideo: "https://videos.pexels.com/video-files/30247830/12967147_1920_1080_30fps.mp4",
+      backgroundColor: "#000d1a",
+      buttonColor: "rgba(0, 191, 255, 0.3)",
+      buttonTextColor: "#ffffff",
+      pageTextColor: "#b3e5fc",
+      titleColor: "#40c4ff",
+      buttonStyle: "glass",
+      cornerRoundness: "full",
+      buttonShadow: "hard",
+      noise: false,
+    }
+  },
+  {
+    id: "glitch-distortion",
+    label: "Glitch Distortion",
+    preview: "video",
+    videoUrl: "https://www.pexels.com/download/video/10994870/",  // Fallback to digital effect video (has some distortion feel; test or replace if not ideal)
+    settings: {
+      wallpaperStyle: "video",
+      backgroundVideo: "https://www.pexels.com/download/video/10994870/",
+      backgroundColor: "#0f001a",
+      buttonColor: "rgba(255, 0, 255, 0.25)",
+      buttonTextColor: "#ffffff",
+      pageTextColor: "#e1bee7",
+      titleColor: "#ff00ff",
+      buttonStyle: "glass",
+      cornerRoundness: "round",
+      buttonShadow: "strong",
+      noise: true,
+    }
+  },
+  {
+    id: "purple-nebula",
+    label: "Purple Nebula",
+    preview: "video",
+  videoUrl: "https://videos.pexels.com/video-files/29148868/12590626_2560_1440_30fps.mp4",  // Dynamic blue particle nebula / wave-like cosmic feel
+    settings: {
+      wallpaperStyle: "video",
+      backgroundVideo: "https://videos.pexels.com/video-files/29148868/12590626_2560_1440_30fps.mp4",      backgroundColor: "#12001a",
+      buttonColor: "rgba(156, 39, 176, 0.35)",
+      buttonTextColor: "#ffffff",
+      pageTextColor: "#e1bee7",
+      titleColor: "#ab47bc",
+      buttonStyle: "glass",
+      cornerRoundness: "rounder",
+      buttonShadow: "soft",
+      noise: false,
+    }
+  }
 ];
 
 export const advancedThemes = [
