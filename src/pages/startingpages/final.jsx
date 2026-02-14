@@ -1,11 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import gsap from "gsap";
+import { useNavigate } from "react-router-dom";
 
 const Final = ({ userGoal, profileData, platformLinks, selectedPlatforms }) => {
   const confettiRef = useRef(null);
   const [showContent, setShowContent] = useState(false);
-
+const navigate = useNavigate()
   useEffect(() => {
     // Confetti animation
     createConfetti();
@@ -113,7 +114,9 @@ const Final = ({ userGoal, profileData, platformLinks, selectedPlatforms }) => {
           transition={{ duration: 0.5, delay: 1.2 }}
           className="flex justify-center pb-12 px-4"
         >
-          <button className="bg-purple-600 hover:bg-purple-700 text-white font-semibold px-8 sm:px-12 py-4 rounded-full text-base sm:text-lg transition-all duration-300 transform hover:scale-105 hover:shadow-xl">
+          <button 
+          onClick={navigate("/")}
+          className="bg-purple-600 hover:bg-purple-700 text-white font-semibold px-8 sm:px-12 py-4 rounded-full text-base sm:text-lg transition-all duration-300 transform hover:scale-105 hover:shadow-xl">
             Continue building this LinkHub
           </button>
         </motion.div>

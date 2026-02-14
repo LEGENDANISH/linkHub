@@ -2,7 +2,18 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import gsap from 'gsap';
+import { 
+  FaInstagram,
+  FaWhatsapp,
+  FaSpotify,
+  FaYoutube,
+  FaFacebook,
+  FaTwitter 
+} from "react-icons/fa";
 
+import { BsThreads } from "react-icons/bs";
+import { TbWorld } from "react-icons/tb";
+import { SiTiktok } from "react-icons/si";
 const Q3 = ({ selectedPlatforms = [], onContinue, onBack, onSkip, direction = 1 }) => {
   const [links, setLinks] = useState({});
   const [errors, setErrors] = useState({});
@@ -10,62 +21,63 @@ const Q3 = ({ selectedPlatforms = [], onContinue, onBack, onSkip, direction = 1 
   const titleRef = useRef(null);
   const progressRef = useRef(null);
 
-  const platformConfig = {
-    instagram: {
-      icon: "📸",
-      gradient: "from-purple-600 to-pink-500",
-      placeholder: "instagram.com/yourhandle",
-      label: "Instagram Profile"
-    },
-    whatsapp: {
-      icon: "💬",
-      gradient: "from-green-500 to-green-600",
-      placeholder: "+1234567890 or whatsapp link",
-      label: "WhatsApp Number"
-    },
-    tiktok: {
-      icon: "🎵",
-      gradient: "from-black to-pink-500",
-      placeholder: "tiktok.com/@yourhandle",
-      label: "TikTok Profile"
-    },
-    youtube: {
-      icon: "▶️",
-      gradient: "from-red-600 to-red-700",
-      placeholder: "youtube.com/@yourchannel",
-      label: "YouTube Channel"
-    },
-    website: {
-      icon: "🌐",
-      gradient: "from-blue-500 to-cyan-500",
-      placeholder: "https://yourwebsite.com",
-      label: "Personal Website"
-    },
-    spotify: {
-      icon: "🎧",
-      gradient: "from-green-400 to-green-600",
-      placeholder: "open.spotify.com/artist/...",
-      label: "Spotify Profile"
-    },
-    threads: {
-      icon: "🧵",
-      gradient: "from-gray-800 to-black",
-      placeholder: "threads.net/@yourhandle",
-      label: "Threads Profile"
-    },
-    facebook: {
-      icon: "📘",
-      gradient: "from-blue-600 to-blue-700",
-      placeholder: "facebook.com/yourpage",
-      label: "Facebook Page"
-    },
-    twitter: {
-      icon: "🐦",
-      gradient: "from-gray-900 to-black",
-      placeholder: "x.com/yourhandle",
-      label: "X / Twitter Profile"
-    }
-  };
+ const platformConfig = {
+  instagram: {
+    icon: FaInstagram,
+    gradient: "from-purple-600 to-pink-500",
+    placeholder: "instagram.com/yourhandle",
+    label: "Instagram Profile"
+  },
+  whatsapp: {
+    icon: FaWhatsapp,
+    gradient: "from-green-500 to-green-600",
+    placeholder: "+1234567890 or whatsapp link",
+    label: "WhatsApp Number"
+  },
+  tiktok: {
+    icon: SiTiktok,
+    gradient: "from-black to-pink-500",
+    placeholder: "tiktok.com/@yourhandle",
+    label: "TikTok Profile"
+  },
+  youtube: {
+    icon: FaYoutube,
+    gradient: "from-red-600 to-red-700",
+    placeholder: "youtube.com/@yourchannel",
+    label: "YouTube Channel"
+  },
+  website: {
+    icon: TbWorld,
+    gradient: "from-blue-500 to-cyan-500",
+    placeholder: "https://yourwebsite.com",
+    label: "Personal Website"
+  },
+  spotify: {
+    icon: FaSpotify,
+    gradient: "from-green-400 to-green-600",
+    placeholder: "open.spotify.com/artist/...",
+    label: "Spotify Profile"
+  },
+  threads: {
+    icon: BsThreads,
+    gradient: "from-gray-800 to-black",
+    placeholder: "threads.net/@yourhandle",
+    label: "Threads Profile"
+  },
+  facebook: {
+    icon: FaFacebook,
+    gradient: "from-blue-600 to-blue-700",
+    placeholder: "facebook.com/yourpage",
+    label: "Facebook Page"
+  },
+  twitter: {
+    icon: FaTwitter,
+    gradient: "from-gray-900 to-black",
+    placeholder: "x.com/yourhandle",
+    label: "X / Twitter Profile"
+  }
+};
+
 
   useEffect(() => {
     // Set initial visibility
@@ -277,7 +289,7 @@ const Q3 = ({ selectedPlatforms = [], onContinue, onBack, onSkip, direction = 1 
                 {/* Platform header */}
                 <div className="flex items-center gap-3 mb-4">
                   <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br ${config.gradient} flex items-center justify-center text-xl sm:text-2xl shadow-md transition-transform duration-300 hover:scale-110`}>
-                    {config.icon}
+  <config.icon size={22} className="text-white" />
                   </div>
                   <div className="flex-1">
                     <h3 className="font-bold text-base sm:text-lg text-gray-900">

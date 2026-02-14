@@ -1,8 +1,11 @@
 import React from "react";
 import Topbar from "../component/topbar";
+import { useNavigate } from "react-router-dom";
 
 const Hero = () => {
+  const navigate = useNavigate(); 
   return (
+    
     <div className="min-h-screen w-full bg-[#d2e823]">
       
       {/* Floating navbar */}
@@ -34,9 +37,12 @@ const Hero = () => {
               placeholder="linkhub/"
               className="px-4 py-3 bg-white rounded-2xl sm:rounded-r-none outline-none w-full text-sm sm:text-base"
             />
-            <button className="px-6 py-3 mt-3 sm:mt-0 bg-[#254f1a] text-white rounded-2xl sm:rounded-l-none font-semibold w-full sm:w-auto text-sm sm:text-base hover:opacity-90 transition">
-              Get Started
-            </button>
+           <button
+  onClick={() => navigate("/onboard")}
+  className="px-6 py-3 mt-3 sm:mt-0 bg-[#254f1a] text-white rounded-2xl sm:rounded-l-none font-semibold w-full sm:w-auto text-sm sm:text-base hover:opacity-90 transition"
+>
+  Get Started
+</button>
           </div>
 
         </div>

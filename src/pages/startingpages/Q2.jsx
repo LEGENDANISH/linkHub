@@ -2,6 +2,18 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import gsap from "gsap";
+import { 
+  FaInstagram,
+  FaWhatsapp,
+  FaSpotify,
+  FaYoutube,
+  FaFacebook,
+  FaTwitter 
+} from "react-icons/fa";
+
+import { BsThreads } from "react-icons/bs";
+import { TbWorld } from "react-icons/tb";
+import { SiTiktok } from "react-icons/si";
 
 const Q2 = ({ onContinue, onBack, onSkip, direction = 1 }) => {
   const MAX_SELECT = 5;
@@ -9,18 +21,19 @@ const Q2 = ({ onContinue, onBack, onSkip, direction = 1 }) => {
   const gridRef = useRef(null);
   const titleRef = useRef(null);
   const progressRef = useRef(null);
+const platforms = [
+  { id: "instagram", name: "Instagram", icon: FaInstagram },
+  { id: "whatsapp", name: "WhatsApp", icon: FaWhatsapp },
+  { id: "tiktok", name: "TikTok", icon: SiTiktok },
+  { id: "youtube", name: "YouTube", icon: FaYoutube },
+  { id: "website", name: "Personal Website", icon: TbWorld },
+  { id: "spotify", name: "Spotify", icon: FaSpotify },
+  { id: "threads", name: "Threads", icon: BsThreads },
+  { id: "facebook", name: "Facebook", icon: FaFacebook },
+  { id: "twitter", name: "X / Twitter", icon: FaTwitter },
+];
 
-  const platforms = [
-    { id: "instagram", name: "Instagram", icon: "📸", gradient: "from-purple-600 to-pink-500" },
-    { id: "whatsapp", name: "WhatsApp", icon: "💬", gradient: "from-green-500 to-green-600" },
-    { id: "tiktok", name: "TikTok", icon: "🎵", gradient: "from-black to-pink-500" },
-    { id: "youtube", name: "YouTube", icon: "▶️", gradient: "from-red-600 to-red-700" },
-    { id: "website", name: "Personal Website", icon: "🌐", gradient: "from-blue-500 to-cyan-500" },
-    { id: "spotify", name: "Spotify", icon: "🎧", gradient: "from-green-400 to-green-600" },
-    { id: "threads", name: "Threads", icon: "🧵", gradient: "from-gray-800 to-black" },
-    { id: "facebook", name: "Facebook", icon: "📘", gradient: "from-blue-600 to-blue-700" },
-    { id: "twitter", name: "X / Twitter", icon: "🐦", gradient: "from-gray-900 to-black" },
-  ];
+
 
   useEffect(() => {
     // Set initial visibility
@@ -216,8 +229,12 @@ const Q2 = ({ onContinue, onBack, onSkip, direction = 1 }) => {
                 <div className={`text-4xl mb-3 transition-transform duration-300 ${
                   isActive ? "scale-110" : ""
                 }`}>
-                  {item.icon}
-                </div>
+ <item.icon
+    size={32}
+    className={`transition-colors duration-300 ${
+      isActive ? "text-purple-600" : "text-gray-700"
+    }`}
+  />                </div>
                 <span className="text-sm font-semibold text-gray-800 text-center px-2">
                   {item.name}
                 </span>
