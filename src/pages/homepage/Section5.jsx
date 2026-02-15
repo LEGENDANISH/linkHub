@@ -1,6 +1,8 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const Section5 = () => {
+  const navigate = useNavigate();
   return (
     <section className="bg-[#E9C0E9] w-full py-12 sm:py-16 md:py-20 px-4 sm:px-6">
       <div className="max-w-7xl mx-auto">
@@ -12,7 +14,7 @@ const Section5 = () => {
           </h1>
 
           <p className="text-xs sm:text-sm md:text-base lg:text-lg font-semibold text-[#502274] mt-4 sm:mt-6 leading-relaxed px-2">
-            Manage your entire online following on Linktree. Schedule your social posts, grow
+            Manage your entire online following on Linkhub. Schedule your social posts, grow
             your email list, track visitors and get even more followers.
           </p>
         </div>
@@ -22,9 +24,12 @@ const Section5 = () => {
 
           {/* Card 1 */}
           <div className="bg-white rounded-3xl sm:rounded-[2.5rem] p-6 sm:p-8 flex flex-col">
-            {/* Image space */}
-            <div className="h-[180px] sm:h-[200px] lg:h-[220px] w-full rounded-xl sm:rounded-2xl bg-gray-100 mb-6 sm:mb-8 flex items-center justify-center text-gray-400 text-sm">
-              Image here
+            <div className="h-[180px] sm:h-[200px] lg:h-[220px] w-full rounded-xl sm:rounded-2xl overflow-hidden mb-6 sm:mb-8">
+              <img
+                src="/Q5_1.png"
+                alt="Social scheduling"
+                className="w-full h-full object-cover"
+              />
             </div>
 
             <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-black mb-3 sm:mb-4">
@@ -38,9 +43,12 @@ const Section5 = () => {
 
           {/* Card 2 */}
           <div className="bg-white rounded-3xl sm:rounded-[2.5rem] p-6 sm:p-8 flex flex-col">
-            {/* Image space */}
-            <div className="h-[180px] sm:h-[200px] lg:h-[220px] w-full rounded-xl sm:rounded-2xl bg-gray-100 mb-6 sm:mb-8 flex items-center justify-center text-gray-400 text-sm">
-              Image here
+            <div className="h-[180px] sm:h-[200px] lg:h-[220px] w-full rounded-xl sm:rounded-2xl overflow-hidden mb-6 sm:mb-8">
+              <img
+                src="/Q5_2.png"
+                alt="Email growth"
+                className="w-full h-full object-cover"
+              />
             </div>
 
             <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-black mb-3 sm:mb-4">
@@ -48,15 +56,18 @@ const Section5 = () => {
             </h3>
 
             <p className="text-gray-600 text-sm sm:text-base leading-relaxed">
-              Collect emails on your Linktree so you can stay connected on and off social platforms.
+              Collect emails on your Linkhub so you can stay connected on and off social platforms.
             </p>
           </div>
 
           {/* Card 3 */}
           <div className="bg-white rounded-3xl sm:rounded-[2.5rem] p-6 sm:p-8 flex flex-col md:col-span-2 lg:col-span-1">
-            {/* Image space */}
-            <div className="h-[180px] sm:h-[200px] lg:h-[220px] w-full rounded-xl sm:rounded-2xl bg-gray-100 mb-6 sm:mb-8 flex items-center justify-center text-gray-400 text-sm">
-              Image here
+            <div className="h-[180px] sm:h-[200px] lg:h-[220px] w-full rounded-xl sm:rounded-2xl overflow-hidden mb-6 sm:mb-8">
+              <img
+                src="/Q5_3.png"
+                alt="Audience insights"
+                className="w-full h-full object-cover"
+              />
             </div>
 
             <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-black mb-3 sm:mb-4">
@@ -64,13 +75,15 @@ const Section5 = () => {
             </h3>
 
             <p className="text-gray-600 text-sm sm:text-base leading-relaxed">
-              Get deep insights into your audience and optimize your Linktree for more clicks and engagement.
+              Get deep insights into your audience and optimize your Linkhub for more clicks and engagement.
             </p>
           </div>
 
-          {/* Center Button - spans full width on mobile, centered on larger screens */}
+          {/* Center Button */}
           <div className="col-span-full flex items-center justify-center mt-4 sm:mt-6 md:mt-8">
-            <button className="bg-[#502274] hover:bg-[#e2b3e2] transition-colors px-12 sm:px-16 md:px-20 py-4 sm:py-5 md:py-6 lg:py-7 rounded-full text-sm sm:text-base lg:text-lg font-semibold text-white w-full sm:w-auto max-w-sm sm:max-w-none">
+            <button
+            onClick={() => navigate("/onboard")}
+            className="bg-[#502274] hover:bg-[#e2b3e2] transition-colors px-12 sm:px-16 md:px-20 py-4 sm:py-5 md:py-6 lg:py-7 rounded-full text-sm sm:text-base lg:text-lg font-semibold text-white w-full sm:w-auto max-w-sm sm:max-w-none">
               Get in touch
             </button>
           </div>

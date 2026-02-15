@@ -46,7 +46,7 @@ const Q4 = ({ onContinue, onSkip, onBack, direction = 1 }) => {
 
   const handleContinue = () => {
     onContinue({
-      name,
+      username: name,
       bio,
       image,
     });

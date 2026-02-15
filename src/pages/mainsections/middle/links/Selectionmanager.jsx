@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-const STORAGE_KEY = 'linktree_links_data';
+const STORAGE_KEY = 'Linkhub_links_data';
 
 // Ensure link has all required fields
 const normalizeLink = (link) => ({

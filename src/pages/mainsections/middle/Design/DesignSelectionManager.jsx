@@ -11,6 +11,8 @@ const defaultDesignState = {
   titleSize: "small",
   titleFont: "Inter",
   titleColor: "#000000",
+    titleFontColor: "#000000", // Add this
+
 
   // Theme
   theme: "custom",
@@ -29,6 +31,8 @@ const defaultDesignState = {
   backgroundVideo: null,
 
   // Text
+    pageTextFont: "Inter", // Add this
+
   pageTextColor: "#ffffff",
 
   // Buttons

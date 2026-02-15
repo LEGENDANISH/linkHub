@@ -6,7 +6,8 @@ import { useNavigate } from "react-router-dom";
 const Final = ({ userGoal, profileData, platformLinks, selectedPlatforms }) => {
   const confettiRef = useRef(null);
   const [showContent, setShowContent] = useState(false);
-const navigate = useNavigate()
+  const navigate = useNavigate();
+
   useEffect(() => {
     // Confetti animation
     createConfetti();
@@ -115,8 +116,9 @@ const navigate = useNavigate()
           className="flex justify-center pb-12 px-4"
         >
           <button 
-          onClick={navigate("/")}
-          className="bg-purple-600 hover:bg-purple-700 text-white font-semibold px-8 sm:px-12 py-4 rounded-full text-base sm:text-lg transition-all duration-300 transform hover:scale-105 hover:shadow-xl">
+            onClick={() => navigate('/edit')}
+            className="bg-purple-600 hover:bg-purple-700 text-white font-semibold px-8 sm:px-12 py-4 rounded-full text-base sm:text-lg transition-all duration-300 transform hover:scale-105 hover:shadow-xl"
+          >
             Continue building this LinkHub
           </button>
         </motion.div>
@@ -161,15 +163,24 @@ const CreatorTemplate = ({ profileData, platformLinks, selectedPlatforms }) => {
         {/* Profile Section */}
         <div className="text-center mb-8">
           <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-white shadow-lg flex items-center justify-center overflow-hidden">
-            <div className="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center">
-              <svg className="w-12 h-12 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
-              </svg>
-            </div>
+            {profileData?.image ? (
+              <img src={profileData.image} alt={profileData.username} className="w-full h-full object-cover" />
+            ) : (
+              <div className="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center">
+                <svg className="w-12 h-12 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
+                </svg>
+              </div>
+            )}
           </div>
           <h2 className="text-2xl font-bold text-white mb-1">
-            {profileData?.username || ""}
+            {profileData?.username || "05anish"}
           </h2>
+          {profileData?.bio && (
+            <p className="text-white text-opacity-90 text-sm mt-2 px-4">
+              {profileData.bio}
+            </p>
+          )}
         </div>
 
         {/* Links */}
@@ -232,16 +243,26 @@ const BusinessTemplate = ({ profileData, platformLinks, selectedPlatforms }) => 
       <div className="bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 p-8 pb-16">
         <div className="text-center">
           <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-white shadow-lg flex items-center justify-center overflow-hidden">
-            <div className="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center">
-              <svg className="w-12 h-12 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
-              </svg>
-            </div>
+            {profileData?.image ? (
+              <img src={profileData.image} alt={profileData.username} className="w-full h-full object-cover" />
+            ) : (
+              <div className="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center">
+                <svg className="w-12 h-12 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
+                </svg>
+              </div>
+            )}
           </div>
           <h2 className="text-2xl font-bold text-white mb-1">
             {profileData?.username || "05anish"}
           </h2>
-          <p className="text-blue-100 text-sm">Professional Profile</p>
+          {profileData?.bio ? (
+            <p className="text-blue-100 text-sm mt-2 px-4">
+              {profileData.bio}
+            </p>
+          ) : (
+            <p className="text-blue-100 text-sm">Professional Profile</p>
+          )}
         </div>
       </div>
 
@@ -272,16 +293,26 @@ const PersonalTemplate = ({ profileData, platformLinks, selectedPlatforms }) => 
       {/* Profile Section */}
       <div className="text-center mb-8">
         <div className="w-28 h-28 mx-auto mb-4 rounded-full bg-white shadow-lg flex items-center justify-center overflow-hidden border-4 border-white">
-          <div className="w-24 h-24 rounded-full bg-gradient-to-br from-rose-200 to-pink-200 flex items-center justify-center">
-            <svg className="w-14 h-14 text-rose-400" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
-            </svg>
-          </div>
+          {profileData?.image ? (
+            <img src={profileData.image} alt={profileData.username} className="w-full h-full object-cover" />
+          ) : (
+            <div className="w-24 h-24 rounded-full bg-gradient-to-br from-rose-200 to-pink-200 flex items-center justify-center">
+              <svg className="w-14 h-14 text-rose-400" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
+              </svg>
+            </div>
+          )}
         </div>
         <h2 className="text-3xl font-bold text-gray-800 mb-2">
           {profileData?.username || "05anish"}
         </h2>
-        <p className="text-gray-600 text-sm">Connect with me ✨</p>
+        {profileData?.bio ? (
+          <p className="text-gray-600 text-sm px-4">
+            {profileData.bio}
+          </p>
+        ) : (
+          <p className="text-gray-600 text-sm">Connect with me ✨</p>
+        )}
       </div>
 
       {/* Links */}

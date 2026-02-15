@@ -1,6 +1,8 @@
-import React from 'react';
+import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const Section4 = () => {
+  const navigate = useNavigate();
   return (
     <section className="w-full min-h-screen bg-[#f3f3f1] py-12 sm:py-16 md:py-20 px-4 sm:px-6 md:px-12 lg:px-20">
       
@@ -8,9 +10,12 @@ const Section4 = () => {
         
         {/* Left space - image/video area (Desktop only) */}
         <div className="hidden lg:flex w-1/2 items-center justify-center pr-8 xl:pr-12">
-          {/* Place image/video here later */}
-          <div className="w-full h-[500px] xl:h-[600px] bg-gray-300/30 rounded-3xl flex items-center justify-center text-gray-600 opacity-50">
-            Image/Video Space
+          <div className="w-full h-[500px] xl:h-[600px] rounded-3xl overflow-hidden">
+            <img
+              src="/Q4.png"
+              alt="Analytics preview"
+              className="w-full h-full object-cover rounded-3xl"
+            />
           </div>
         </div>
 
@@ -26,17 +31,23 @@ const Section4 = () => {
           {/* Paragraph */}
           <p className="text-black text-sm sm:text-base md:text-lg font-medium leading-relaxed">
             Connect all your content across social media, websites, stores and more in one link in bio. 
-            Customize every detail or let Linktree automatically enhance it to match your brand and drive more clicks.
+            Customize every detail or let Linkhub automatically enhance it to match your brand and drive more clicks.
           </p>
 
           {/* Mobile image/video space */}
-          <div className="lg:hidden w-full h-[200px] sm:h-[300px] md:h-[350px] my-6 sm:my-8 bg-gray-300/30 rounded-2xl flex items-center justify-center text-gray-600 opacity-50">
-            Image/Video Space
+          <div className="lg:hidden w-full h-[200px] sm:h-[300px] md:h-[350px] my-6 sm:my-8 rounded-2xl overflow-hidden">
+            <img
+              src="/Q4.png"
+              alt="Analytics preview"
+              className="w-full h-full object-cover rounded-2xl"
+            />
           </div>
 
           {/* Button BELOW text */}
           <div className="mt-6 sm:mt-8">
-            <button className="bg-[#e9c0e9] text-black font-semibold px-5 sm:px-6 py-2.5 sm:py-3 rounded-full hover:opacity-90 transition text-sm sm:text-base">
+            <button
+            onClick={() => navigate("/onboard")}
+            className="bg-[#e9c0e9] text-black font-semibold px-5 sm:px-6 py-2.5 sm:py-3 rounded-full hover:opacity-90 transition text-sm sm:text-base">
               Get Started for free
             </button>
           </div>

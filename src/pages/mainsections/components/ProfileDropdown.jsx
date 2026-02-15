@@ -75,11 +75,11 @@ export default function ProfileDropdown() {
 
             <MenuItem 
               icon={<ArrowLeftRight className="w-5 h-5" />} 
-              text="Switch Linktrees" 
+              text="Switch Linkhubs" 
             />
             <MenuItem 
               icon={<Plus className="w-5 h-5" />} 
-              text="Create new Linktree" 
+              text="Create new Linkhub" 
             />
 
             <div className="my-3 border-t border-gray-200" />

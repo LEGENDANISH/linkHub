@@ -15,7 +15,7 @@ import SettingsDropdown from "./components/SettingsDropdown";
 
 
 
-export default function LinktreeDashboard() {
+export default function LinkhubDashboard() {
   const [open, setOpen] = useState(true);
   const [activeSection, setActiveSection] = useState("links");
   const [isMobile, setIsMobile] = useState(false);

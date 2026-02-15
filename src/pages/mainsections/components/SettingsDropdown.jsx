@@ -50,12 +50,12 @@ useEffect(()=>{
         <div className="py-1">
           <MenuItem 
             icon={<ArrowLeftRight className="w-5 h-5" />} 
-            text="Switch Linktrees" 
+            text="Switch Linkhubs" 
             onClick={onClose}
           />
           <MenuItem 
             icon={<Plus className="w-5 h-5" />} 
-            text="Create new Linktree" 
+            text="Create new Linkhub" 
             onClick={onClose}
           />
 

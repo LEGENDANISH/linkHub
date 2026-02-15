@@ -1,6 +1,37 @@
 import React, { useState } from 'react';
-import { X, Search, Lightbulb, ShoppingBag, Heart, Play, Contact, Calendar, FileText } from 'lucide-react';
+import { X, Search } from 'lucide-react';
+import {
+  MdLightbulb,
+  MdShoppingBag,
+  MdFavorite,
+  MdPlayCircle,
+  MdContactMail,
+  MdEvent,
+  MdTextFields,
+  MdOutlineShoppingBag,MdLink ,MdEmail 
+} from "react-icons/md";
+
 import LinkCard from './LinkCard';
+
+import {
+  FaInstagram,
+  FaTiktok,
+  FaYoutube,
+  FaSpotify,
+  FaFacebook,
+  FaPinterest,
+  FaDiscord,
+  FaWhatsapp,
+  FaApple,
+  FaVimeo
+} from "react-icons/fa";
+
+import {
+  HiOutlineDocumentText,
+  HiOutlineCalendar
+} from "react-icons/hi";
+
+import { BsTwitterX } from "react-icons/bs";
 
 const AddLinkModal = ({ onClose, onAddLink }) => {
   const [activeCategory, setActiveCategory] = useState('suggested');
@@ -8,147 +39,153 @@ const AddLinkModal = ({ onClose, onAddLink }) => {
   const [selectedLink, setSelectedLink] = useState(null);
   const [linkUrl, setLinkUrl] = useState('');
 
-  const categories = [
-    { id: 'suggested', label: 'Suggested', icon: Lightbulb },
-    { id: 'commerce', label: 'Commerce', icon: ShoppingBag },
-    { id: 'social', label: 'Social', icon: Heart },
-    { id: 'media', label: 'Media', icon: Play },
-    { id: 'contact', label: 'Contact', icon: Contact },
-    { id: 'events', label: 'Events', icon: Calendar },
-    { id: 'text', label: 'Text', icon: FileText },
-  ];
+const categories = [
+  { id: 'suggested', label: 'Suggested', icon: MdLightbulb },
+  { id: 'commerce', label: 'Commerce', icon: MdShoppingBag },
+  { id: 'social', label: 'Social', icon: MdFavorite },
+  { id: 'media', label: 'Media', icon: MdPlayCircle },
+  { id: 'contact', label: 'Contact', icon: MdContactMail },
+  { id: 'events', label: 'Events', icon: MdEvent },
+  { id: 'text', label: 'Text', icon: MdTextFields },
+];
 
-  const categoryContent = {
-    suggested: {
-      sections: [
-        {
-          title: 'Suggested',
-          items: [
-            { name: 'Instagram', description: 'Display your posts and reels', icon: '📸', color: 'from-purple-500 to-pink-500' },
-            { name: 'TikTok', description: 'Share your TikToks on your Linktree', icon: '🎵', color: 'from-black to-gray-800' },
-            { name: 'YouTube', description: 'Share YouTube videos on your Linktree', icon: '▶️', color: 'from-red-600 to-red-700' },
-            { name: 'Spotify', description: 'Share your latest or favorite music', icon: '🎧', color: 'from-green-500 to-green-600' },
-          ]
-        }
-      ]
-    },
-    commerce: {
-      sections: [
-        {
-          title: 'Digital products',
-          items: [
-            { name: 'Coaching & bookings', description: 'Sell 1:1 sessions, consultations, and private coaching', icon: '📅', color: 'from-purple-400 to-purple-500' },
-            { name: 'Digital products', description: 'Sell documents, PDFs, guides, templates, and other content', icon: '📢', color: 'from-orange-500 to-orange-600' },
-            { name: 'Courses', description: 'Sell online courses and lessons to your audience', icon: '🎓', color: 'from-pink-400 to-pink-500' },
-          ]
-        },
-        {
-          title: 'Affiliate products',
-          items: [
-            { name: 'Affiliate products', description: 'Share items you love or promote products', icon: '🏷️', color: 'from-yellow-400 to-yellow-500' },
-          ]
-        },
-        {
-          title: 'Physical products',
-          items: [
-            { name: 'Shopify', description: 'Display the best of your Shopify store', icon: '🛍️', color: 'from-green-600 to-green-700' },
-            { name: 'Fourthwall', description: 'Make & sell premium merch', icon: '🎨', color: 'from-blue-500 to-blue-600' },
-            { name: 'Amaze', description: 'Simple solution for selling products', icon: '⚡', color: 'from-indigo-500 to-indigo-600' },
-          ]
-        },
-      ]
-    },
-    social: {
-      sections: [
-        {
-          title: 'Social platforms',
-          items: [
-            { name: 'Instagram', description: 'Display up to six posts and reels', icon: '📸', color: 'from-purple-500 to-pink-500' },
-            { name: 'TikTok', description: 'Share your TikToks', icon: '🎵', color: 'from-black to-gray-800' },
-            { name: 'X (Twitter)', description: 'Display your latest posts', icon: '🐦', color: 'from-black to-gray-700' },
-            { name: 'Threads', description: 'Showcase Threads posts', icon: '🧵', color: 'from-black to-gray-600' },
-            { name: 'Facebook', description: 'Show Facebook videos', icon: '👤', color: 'from-blue-600 to-blue-700' },
-            { name: 'Pinterest', description: 'Share what you love', icon: '📌', color: 'from-red-600 to-red-700' },
-          ]
-        },
-        {
-          title: 'Communities',
-          items: [
-            { name: 'Discord', description: 'Add members to your server', icon: '💬', color: 'from-indigo-500 to-indigo-600' },
-            { name: 'WhatsApp', description: 'Add members to your group', icon: '💚', color: 'from-green-500 to-green-600' },
-          ]
-        },
-      ]
-    },
-    media: {
-      sections: [
-        {
-          title: 'Video',
-          items: [
-            { name: 'YouTube', description: 'Show YouTube videos', icon: '▶️', color: 'from-red-600 to-red-700' },
-            { name: 'TikTok Video', description: 'Highlight TikToks', icon: '🎵', color: 'from-black to-gray-800' },
-            { name: 'Vimeo', description: 'Share Vimeo videos', icon: '🎬', color: 'from-blue-500 to-blue-600' },
-          ]
-        },
-        {
-          title: 'Audio',
-          items: [
-            { name: 'Spotify', description: 'Share Spotify sounds', icon: '🎧', color: 'from-green-500 to-green-600' },
-            { name: 'Apple Music', description: 'Share songs and albums', icon: '🍎', color: 'from-red-500 to-pink-500' },
-            { name: 'Podcasts', description: 'Get more listeners', icon: '🎙️', color: 'from-purple-500 to-purple-600' },
-          ]
-        },
-      ]
-    },
-    contact: {
-      sections: [
-        {
-          title: 'Forms',
-          items: [
-            { name: 'Contact Form', description: 'Collect info with custom form', icon: '📋', color: 'from-blue-500 to-blue-600' },
-            { name: 'Email signup', description: 'Collect emails', icon: '✉️', color: 'from-green-500 to-green-600' },
-            { name: 'SMS signup', description: 'Collect phone numbers', icon: '📱', color: 'from-purple-500 to-purple-600' },
-          ]
-        },
-        {
-          title: 'Details',
-          items: [
-            { name: 'Contact Details', description: 'Add virtual contact card', icon: '👤', color: 'from-indigo-500 to-indigo-600' },
-            { name: 'Maps', description: 'Display a map', icon: '🗺️', color: 'from-red-500 to-red-600' },
-          ]
-        },
-      ]
-    },
-    events: {
-      sections: [
-        {
-          title: 'Events & Scheduling',
-          items: [
-            { name: 'Calendly', description: 'Let visitors book with you', icon: '📅', color: 'from-blue-500 to-blue-600' },
-            { name: 'Tour and Events', description: 'Promote upcoming shows', icon: '🎤', color: 'from-purple-500 to-purple-600' },
-          ]
-        },
-      ]
-    },
-    text: {
-      sections: [
-        {
-          title: 'Text & Layout',
-          items: [
-            { name: 'Text', description: 'Display custom text', icon: '📝', color: 'from-gray-600 to-gray-700' },
-            { name: 'Header', description: 'Add navigation headers', icon: '🔤', color: 'from-blue-600 to-blue-700' },
-          ]
-        },
-      ]
-    },
-  };
 
-  const quickActions = [
-    { id: 'collection', label: 'Collection', icon: '📦' },
-    { id: 'link', label: 'Link', icon: '🔗' },
-    { id: 'product', label: 'Product', icon: '🏷️' },
-    { id: 'form', label: 'Form', icon: '📝' },
-  ];
+const categoryContent = {
+  suggested: {
+    sections: [
+      {
+        title: 'Suggested',
+        items: [
+          { name: 'Instagram', description: 'Display your posts and reels', icon: FaInstagram, color: 'from-purple-500 to-pink-500' },
+          { name: 'TikTok', description: 'Share your TikToks on your Linkhub', icon: FaTiktok, color: 'from-black to-gray-800' },
+          { name: 'YouTube', description: 'Share YouTube videos on your Linkhub', icon: FaYoutube, color: 'from-red-600 to-red-700' },
+          { name: 'Spotify', description: 'Share your latest or favorite music', icon: FaSpotify, color: 'from-green-500 to-green-600' },
+        ]
+      }
+    ]
+  },
+
+  commerce: {
+    sections: [
+      {
+        title: 'Digital products',
+        items: [
+          { name: 'Coaching & bookings', description: 'Sell sessions & coaching', icon: HiOutlineCalendar, color: 'from-purple-400 to-purple-500' },
+          { name: 'Digital products', description: 'Sell documents & PDFs', icon: HiOutlineDocumentText, color: 'from-orange-500 to-orange-600' },
+          { name: 'Courses', description: 'Sell online courses', icon: MdOutlineShoppingBag, color: 'from-pink-400 to-pink-500' },
+        ]
+      },
+      {
+        title: 'Affiliate products',
+        items: [
+          { name: 'Affiliate products', description: 'Promote products', icon: MdOutlineShoppingBag, color: 'from-yellow-400 to-yellow-500' },
+        ]
+      },
+      {
+        title: 'Physical products',
+        items: [
+          { name: 'Shopify', description: 'Display your Shopify store', icon: MdOutlineShoppingBag, color: 'from-green-600 to-green-700' },
+          { name: 'Fourthwall', description: 'Sell premium merch', icon: MdOutlineShoppingBag, color: 'from-blue-500 to-blue-600' },
+          { name: 'Amaze', description: 'Sell products easily', icon: MdOutlineShoppingBag, color: 'from-indigo-500 to-indigo-600' },
+        ]
+      },
+    ]
+  },
+
+  social: {
+    sections: [
+      {
+        title: 'Social platforms',
+        items: [
+          { name: 'Instagram', description: 'Display posts', icon: FaInstagram, color: 'from-purple-500 to-pink-500' },
+          { name: 'TikTok', description: 'Share TikToks', icon: FaTiktok, color: 'from-black to-gray-800' },
+          { name: 'X (Twitter)', description: 'Display tweets', icon: BsTwitterX, color: 'from-black to-gray-700' },
+          { name: 'Threads', description: 'Show Threads posts', icon: BsTwitterX, color: 'from-black to-gray-600' },
+          { name: 'Facebook', description: 'Show Facebook videos', icon: FaFacebook, color: 'from-blue-600 to-blue-700' },
+          { name: 'Pinterest', description: 'Share pins', icon: FaPinterest, color: 'from-red-600 to-red-700' },
+        ]
+      },
+      {
+        title: 'Communities',
+        items: [
+          { name: 'Discord', description: 'Add members', icon: FaDiscord, color: 'from-indigo-500 to-indigo-600' },
+          { name: 'WhatsApp', description: 'Add members', icon: FaWhatsapp, color: 'from-green-500 to-green-600' },
+        ]
+      },
+    ]
+  },
+
+  media: {
+    sections: [
+      {
+        title: 'Video',
+        items: [
+          { name: 'YouTube', description: 'Show videos', icon: FaYoutube, color: 'from-red-600 to-red-700' },
+          { name: 'TikTok Video', description: 'Highlight TikToks', icon: FaTiktok, color: 'from-black to-gray-800' },
+          { name: 'Vimeo', description: 'Share Vimeo videos', icon: FaVimeo, color: 'from-blue-500 to-blue-600' },
+        ]
+      },
+      {
+        title: 'Audio',
+        items: [
+          { name: 'Spotify', description: 'Share sounds', icon: FaSpotify, color: 'from-green-500 to-green-600' },
+          { name: 'Apple Music', description: 'Share songs', icon: FaApple, color: 'from-red-500 to-pink-500' },
+          { name: 'Podcasts', description: 'Get listeners', icon: MdEvent, color: 'from-purple-500 to-purple-600' },
+        ]
+      },
+    ]
+  },
+
+  contact: {
+    sections: [
+      {
+        title: 'Forms',
+        items: [
+          { name: 'Contact Form', description: 'Collect info', icon: HiOutlineDocumentText, color: 'from-blue-500 to-blue-600' },
+          { name: 'Email signup', description: 'Collect emails', icon: MdEmail, color: 'from-green-500 to-green-600' },
+        ]
+      },
+      {
+        title: 'Details',
+        items: [
+          { name: 'Contact Details', description: 'Virtual contact card', icon: MdTextFields, color: 'from-indigo-500 to-indigo-600' },
+        ]
+      },
+    ]
+  },
+
+  events: {
+    sections: [
+      {
+        title: 'Events & Scheduling',
+        items: [
+          { name: 'Calendly', description: 'Let visitors book', icon: HiOutlineCalendar, color: 'from-blue-500 to-blue-600' },
+          { name: 'Tour and Events', description: 'Promote shows', icon: MdEvent, color: 'from-purple-500 to-purple-600' },
+        ]
+      },
+    ]
+  },
+
+  text: {
+    sections: [
+      {
+        title: 'Text & Layout',
+        items: [
+          { name: 'Text', description: 'Display custom text', icon: MdTextFields, color: 'from-gray-600 to-gray-700' },
+          { name: 'Header', description: 'Add headers', icon: MdTextFields, color: 'from-blue-600 to-blue-700' },
+        ]
+      },
+    ]
+  },
+};
+
+const quickActions = [
+  { id: 'collection', label: 'Collection', icon: MdOutlineShoppingBag },
+  { id: 'link', label: 'Link', icon: MdLink },
+  { id: 'product', label: 'Product', icon: MdOutlineShoppingBag },
+  { id: 'form', label: 'Form', icon: HiOutlineDocumentText },
+];
+
 
   const handleLinkSelect = (linkName) => {
     setSelectedLink(linkName);
@@ -317,7 +354,10 @@ const AddLinkModal = ({ onClose, onAddLink }) => {
                     key={action.id}
                     className="flex flex-col items-center justify-center p-4 bg-gray-50 hover:bg-gray-100 rounded-xl transition-all border border-gray-200 hover:border-gray-300 hover:shadow-sm"
                   >
-                    <div className="text-2xl mb-2">{action.icon}</div>
+{(() => {
+  const Icon = action.icon;
+  return <Icon className="text-2xl mb-2 text-gray-700" />;
+})()}
                     <span className="text-sm font-medium text-gray-700">{action.label}</span>
                   </button>
                 ))}
@@ -336,8 +376,10 @@ const AddLinkModal = ({ onClose, onAddLink }) => {
                     className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition-all group border border-transparent hover:border-gray-200 hover:shadow-sm"
                   >
                     <div className={`w-11 h-11 rounded-full bg-gradient-to-br ${item.color} flex items-center justify-center text-xl flex-shrink-0 shadow-sm`}>
-                      {item.icon}
-                    </div>
+ {(() => {
+    const Icon = item.icon;
+    return <Icon className="w-5 h-5 text-white" />;
+  })()}                    </div>
                     <div className="flex-1 text-left min-w-0">
                       <p className="font-semibold text-gray-900 text-sm leading-tight mb-1">{item.name}</p>
                       <p className="text-xs text-gray-500 leading-tight line-clamp-1">{item.description}</p>

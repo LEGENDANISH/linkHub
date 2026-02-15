@@ -3,9 +3,9 @@ import Topbar from "../component/topbar";
 import { useNavigate } from "react-router-dom";
 
 const Hero = () => {
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
+
   return (
-    
     <div className="min-h-screen w-full bg-[#d2e823]">
       
       {/* Floating navbar */}
@@ -20,12 +20,12 @@ const Hero = () => {
           {/* Heading */}
           <h1 className="text-[#254f1a] font-extrabold mb-4 sm:mb-6 
                          text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl leading-tight">
-            A Link in bio built <br className="hidden sm:block"/> for you.
+            A Link in bio built <br className="hidden sm:block" /> for you.
           </h1>
 
           {/* Paragraph */}
           <p className="text-[#254f1a] text-sm sm:text-base md:text-lg font-medium max-w-xl mb-6">
-            Join 70M+ people using Linktree for their link in bio. One link to help you
+            Join 70M+ people using Linkhub for their link in bio. One link to help you
             share everything you create, curate and sell from your Instagram, TikTok,
             Twitter, YouTube and other social media profiles.
           </p>
@@ -37,33 +37,35 @@ const Hero = () => {
               placeholder="linkhub/"
               className="px-4 py-3 bg-white rounded-2xl sm:rounded-r-none outline-none w-full text-sm sm:text-base"
             />
-           <button
-  onClick={() => navigate("/onboard")}
-  className="px-6 py-3 mt-3 sm:mt-0 bg-[#254f1a] text-white rounded-2xl sm:rounded-l-none font-semibold w-full sm:w-auto text-sm sm:text-base hover:opacity-90 transition"
->
-  Get Started
-</button>
-          </div>
 
+            <button
+              onClick={() => navigate("/onboard")}
+              className="px-6 py-3 mt-3 sm:mt-0 bg-[#254f1a] text-white rounded-2xl sm:rounded-l-none font-semibold w-full sm:w-auto text-sm sm:text-base hover:opacity-90 transition"
+            >
+              Get Started
+            </button>
+          </div>
         </div>
 
-        {/* Right section - image/video space */}
+        {/* Right section - image/video */}
         <div className="w-full lg:w-1/2 mt-12 lg:mt-0 flex items-center justify-center">
-          {/* Desktop: Full space for image/video */}
-          <div className="hidden lg:flex w-full h-[500px] xl:h-[600px] items-center justify-center">
-            {/* Place hero image / mockup here later */}
-            <div className="w-full h-full bg-gray-200/30 rounded-3xl flex items-center justify-center text-[#254f1a] opacity-50">
-              Image/Video Space
-            </div>
-          </div>
           
-          {/* Mobile: Reduced space for image/video */}
-          <div className="lg:hidden w-full h-[250px] sm:h-[350px] md:h-[400px] flex items-center justify-center px-4">
-            {/* Place hero image / mockup here later */}
-            <div className="w-full h-full bg-gray-200/30 rounded-2xl flex items-center justify-center text-[#254f1a] opacity-50">
-              Image/Video Space
+          <div className="w-full h-[250px] sm:h-[350px] md:h-[450px] lg:h-[500px] xl:h-[600px] flex items-center justify-center px-4">
+            <div className="w-full h-full bg-gray-200/30 rounded-3xl flex items-center justify-center">
+              
+            <video
+  src="/Q1.mp4"
+  autoPlay
+  loop
+  muted
+  playsInline
+  className="w-full h-full object-contain rounded-3xl"
+>
+  Your browser does not support the video tag.
+</video>
             </div>
           </div>
+
         </div>
 
       </div>

@@ -61,19 +61,24 @@ export function HeroProfile({ design }) {
  * Text Title Component
  */
 export function TextTitle({ design, titleStyle }) {
-  if (!design.title || design.titleStyle !== "text") {
-    return null;
-  }
+  if (design.titleStyle !== "text" || !design.title) return null;
 
   return (
-    <p className="font-semibold mb-4 text-center" style={titleStyle}>
+    <h1
+      className="text-center mb-4"
+      style={{
+        ...titleStyle,
+        fontFamily: `"${design.titleFont || 'Inter'}", sans-serif`,
+        color: design.titleFontColor || '#000000',
+      }}
+    >
       {design.title}
-    </p>
+    </h1>
   );
 }
 
 /**
- * Logo Title Component
+ * Logo Title Component (with logo image + text)
  */
 export function LogoTitle({ design, titleStyle }) {
   if (!design.title || design.titleStyle !== "logo" || !design.profileImage) {
@@ -87,7 +92,14 @@ export function LogoTitle({ design, titleStyle }) {
         alt="Logo"
         className="w-8 h-8 rounded"
       />
-      <p className="font-semibold" style={titleStyle}>
+      <p 
+        className="font-semibold" 
+        style={{
+          ...titleStyle,
+          fontFamily: `"${design.titleFont || 'Inter'}", sans-serif`,
+          color: design.titleFontColor || '#000000',
+        }}
+      >
         {design.title}
       </p>
     </div>

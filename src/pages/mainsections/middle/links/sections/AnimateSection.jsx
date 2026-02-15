@@ -91,7 +91,7 @@ const AnimateSection = ({ link, onClose, onUpdate }) => {
             </div>
             <div className="flex-1 text-left">
               <h6 className="font-semibold mb-1">Spotlight</h6>
-              <p className="text-gray-600 text-sm">Automatically expand this link when a visitor arrives on your Linktree.</p>
+              <p className="text-gray-600 text-sm">Automatically expand this link when a visitor arrives on your Linkhub.</p>
             </div>
           </div>
         </button>

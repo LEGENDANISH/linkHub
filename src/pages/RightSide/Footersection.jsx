@@ -24,7 +24,7 @@ function DefaultFooter({ design }) {
         className="bg-white px-5 py-2 rounded-full font-medium mb-3"
         style={{ color: design.backgroundColor || "#000000" }}
       >
-        Join {design.title || "anish"} on Linktree
+        Join {design.title || "anish"} on Linkhub
       </button>
 
       <p

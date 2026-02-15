@@ -65,7 +65,7 @@ const StatsSection = ({ link, onClose }) => {
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-full bg-green-500"></div>
-            <span>On your Linktree</span>
+            <span>On your Linkhub</span>
           </div>
           <div className="flex gap-24">
             <span className="font-semibold">0</span>
