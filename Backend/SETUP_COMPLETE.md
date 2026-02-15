@@ -273,7 +273,7 @@ docker-compose ps
 ```bash
 # View logs
 docker-compose logs -f
- 
+
 # Stop all services
 docker-compose down
 

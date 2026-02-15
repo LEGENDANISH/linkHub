@@ -137,6 +137,8 @@ model Plan {
   
   // Stripe
   stripePriceId    String?  @unique
+  stripePriceIdMonthly String? @unique  // Monthly recurring price ID  👈 NEW!
+
   stripeProductId  String?  @unique
   
   // Trial

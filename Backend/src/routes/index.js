@@ -5,6 +5,7 @@ import linkRoutes from './link.routes.js';
 import subscriptionRoutes from './subscription.routes.js';
 import uploadRoutes from './upload.routes.js';
 import paymentRoutes from './payment.routes.js';
+import adminRoutes from './admin.routes.js';
 
 const router = express.Router();
 
@@ -25,5 +26,6 @@ router.use('/links', linkRoutes);
 router.use('/subscriptions', subscriptionRoutes);
 router.use('/upload', uploadRoutes);
 router.use('/payments', paymentRoutes);
+router.use('/admin', adminRoutes);
 
 export default router;

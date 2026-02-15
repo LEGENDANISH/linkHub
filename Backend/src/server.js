@@ -1,3 +1,5 @@
+import 'dotenv/config'  // ← Must be first!
+
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
@@ -12,7 +14,7 @@ import passport from './config/passport.js';
 import { errorHandler, notFound } from './middleware/error.middleware.js';
 
 // Load environment variables
-dotenv.config();
+// require('dotenv').config()
 
 // Initialize Express app
 const app = express();

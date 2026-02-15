@@ -15,7 +15,7 @@ import {
  */
 export const createCheckout = async (req, res) => {
   try {
-    const { planId } = req.body;
+    const { planId, billingInterval } = req.body; // billingInterval: 'monthly' or 'annual'
 
     // Get plan details
     const plan = await prisma.plan.findUnique({
@@ -29,10 +29,18 @@ export const createCheckout = async (req, res) => {
       });
     }
 
-    if (!plan.stripePriceId) {
+    // Determine which Stripe Price ID to use
+    let stripePriceId;
+    if (billingInterval === 'monthly') {
+      stripePriceId = plan.stripePriceIdMonthly;
+    } else {
+      stripePriceId = plan.stripePriceId; // Annual by default
+    }
+
+    if (!stripePriceId) {
       return res.status(400).json({
         success: false,
-        message: 'Plan does not have Stripe price ID configured'
+        message: `Plan does not have Stripe ${billingInterval || 'annual'} price ID configured`
       });
     }
 
@@ -52,7 +60,7 @@ export const createCheckout = async (req, res) => {
     const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
     const session = await createCheckoutSession({
       customerId,
-      priceId: plan.stripePriceId,
+      priceId: stripePriceId,
       userId: req.user.id,
       planName: plan.name,
       successUrl: `${frontendUrl}/subscription/success?session_id={CHECKOUT_SESSION_ID}`,

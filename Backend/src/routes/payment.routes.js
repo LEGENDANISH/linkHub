@@ -21,7 +21,11 @@ router.post(
   [
     body('planId')
       .notEmpty()
-      .withMessage('Plan ID is required')
+      .withMessage('Plan ID is required'),
+    body('billingInterval')
+      .optional()
+      .isIn(['monthly', 'annual'])
+      .withMessage('Billing interval must be either "monthly" or "annual"')
   ],
   validate,
   createCheckout
