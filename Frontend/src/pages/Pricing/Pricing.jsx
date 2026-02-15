@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Link,
   Smartphone,
@@ -15,116 +15,121 @@ import {
   Star,
   BarChart3,
   Eye,
+  Loader2,
 } from 'lucide-react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-hot-toast';
 
 const Pricing = () => {
   const [isAnnual, setIsAnnual] = useState(true);
+  const [loadingPlan, setLoadingPlan] = useState(null);
+  const [plans, setPlans] = useState([]); // 👈 Changed from Plans to plans
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+  
+  const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
-  const plans = [
-    {
-      name: 'Free',
-      description: 'Get started with your own personal Linkhub',
-      price: { monthly: 0, annual: 0 },
-      priceLabel: 'Free, forever',
-      buttonText: 'Get started',
-      buttonStyle: 'bg-white border-2 border-gray-300 text-gray-800 hover:border-gray-400',
-      features: [
-        { icon: <Link size={24} />, text: 'Unlimited links' },
-        { icon: <Smartphone size={24} />, text: 'Social icons, videos & embeds' },
-        { icon: <BarChart2 size={24} />, text: 'Essential analytics' },
-        { icon: <Search size={24} />, text: 'SEO optimized, high-converting design' },
-        { icon: <QrCode size={24} />, text: 'Unique QR code' },
-      ],
-      moneyFeatures: [
+  // Fetch plans from API
+  useEffect(() => {
+    const fetchPlans = async () => {
+      try {
+        const response = await axios.get(`${API_BASE_URL}/subscriptions/plans`);
+        if (response.data.success) {
+          setPlans(response.data.data);
+        }
+      } catch (error) {
+        console.error('Error fetching plans:', error);
+        toast.error('Failed to load plans');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPlans();
+  }, []);
+
+  const handlePlanSelection = async (plan) => { // 👈 Accept entire plan object
+    const token = localStorage.getItem('accessToken');
+    
+    if (!token) {
+      toast.error('Please login to subscribe');
+      navigate('/login');
+      return;
+    }
+
+    // Free plan - just navigate to dashboard
+    if (plan.name === 'FREE') { // 👈 Check by plan name from database
+      toast.success('Welcome to the Free plan!');
+      navigate('/dashboard');
+      return;
+    }
+
+    setLoadingPlan(plan.id);
+
+    try {
+      const billingInterval = isAnnual ? 'annual' : 'monthly';
+      
+      const response = await axios.post(
+        `${API_BASE_URL}/payments/create-checkout-session`,
         {
-          icon: <ShoppingBag size={24} />,
-          text: 'Linkhub Shops & sponsored links',
-          subtitle: 'Build a shop and get paid for space on your Linkhub by trusted brands.',
+          planId: plan.id, // 👈 Use plan.id from parameter
+          billingInterval: billingInterval
         },
         {
-          icon: <Gem size={24} />,
-          text: 'Digital products and courses',
-          subtitle: 'Build courses and sell digital products like eBooks, music files and images.',
-        },
-      ],
-    },
-    {
-      name: 'Starter',
-      description: 'For creators and brands, just getting started',
-      price: { monthly: 360, annual: 220 },
-      priceLabel: isAnnual ? 'Billed annually, or ₹360 monthly' : 'Billed monthly',
-      buttonText: 'Get started',
-      buttonStyle: 'bg-white border-2 border-gray-300 text-gray-800 hover:border-gray-400',
-      includedPlan: 'Everything in Free, plus:',
-      features: [
-        { icon: <Link size={24} />, text: 'Link in bio' },
-        {
-          icon: <Palette size={24} />,
-          text: 'Custom themes',
-          subtitle: 'Custom color palettes and fresh themes to match your style',
-        },
-        {
-          icon: <Users size={24} />,
-          text: 'Own your audience',
-          subtitle: 'Collect and manage your subscribers',
-        },
-        {
-          icon: <ArrowUpRight size={24} />,
-          text: 'Redirect links',
-          subtitle: 'Temporarily send visitors to one key link, perfect for promos or launches',
-        },
-      ],
-      growthTools: [
-        {
-          icon: <Calendar size={24} />,
-          text: 'Social media scheduling',
-          subtitle: 'Plan and auto-publish your posts across all major social networks',
-          new: true,
-        },
-      ],
-    },
-    {
-      name: 'Pro',
-      description: 'For creators and solopreneurs looking to grow and monetize',
-      price: { monthly: 650, annual: 440 },
-      priceLabel: isAnnual ? 'Billed annually, or ₹650 monthly' : 'Billed monthly',
-      buttonText: 'Try free for 7 days',
-      buttonStyle: 'bg-purple-300 text-purple-900 hover:bg-purple-400',
-      recommended: true,
-      cardStyle: 'bg-gradient-to-br from-purple-900 to-purple-800 text-white',
-      includedPlan: 'Everything in Starter, plus:',
-      features: [
-        { icon: <Link size={24} />, text: 'Link in bio' },
-        {
-          icon: <Star size={24} />,
-          text: 'Personalized Linkhub',
-          subtitle: 'Add your own logo, full-screen visuals and personalized design styles',
-        },
-        {
-          icon: <Eye size={24} />,
-          text: 'Highlight key links',
-          subtitle: 'Prioritize what matters with eye-catching featured and animated links',
-        },
-        {
-          icon: <BarChart3 size={24} />,
-          text: 'Comprehensive analytics',
-          subtitle: 'See top-performing links & optimize content that drives growth',
-        },
-      ],
-      growthTools: [
-        {
-          icon: <Calendar size={24} />,
-          text: 'Social media scheduling',
-          subtitle: 'Plan and auto-publish your posts across all major social networks',
-          new: true,
-        },
-        {
-          icon: <Bot size={24} />,
-          text: 'Automated Instagram replies',
-        },
-      ],
-    },
-  ];
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+
+      if (response.data.success && response.data.data.url) {
+        window.location.href = response.data.data.url;
+      } else {
+        toast.error('Failed to create checkout session');
+      }
+    } catch (error) {
+      console.error('Checkout error:', error);
+      
+      if (error.response?.status === 401) {
+        toast.error('Please login to continue');
+        navigate('/login');
+      } else if (error.response?.status === 404) {
+        toast.error('Plan not found. Please try again.');
+      } else {
+        toast.error(
+          error.response?.data?.message || 'Failed to initiate payment. Please try again.'
+        );
+      }
+    } finally {
+      setLoadingPlan(null);
+    }
+  };
+
+  // Helper function to get icon based on feature
+  const getFeatureIcon = (featureName) => {
+    const iconMap = {
+      'linkInBio': <Link size={24} />,
+      'customThemes': <Palette size={24} />,
+      'ownYourAudience': <Users size={24} />,
+      'comprehensiveAnalytics': <BarChart3 size={24} />,
+      'highlightKeyLinks': <Eye size={24} />,
+      'personalizedLinkhub': <Star size={24} />,
+      'socialScheduling': <Calendar size={24} />,
+      'instagramReplies': <Bot size={24} />,
+    };
+    return iconMap[featureName] || <Link size={24} />;
+  };
+
+  // Show loading state
+  if (loading) {
+    return (
+      <div className="bg-[#f6f7f5] min-h-screen w-full py-20 px-4 flex items-center justify-center">
+        <Loader2 className="animate-spin" size={48} />
+      </div>
+    );
+  }
 
   return (
     <div id="pricing" className="bg-[#f6f7f5] min-h-screen w-full py-20 px-4">
@@ -161,190 +166,158 @@ const Pricing = () => {
 
         {/* Pricing Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {plans.map((plan, index) => (
-            <div
-              key={index}
-              className={`rounded-3xl p-8 ${
-                plan.cardStyle || 'bg-white'
-              } ${plan.recommended ? 'ring-4 ring-purple-400' : ''} relative`}
-            >
-              {/* Recommended Badge */}
-              {plan.recommended && (
-                <div className="absolute top-6 right-6">
-                  <span className="bg-yellow-400 text-gray-900 text-xs font-bold px-3 py-1 rounded-full">
-                    Recommended
-                  </span>
-                </div>
-              )}
-
-              {/* Plan Header */}
-              <div className="mb-6">
-                <h2
-                  className={`text-3xl font-bold mb-2 ${
-                    plan.cardStyle ? 'text-white' : 'text-gray-900'
-                  }`}
-                >
-                  {plan.name}
-                </h2>
-                <p
-                  className={`text-sm ${
-                    plan.cardStyle ? 'text-purple-200' : 'text-gray-600'
-                  }`}
-                >
-                  {plan.description}
-                </p>
-              </div>
-
-              {/* Pricing */}
-              <div className="mb-6">
-                <div className="flex items-baseline">
-                  <span
-                    className={`text-5xl font-bold ${
-                      plan.cardStyle ? 'text-white' : 'text-gray-900'
-                    }`}
-                  >
-                    ₹{isAnnual ? plan.price.annual : plan.price.monthly}
-                  </span>
-                  {plan.price.monthly > 0 && (
-                    <span
-                      className={`ml-2 ${
-                        plan.cardStyle ? 'text-purple-200' : 'text-gray-600'
-                      }`}
-                    >
-                      INR/mo
-                    </span>
-                  )}
-                </div>
-                <p
-                  className={`text-sm mt-2 ${
-                    plan.cardStyle ? 'text-purple-200' : 'text-gray-600'
-                  }`}
-                >
-                  {plan.priceLabel}
-                </p>
-              </div>
-
-              {/* CTA Button */}
-              <button
-                className={`w-full py-3.5 rounded-full font-semibold transition-all mb-8 ${plan.buttonStyle}`}
+          {plans.map((plan) => { // 👈 Now using fetched plans
+            const isPro = plan.name === 'PRO';
+            const isFree = plan.name === 'FREE';
+            
+            return (
+              <div
+                key={plan.id}
+                className={`rounded-3xl p-8 ${
+                  isPro 
+                    ? 'bg-gradient-to-br from-purple-900 to-purple-800 text-white ring-4 ring-purple-400' 
+                    : 'bg-white'
+                } relative`}
               >
-                {plan.buttonText}
-              </button>
-
-              {/* Features */}
-              <div>
-                {plan.includedPlan && (
-                  <p
-                    className={`font-bold mb-4 ${
-                      plan.cardStyle ? 'text-white' : 'text-gray-900'
-                    }`}
-                  >
-                    {plan.includedPlan}
-                  </p>
+                {/* Recommended Badge */}
+                {isPro && (
+                  <div className="absolute top-6 right-6">
+                    <span className="bg-yellow-400 text-gray-900 text-xs font-bold px-3 py-1 rounded-full">
+                      Recommended
+                    </span>
+                  </div>
                 )}
-                {!plan.includedPlan && (
-                  <p
-                    className={`font-bold mb-4 ${
-                      plan.cardStyle ? 'text-white' : 'text-gray-900'
-                    }`}
-                  >
+
+                {/* Plan Header */}
+                <div className="mb-6">
+                  <h2 className={`text-3xl font-bold mb-2 ${isPro ? 'text-white' : 'text-gray-900'}`}>
+                    {plan.displayName}
+                  </h2>
+                  <p className={`text-sm ${isPro ? 'text-purple-200' : 'text-gray-600'}`}>
+                    {plan.description}
+                  </p>
+                </div>
+
+                {/* Pricing */}
+                <div className="mb-6">
+                  <div className="flex items-baseline">
+                    <span className={`text-5xl font-bold ${isPro ? 'text-white' : 'text-gray-900'}`}>
+                      ₹{isAnnual ? plan.price : (plan.priceMonthly || plan.price)}
+                    </span>
+                    {plan.price > 0 && (
+                      <span className={`ml-2 ${isPro ? 'text-purple-200' : 'text-gray-600'}`}>
+                        /mo
+                      </span>
+                    )}
+                  </div>
+                  <p className={`text-sm mt-2 ${isPro ? 'text-purple-200' : 'text-gray-600'}`}>
+                    {isFree 
+                      ? 'Free, forever' 
+                      : isAnnual 
+                        ? `Billed annually, or ₹${plan.priceMonthly} monthly`
+                        : 'Billed monthly'
+                    }
+                  </p>
+                </div>
+
+                {/* CTA Button */}
+                <button
+                  onClick={() => handlePlanSelection(plan)} // 👈 Pass entire plan object
+                  disabled={loadingPlan === plan.id}
+                  className={`w-full py-3.5 rounded-full font-semibold transition-all mb-8 
+                    ${isPro 
+                      ? 'bg-purple-300 text-purple-900 hover:bg-purple-400' 
+                      : 'bg-white border-2 border-gray-300 text-gray-800 hover:border-gray-400'
+                    } 
+                    disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center`}
+                >
+                  {loadingPlan === plan.id ? (
+                    <>
+                      <Loader2 className="animate-spin mr-2" size={20} />
+                      Processing...
+                    </>
+                  ) : isFree ? (
+                    'Get started'
+                  ) : isPro ? (
+                    'Try free for 7 days'
+                  ) : (
+                    'Get started'
+                  )}
+                </button>
+
+                {/* Features */}
+                <div>
+                  <p className={`font-bold mb-4 ${isPro ? 'text-white' : 'text-gray-900'}`}>
                     Key features:
                   </p>
-                )}
 
-                <ul className="space-y-4">
-                  {plan.features.map((feature, idx) => (
-                    <li key={idx} className="flex items-start">
-                      <span className="mr-3 flex-shrink-0">{feature.icon}</span>
+                  <ul className="space-y-4">
+                    <li className="flex items-start">
+                      <span className="mr-3 flex-shrink-0"><Link size={24} /></span>
                       <div>
-                        <p
-                          className={`font-medium ${
-                            plan.cardStyle ? 'text-white' : 'text-gray-900'
-                          }`}
-                        >
-                          {feature.text}
+                        <p className={`font-medium ${isPro ? 'text-white' : 'text-gray-900'}`}>
+                          {plan.maxLinks === -1 ? 'Unlimited links' : `${plan.maxLinks} links`}
                         </p>
-                        {feature.subtitle && (
-                          <p
-                            className={`text-sm mt-1 ${
-                              plan.cardStyle ? 'text-purple-200' : 'text-gray-600'
-                            }`}
-                          >
-                            {feature.subtitle}
-                          </p>
-                        )}
                       </div>
                     </li>
-                  ))}
-                </ul>
 
-                {/* Growth Tools */}
-                {plan.growthTools && (
-                  <div className="mt-6">
-                    <p
-                      className={`font-bold mb-3 flex items-center ${
-                        plan.cardStyle ? 'text-white' : 'text-gray-900'
-                      }`}
-                    >
-                      Growth tools
-                      <span className="ml-2 bg-purple-500 text-white text-xs px-2 py-0.5 rounded-full">
-                        NEW
-                      </span>
-                    </p>
-                    <ul className="space-y-4">
-                      {plan.growthTools.map((tool, idx) => (
-                        <li key={idx} className="flex items-start">
-                          <span className="mr-3 flex-shrink-0">{tool.icon}</span>
-                          <div>
-                            <p
-                              className={`font-medium ${
-                                plan.cardStyle ? 'text-white' : 'text-gray-900'
-                              }`}
-                            >
-                              {tool.text}
-                            </p>
-                            {tool.subtitle && (
-                              <p
-                                className={`text-sm mt-1 ${
-                                  plan.cardStyle ? 'text-purple-200' : 'text-gray-600'
-                                }`}
-                              >
-                                {tool.subtitle}
-                              </p>
-                            )}
-                          </div>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
+                    {plan.customThemes && (
+                      <li className="flex items-start">
+                        <span className="mr-3 flex-shrink-0"><Palette size={24} /></span>
+                        <div>
+                          <p className={`font-medium ${isPro ? 'text-white' : 'text-gray-900'}`}>
+                            Custom themes
+                          </p>
+                          <p className={`text-sm mt-1 ${isPro ? 'text-purple-200' : 'text-gray-600'}`}>
+                            Custom color palettes and fresh themes
+                          </p>
+                        </div>
+                      </li>
+                    )}
 
-                {/* Money Features */}
-                {plan.moneyFeatures && (
-                  <div className="mt-6">
-                    <p className="font-bold mb-3 text-gray-900">Make money*</p>
-                    <ul className="space-y-4">
-                      {plan.moneyFeatures.map((feature, idx) => (
-                        <li key={idx} className="flex items-start">
-                          <span className="mr-3 flex-shrink-0">{feature.icon}</span>
-                          <div>
-                            <p className="font-medium text-gray-900">{feature.text}</p>
-                            {feature.subtitle && (
-                              <p className="text-sm mt-1 text-gray-600">
-                                {feature.subtitle}
-                              </p>
-                            )}
-                          </div>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
+                    {plan.comprehensiveAnalytics && (
+                      <li className="flex items-start">
+                        <span className="mr-3 flex-shrink-0"><BarChart3 size={24} /></span>
+                        <div>
+                          <p className={`font-medium ${isPro ? 'text-white' : 'text-gray-900'}`}>
+                            Comprehensive analytics
+                          </p>
+                          <p className={`text-sm mt-1 ${isPro ? 'text-purple-200' : 'text-gray-600'}`}>
+                            See top-performing links & optimize content
+                          </p>
+                        </div>
+                      </li>
+                    )}
+
+                    {plan.removeBranding && (
+                      <li className="flex items-start">
+                        <span className="mr-3 flex-shrink-0"><Star size={24} /></span>
+                        <div>
+                          <p className={`font-medium ${isPro ? 'text-white' : 'text-gray-900'}`}>
+                            Remove branding
+                          </p>
+                        </div>
+                      </li>
+                    )}
+
+                    {plan.prioritySupport && (
+                      <li className="flex items-start">
+                        <span className="mr-3 flex-shrink-0"><Users size={24} /></span>
+                        <div>
+                          <p className={`font-medium ${isPro ? 'text-white' : 'text-gray-900'}`}>
+                            Priority support
+                          </p>
+                        </div>
+                      </li>
+                    )}
+                  </ul>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
+        {/* Enterprise Section */}
         <div className="bg-white p-6 sm:p-8 md:p-10 rounded-[2rem] mt-12 text-sm text-gray-600">
           <h1 className="text-black font-bold text-3xl sm:text-4xl md:text-5xl text-left mb-4 sm:mb-6">
             Agency or Enterprise

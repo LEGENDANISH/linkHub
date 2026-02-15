@@ -122,7 +122,45 @@ export const createPortal = async (req, res) => {
     });
   }
 };
+/**
+ * @route   GET /api/payments/verify-session/:sessionId
+ * @desc    Verify checkout session
+ * @access  Private
+ */
+export const verifySession = async (req, res) => {
+  try {
+    const { sessionId } = req.params;
+    
+    const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+    const session = await stripe.checkout.sessions.retrieve(sessionId);
 
+    if (session.payment_status === 'paid') {
+      res.json({
+        success: true,
+        data: {
+          status: 'paid',
+          customerEmail: session.customer_email,
+          amountTotal: session.amount_total / 100,
+          currency: session.currency
+        }
+      });
+    } else {
+      res.json({
+        success: false,
+        message: 'Payment not completed',
+        data: {
+          status: session.payment_status
+        }
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error verifying session',
+      error: error.message
+    });
+  }
+};
 /**
  * @route   POST /api/payments/webhook
  * @desc    Handle Stripe webhooks

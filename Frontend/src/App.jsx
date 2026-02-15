@@ -29,6 +29,8 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/onboard" element={<OnboardingFlow />} />
         <Route path="/edit" element={<LinkhubDashboard/>}/>
+                <Route path="/login" element={<AuthPage/>}/>
+
       </Routes>
     </BrowserRouter>
   );

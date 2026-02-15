@@ -12,6 +12,10 @@
   import Pricing from "./pages/Pricing/Pricing";
   import OnboardingFlow from "./pages/startingpages/Q";
   import LinkhubDashboard from "./pages/mainsections/base";
+import SubscriptionSuccess from "./pages/Pricing/Subscriptionsuccess";
+import SubscriptionCancel from "./pages/Pricing/Subscriptioncancel";
+import SubscriptionManagement from "./pages/Pricing/Subscriptionmanagement";
+import AuthPage from "./Authpage";
 
   function HomePage() {
     return (
@@ -36,6 +40,13 @@
           {/* Onboarding page */}
   <Route path="/edit" element={<LinkhubDashboard/>}/>
           <Route path="/onboard" element={<OnboardingFlow />} />
+
+                <Route path="/login" element={<AuthPage/>}/>
+
+          <Route path="/pricing" element={<Pricing />} />
+<Route path="/subscription/success" element={<SubscriptionSuccess />} />
+<Route path="/subscription/cancel" element={<SubscriptionCancel />} />
+<Route path="/subscription" element={<SubscriptionManagement />} />
         </Routes>
       </BrowserRouter>
     </StrictMode>

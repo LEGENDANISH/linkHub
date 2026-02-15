@@ -128,6 +128,8 @@ export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
+    console.log('Login attempt for:', email); // 👈 ADD THIS
+
     // Find user
     const user = await prisma.user.findUnique({
       where: { email },
@@ -140,6 +142,9 @@ export const login = async (req, res) => {
       }
     });
 
+    console.log('User found:', user ? 'YES' : 'NO'); // 👈 ADD THIS
+    console.log('User ID:', user?.id); // 👈 ADD THIS
+
     if (!user) {
       return res.status(401).json({
         success: false,
@@ -147,8 +152,14 @@ export const login = async (req, res) => {
       });
     }
 
+    console.log('Comparing passwords...'); // 👈 ADD THIS
+    console.log('Input password:', password); // 👈 ADD THIS
+    console.log('Stored hash:', user.password); // 👈 ADD THIS
+
     // Check password
     const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    console.log('Password valid:', isPasswordValid); // 👈 ADD THIS
 
     if (!isPasswordValid) {
       return res.status(401).json({
@@ -181,7 +192,6 @@ export const login = async (req, res) => {
     });
   }
 };
-
 /**
  * @route   POST /api/auth/refresh
  * @desc    Refresh access token

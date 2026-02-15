@@ -11,7 +11,7 @@ export const validate = (req, res, next) => {
       success: false,
       message: 'Validation failed',
       errors: errors.array().map(err => ({
-        field: err.path,
+        field: err.path || err.param,
         message: err.msg
       }))
     });
