@@ -1,0 +1,389 @@
+// schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql" // or "mysql", "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================
+// AUTH & USER MODELS
+// ============================================
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  username      String    @unique
+  password      String    // hashed password
+  name          String?
+  emailVerified DateTime?
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  accounts      Account[]
+  sessions      Session[]
+  profile       Profile?
+  subscription  Subscription?
+  
+  @@index([email])
+  @@index([username])
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String  // oauth, credentials
+  provider          String  // google, credentials
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// ============================================
+// SUBSCRIPTION MODELS
+// ============================================
+
+model Subscription {
+  id              String           @id @default(cuid())
+  userId          String           @unique
+  planId          String
+  status          SubscriptionStatus @default(ACTIVE)
+  
+  // Billing
+  currentPeriodStart DateTime
+  currentPeriodEnd   DateTime
+  cancelAtPeriodEnd  Boolean       @default(false)
+  canceledAt         DateTime?
+  
+  // Payment
+  stripeCustomerId      String?   @unique
+  stripeSubscriptionId  String?   @unique
+  stripePriceId         String?
+  
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  
+  // Relations
+  user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan            Plan             @relation(fields: [planId], references: [id])
+  payments        Payment[]
+  
+  @@index([userId])
+  @@index([planId])
+  @@index([status])
+}
+
+model Plan {
+  id          String   @id @default(cuid())
+  name        String   @unique // FREE, STARTER, PRO
+  displayName String
+  description String?  @db.Text
+  price       Float
+  priceMonthly Float?  // Monthly price if different from yearly
+  currency    String   @default("INR")
+  interval    String   @default("year") // month, year
+  
+  // Features
+  maxLinks              Int      @default(-1) // -1 = unlimited
+  linkInBio             Boolean  @default(true)
+  customThemes          Boolean  @default(false)
+  ownYourAudience       Boolean  @default(false) // Collect subscribers
+  redirectLinks         Boolean  @default(false)
+  socialScheduling      Boolean  @default(false)
+  personalizedLinkhub   Boolean  @default(false) // Custom logo & visuals
+  highlightKeyLinks     Boolean  @default(false) // Featured/animated links
+  comprehensiveAnalytics Boolean @default(false)
+  instagramReplies      Boolean  @default(false)
+  removeBranding        Boolean  @default(false)
+  videoBackground       Boolean  @default(false)
+  prioritySupport       Boolean  @default(false)
+  
+  // Commerce Features
+  linkhubShops          Boolean  @default(false)
+  digitalProducts       Boolean  @default(false)
+  
+  // Stripe
+  stripePriceId    String?  @unique
+  stripeProductId  String?  @unique
+  
+  // Trial
+  trialDays        Int?     @default(0)
+  
+  isActive         Boolean  @default(true)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  
+  // Relations
+  subscriptions    Subscription[]
+  
+  @@index([name])
+}
+
+model Payment {
+  id               String   @id @default(cuid())
+  subscriptionId   String
+  amount           Float
+  currency         String   @default("USD")
+  status           PaymentStatus @default(PENDING)
+  
+  stripePaymentId  String?  @unique
+  stripeInvoiceId  String?
+  
+  paidAt           DateTime?
+  createdAt        DateTime @default(now())
+  
+  subscription     Subscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+  
+  @@index([subscriptionId])
+  @@index([status])
+}
+
+// ============================================
+// PROFILE & DESIGN MODELS
+// ============================================
+
+model Profile {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  slug      String   @unique // public URL slug
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Profile Content
+  profileImage      String?
+  bio               String?        @db.Text
+  
+  // Title Configuration
+  titleType         TitleType      @default(TEXT)
+  titleText         String?
+  logoUrl           String?
+  titleAlignment    String?        @default("center")
+  titleFontSize     String?        @default("24px")
+  titleFontWeight   String?        @default("bold")
+  titleColor        String?        @default("#000000")
+  
+  // Profile Style
+  profileLayout     ProfileLayout  @default(CLASSIC)
+  profileSize       ProfileSize    @default(MEDIUM)
+  profileShape      String?        @default("circle")
+  
+  // Background Design
+  wallpaperStyle    WallpaperStyle @default(SOLID)
+  backgroundColor   String?        @default("#ffffff")
+  gradientFrom      String?
+  gradientTo        String?
+  gradientAngle     Int?           @default(180)
+  backgroundImage   String?
+  backgroundVideo   String?
+  backgroundPattern PatternType?
+  
+  // Background Effects
+  blurEffect        Boolean        @default(false)
+  blurIntensity     Int?           @default(10)
+  noiseEffect       Boolean        @default(false)
+  noiseOpacity      Float?         @default(0.05)
+  imageEffects      String?
+  
+  // Footer
+  footerText        String?
+  footerVisible     Boolean        @default(true)
+  
+  // SEO & Metadata
+  metaTitle         String?
+  metaDescription   String?
+  
+  // Analytics
+  viewCount         Int            @default(0)
+  
+  // Relations
+  user              User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  links             Link[]
+  analytics         Analytics[]
+  
+  @@index([slug])
+  @@index([userId])
+}
+
+// ============================================
+// LINKS MODELS
+// ============================================
+
+model Link {
+  id          String     @id @default(cuid())
+  profileId   String
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  // Link Content
+  title       String
+  url         String
+  icon        String?
+  thumbnail   String?
+  
+  // Link Styling
+  linkType    LinkType   @default(STANDARD)
+  buttonStyle String?    @default("rounded")
+  buttonColor String?
+  textColor   String?
+  borderColor String?
+  borderWidth Int?       @default(0)
+  
+  // Positioning & Visibility
+  order       Int        @default(0)
+  isActive    Boolean    @default(true)
+  isScheduled Boolean    @default(false)
+  scheduleStart DateTime?
+  scheduleEnd   DateTime?
+  
+  // Analytics
+  clickCount  Int        @default(0)
+  
+  // Relations
+  profile     Profile    @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  clicks      LinkClick[]
+  
+  @@index([profileId])
+  @@index([order])
+  @@index([isActive])
+}
+
+model LinkClick {
+  id         String   @id @default(cuid())
+  linkId     String
+  clickedAt  DateTime @default(now())
+  
+  // Analytics data
+  ipAddress  String?
+  userAgent  String?  @db.Text
+  referer    String?  @db.Text
+  country    String?
+  city       String?
+  device     String?
+  browser    String?
+  
+  link       Link     @relation(fields: [linkId], references: [id], onDelete: Cascade)
+  
+  @@index([linkId])
+  @@index([clickedAt])
+}
+
+// ============================================
+// ANALYTICS MODELS
+// ============================================
+
+model Analytics {
+  id         String   @id @default(cuid())
+  profileId  String
+  date       DateTime @default(now())
+  
+  // Metrics
+  views      Int      @default(0)
+  uniqueViews Int     @default(0)
+  clicks     Int      @default(0)
+  
+  // Visitor Info
+  country    String?
+  city       String?
+  device     String?
+  browser    String?
+  referer    String?  @db.Text
+  
+  profile    Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  
+  @@index([profileId])
+  @@index([date])
+}
+
+// ============================================
+// ENUMS
+// ============================================
+
+enum SubscriptionStatus {
+  ACTIVE
+  CANCELED
+  EXPIRED
+  PAST_DUE
+  TRIALING
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCEEDED
+  FAILED
+  REFUNDED
+}
+
+enum TitleType {
+  TEXT
+  LOGO
+}
+
+enum ProfileLayout {
+  CLASSIC
+  HERO
+}
+
+enum ProfileSize {
+  SMALL
+  MEDIUM
+  LARGE
+}
+
+enum WallpaperStyle {
+  SOLID
+  GRADIENT
+  IMAGE
+  VIDEO
+  PATTERN
+}
+
+enum PatternType {
+  DOTS
+  GRID
+  LINES
+  WAVES
+  DIAGONAL
+  CIRCLES
+}
+
+enum LinkType {
+  STANDARD
+  HEADER
+  SOCIAL
+  EMBED
+  EMAIL
+  PHONE
+}
