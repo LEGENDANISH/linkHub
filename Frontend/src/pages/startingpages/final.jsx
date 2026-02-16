@@ -2,11 +2,40 @@ import React, { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import gsap from "gsap";
 import { useNavigate } from "react-router-dom";
+import { 
+  FaInstagram,
+  FaWhatsapp,
+  FaSpotify,
+  FaYoutube,
+  FaFacebook,
+  FaTwitter,
+  FaLinkedin,
+  FaTwitch,
+  FaSnapchat
+} from "react-icons/fa";
+import { BsThreads } from "react-icons/bs";
+import { TbWorld } from "react-icons/tb";
+import { SiTiktok } from "react-icons/si";
 
 const Final = ({ userGoal, profileData, platformLinks, selectedPlatforms }) => {
   const confettiRef = useRef(null);
   const [showContent, setShowContent] = useState(false);
   const navigate = useNavigate();
+
+  const platformIcons = {
+    instagram: FaInstagram,
+    whatsapp: FaWhatsapp,
+    tiktok: SiTiktok,
+    youtube: FaYoutube,
+    website: TbWorld,
+    spotify: FaSpotify,
+    threads: BsThreads,
+    facebook: FaFacebook,
+    twitter: FaTwitter,
+    linkedin: FaLinkedin,
+    twitch: FaTwitch,
+    snapchat: FaSnapchat,
+  };
 
   useEffect(() => {
     // Confetti animation
@@ -52,14 +81,19 @@ const Final = ({ userGoal, profileData, platformLinks, selectedPlatforms }) => {
   const renderTemplate = () => {
     switch (userGoal) {
       case "creator":
-        return <CreatorTemplate profileData={profileData} platformLinks={platformLinks} selectedPlatforms={selectedPlatforms} />;
+        return <CreatorTemplate profileData={profileData} platformLinks={platformLinks} selectedPlatforms={selectedPlatforms} platformIcons={platformIcons} />;
       case "business":
-        return <BusinessTemplate profileData={profileData} platformLinks={platformLinks} selectedPlatforms={selectedPlatforms} />;
+        return <BusinessTemplate profileData={profileData} platformLinks={platformLinks} selectedPlatforms={selectedPlatforms} platformIcons={platformIcons} />;
       case "personal":
-        return <PersonalTemplate profileData={profileData} platformLinks={platformLinks} selectedPlatforms={selectedPlatforms} />;
+        return <PersonalTemplate profileData={profileData} platformLinks={platformLinks} selectedPlatforms={selectedPlatforms} platformIcons={platformIcons} />;
       default:
-        return <CreatorTemplate profileData={profileData} platformLinks={platformLinks} selectedPlatforms={selectedPlatforms} />;
+        return <CreatorTemplate profileData={profileData} platformLinks={platformLinks} selectedPlatforms={selectedPlatforms} platformIcons={platformIcons} />;
     }
+  };
+
+  const handleContinue = () => {
+    // Navigate to edit page or dashboard
+    navigate('/edit');
   };
 
   return (
@@ -75,12 +109,12 @@ const Final = ({ userGoal, profileData, platformLinks, selectedPlatforms }) => {
         className="relative z-10"
       >
         {/* Header */}
-        <div className="text-center pt-12 px-4">
+        <div className="text-center pt-16 px-6">
           <motion.h1
             initial={{ y: -30, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.5 }}
-            className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-gray-900"
+            className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-gray-900 mb-4"
           >
             Looking good! 🎉
           </motion.h1>
@@ -88,7 +122,7 @@ const Final = ({ userGoal, profileData, platformLinks, selectedPlatforms }) => {
             initial={{ y: -20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.7 }}
-            className="text-gray-600 mt-4 text-base sm:text-lg max-w-xl mx-auto"
+            className="text-gray-600 mt-4 text-lg sm:text-xl max-w-2xl mx-auto"
           >
             Your LinkHub is off to a great start.
             <br />
@@ -102,7 +136,7 @@ const Final = ({ userGoal, profileData, platformLinks, selectedPlatforms }) => {
             initial={{ y: 50, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.9 }}
-            className="mt-12 flex justify-center px-4 pb-12"
+            className="mt-16 flex justify-center px-6 pb-12"
           >
             {renderTemplate()}
           </motion.div>
@@ -113,11 +147,11 @@ const Final = ({ userGoal, profileData, platformLinks, selectedPlatforms }) => {
           initial={{ y: 30, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.5, delay: 1.2 }}
-          className="flex justify-center pb-12 px-4"
+          className="flex justify-center pb-16 px-6"
         >
           <button 
-            onClick={() => navigate('/edit')}
-            className="bg-purple-600 hover:bg-purple-700 text-white font-semibold px-8 sm:px-12 py-4 rounded-full text-base sm:text-lg transition-all duration-300 transform hover:scale-105 hover:shadow-xl"
+            onClick={handleContinue}
+            className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-bold px-12 py-5 rounded-full text-lg transition-all duration-300 transform hover:scale-105 hover:shadow-2xl"
           >
             Continue building this LinkHub
           </button>
@@ -132,22 +166,13 @@ const Final = ({ userGoal, profileData, platformLinks, selectedPlatforms }) => {
           border-radius: 50%;
           pointer-events: none;
         }
-
-        @keyframes float {
-          0%, 100% {
-            transform: translateY(0) rotate(0deg);
-          }
-          50% {
-            transform: translateY(-20px) rotate(180deg);
-          }
-        }
       `}</style>
     </div>
   );
 };
 
 // CREATOR TEMPLATE - Vibrant, modern, lava lamp style
-const CreatorTemplate = ({ profileData, platformLinks, selectedPlatforms }) => {
+const CreatorTemplate = ({ profileData, platformLinks, selectedPlatforms, platformIcons }) => {
   return (
     <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden relative">
       {/* Lava Lamp Background */}
@@ -166,15 +191,13 @@ const CreatorTemplate = ({ profileData, platformLinks, selectedPlatforms }) => {
             {profileData?.image ? (
               <img src={profileData.image} alt={profileData.username} className="w-full h-full object-cover" />
             ) : (
-              <div className="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center">
-                <svg className="w-12 h-12 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
-                </svg>
+              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-purple-200 to-pink-200 flex items-center justify-center">
+                <span className="text-4xl">👤</span>
               </div>
             )}
           </div>
-          <h2 className="text-2xl font-bold text-white mb-1">
-            {profileData?.username || "05anish"}
+          <h2 className="text-2xl font-bold text-white mb-2">
+            {profileData?.username || "Your Name"}
           </h2>
           {profileData?.bio && (
             <p className="text-white text-opacity-90 text-sm mt-2 px-4">
@@ -185,17 +208,21 @@ const CreatorTemplate = ({ profileData, platformLinks, selectedPlatforms }) => {
 
         {/* Links */}
         <div className="space-y-3">
-          {selectedPlatforms?.slice(0, 4).map((platform, index) => (
-            <motion.div
-              key={index}
-              initial={{ x: -20, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              transition={{ delay: 1.3 + index * 0.1 }}
-              className="bg-white bg-opacity-90 backdrop-blur-sm rounded-full px-6 py-4 text-center font-semibold text-gray-800 hover:bg-opacity-100 transition-all duration-300 cursor-pointer hover:scale-105 shadow-lg"
-            >
-              {platform.charAt(0).toUpperCase() + platform.slice(1)}
-            </motion.div>
-          ))}
+          {selectedPlatforms?.slice(0, 5).map((platform, index) => {
+            const Icon = platformIcons[platform];
+            return (
+              <motion.div
+                key={index}
+                initial={{ x: -20, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ delay: 1.3 + index * 0.1 }}
+                className="bg-white bg-opacity-90 backdrop-blur-sm rounded-full px-6 py-4 flex items-center gap-3 font-semibold text-gray-800 hover:bg-opacity-100 transition-all duration-300 cursor-pointer hover:scale-105 shadow-lg"
+              >
+                {Icon && <Icon size={20} />}
+                <span>{platform.charAt(0).toUpperCase() + platform.slice(1)}</span>
+              </motion.div>
+            );
+          })}
         </div>
       </div>
 
@@ -236,7 +263,7 @@ const CreatorTemplate = ({ profileData, platformLinks, selectedPlatforms }) => {
 };
 
 // BUSINESS TEMPLATE - Professional, clean, gradient
-const BusinessTemplate = ({ profileData, platformLinks, selectedPlatforms }) => {
+const BusinessTemplate = ({ profileData, platformLinks, selectedPlatforms, platformIcons }) => {
   return (
     <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden">
       {/* Gradient Header */}
@@ -246,15 +273,13 @@ const BusinessTemplate = ({ profileData, platformLinks, selectedPlatforms }) => 
             {profileData?.image ? (
               <img src={profileData.image} alt={profileData.username} className="w-full h-full object-cover" />
             ) : (
-              <div className="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center">
-                <svg className="w-12 h-12 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
-                </svg>
+              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-blue-200 to-indigo-200 flex items-center justify-center">
+                <span className="text-4xl">💼</span>
               </div>
             )}
           </div>
-          <h2 className="text-2xl font-bold text-white mb-1">
-            {profileData?.username || "05anish"}
+          <h2 className="text-2xl font-bold text-white mb-2">
+            {profileData?.username || "Business Name"}
           </h2>
           {profileData?.bio ? (
             <p className="text-blue-100 text-sm mt-2 px-4">
@@ -269,17 +294,21 @@ const BusinessTemplate = ({ profileData, platformLinks, selectedPlatforms }) => 
       {/* Links Section */}
       <div className="p-8 -mt-8">
         <div className="space-y-3">
-          {selectedPlatforms?.slice(0, 4).map((platform, index) => (
-            <motion.div
-              key={index}
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 1.3 + index * 0.1 }}
-              className="bg-white border-2 border-gray-200 rounded-2xl px-6 py-4 text-center font-semibold text-gray-800 hover:border-indigo-500 hover:shadow-lg transition-all duration-300 cursor-pointer hover:scale-[1.02]"
-            >
-              {platform.charAt(0).toUpperCase() + platform.slice(1)}
-            </motion.div>
-          ))}
+          {selectedPlatforms?.slice(0, 5).map((platform, index) => {
+            const Icon = platformIcons[platform];
+            return (
+              <motion.div
+                key={index}
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 1.3 + index * 0.1 }}
+                className="bg-white border-2 border-gray-200 rounded-2xl px-6 py-4 flex items-center gap-3 font-semibold text-gray-800 hover:border-indigo-500 hover:shadow-lg transition-all duration-300 cursor-pointer hover:scale-[1.02]"
+              >
+                {Icon && <Icon size={20} />}
+                <span>{platform.charAt(0).toUpperCase() + platform.slice(1)}</span>
+              </motion.div>
+            );
+          })}
         </div>
       </div>
     </div>
@@ -287,7 +316,7 @@ const BusinessTemplate = ({ profileData, platformLinks, selectedPlatforms }) => 
 };
 
 // PERSONAL TEMPLATE - Warm, friendly, soft colors
-const PersonalTemplate = ({ profileData, platformLinks, selectedPlatforms }) => {
+const PersonalTemplate = ({ profileData, platformLinks, selectedPlatforms, platformIcons }) => {
   return (
     <div className="w-full max-w-md bg-gradient-to-br from-rose-100 via-pink-100 to-orange-100 rounded-3xl shadow-2xl overflow-hidden p-8">
       {/* Profile Section */}
@@ -297,14 +326,12 @@ const PersonalTemplate = ({ profileData, platformLinks, selectedPlatforms }) => 
             <img src={profileData.image} alt={profileData.username} className="w-full h-full object-cover" />
           ) : (
             <div className="w-24 h-24 rounded-full bg-gradient-to-br from-rose-200 to-pink-200 flex items-center justify-center">
-              <svg className="w-14 h-14 text-rose-400" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
-              </svg>
+              <span className="text-5xl">✨</span>
             </div>
           )}
         </div>
         <h2 className="text-3xl font-bold text-gray-800 mb-2">
-          {profileData?.username || "05anish"}
+          {profileData?.username || "Your Name"}
         </h2>
         {profileData?.bio ? (
           <p className="text-gray-600 text-sm px-4">
@@ -317,17 +344,21 @@ const PersonalTemplate = ({ profileData, platformLinks, selectedPlatforms }) => 
 
       {/* Links */}
       <div className="space-y-4">
-        {selectedPlatforms?.slice(0, 4).map((platform, index) => (
-          <motion.div
-            key={index}
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ delay: 1.3 + index * 0.1, type: "spring" }}
-            className="bg-white rounded-full px-6 py-4 text-center font-semibold text-gray-700 hover:bg-gradient-to-r hover:from-rose-400 hover:to-pink-400 hover:text-white transition-all duration-300 cursor-pointer hover:scale-105 shadow-md hover:shadow-xl"
-          >
-            {platform.charAt(0).toUpperCase() + platform.slice(1)}
-          </motion.div>
-        ))}
+        {selectedPlatforms?.slice(0, 5).map((platform, index) => {
+          const Icon = platformIcons[platform];
+          return (
+            <motion.div
+              key={index}
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 1.3 + index * 0.1, type: "spring" }}
+              className="bg-white rounded-full px-6 py-4 flex items-center gap-3 font-semibold text-gray-700 hover:bg-gradient-to-r hover:from-rose-400 hover:to-pink-400 hover:text-white transition-all duration-300 cursor-pointer hover:scale-105 shadow-md hover:shadow-xl"
+            >
+              {Icon && <Icon size={20} />}
+              <span>{platform.charAt(0).toUpperCase() + platform.slice(1)}</span>
+            </motion.div>
+          );
+        })}
       </div>
 
       {/* Decorative Elements */}

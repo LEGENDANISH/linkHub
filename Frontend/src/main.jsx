@@ -10,13 +10,13 @@
   import Section4 from "./pages/homepage/Section4";
   import Section5 from "./pages/homepage/Section5";
   import Pricing from "./pages/Pricing/Pricing";
-  import OnboardingFlow from "./pages/startingpages/Q";
   import LinkhubDashboard from "./pages/mainsections/base";
 import SubscriptionSuccess from "./pages/Pricing/Subscriptionsuccess";
 import SubscriptionCancel from "./pages/Pricing/Subscriptioncancel";
 import SubscriptionManagement from "./pages/Pricing/Subscriptionmanagement";
 import AuthPage from "./Authpage";
 import AuthCallback from "./AuthCallback";
+import OnboardingFlow from "./pages/startingpages/Q";
 
   function HomePage() {
     return (

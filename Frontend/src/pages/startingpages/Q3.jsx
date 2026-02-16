@@ -1,4 +1,3 @@
-// Q3.jsx
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import gsap from 'gsap';
@@ -8,12 +7,15 @@ import {
   FaSpotify,
   FaYoutube,
   FaFacebook,
-  FaTwitter 
+  FaTwitter,
+  FaLinkedin,
+  FaTwitch,
+  FaSnapchat
 } from "react-icons/fa";
-
 import { BsThreads } from "react-icons/bs";
 import { TbWorld } from "react-icons/tb";
 import { SiTiktok } from "react-icons/si";
+
 const Q3 = ({ selectedPlatforms = [], onContinue, onBack, onSkip, direction = 1 }) => {
   const [links, setLinks] = useState({});
   const [errors, setErrors] = useState({});
@@ -21,63 +23,80 @@ const Q3 = ({ selectedPlatforms = [], onContinue, onBack, onSkip, direction = 1 
   const titleRef = useRef(null);
   const progressRef = useRef(null);
 
- const platformConfig = {
-  instagram: {
-    icon: FaInstagram,
-    gradient: "from-purple-600 to-pink-500",
-    placeholder: "instagram.com/yourhandle",
-    label: "Instagram Profile"
-  },
-  whatsapp: {
-    icon: FaWhatsapp,
-    gradient: "from-green-500 to-green-600",
-    placeholder: "+1234567890 or whatsapp link",
-    label: "WhatsApp Number"
-  },
-  tiktok: {
-    icon: SiTiktok,
-    gradient: "from-black to-pink-500",
-    placeholder: "tiktok.com/@yourhandle",
-    label: "TikTok Profile"
-  },
-  youtube: {
-    icon: FaYoutube,
-    gradient: "from-red-600 to-red-700",
-    placeholder: "youtube.com/@yourchannel",
-    label: "YouTube Channel"
-  },
-  website: {
-    icon: TbWorld,
-    gradient: "from-blue-500 to-cyan-500",
-    placeholder: "https://yourwebsite.com",
-    label: "Personal Website"
-  },
-  spotify: {
-    icon: FaSpotify,
-    gradient: "from-green-400 to-green-600",
-    placeholder: "open.spotify.com/artist/...",
-    label: "Spotify Profile"
-  },
-  threads: {
-    icon: BsThreads,
-    gradient: "from-gray-800 to-black",
-    placeholder: "threads.net/@yourhandle",
-    label: "Threads Profile"
-  },
-  facebook: {
-    icon: FaFacebook,
-    gradient: "from-blue-600 to-blue-700",
-    placeholder: "facebook.com/yourpage",
-    label: "Facebook Page"
-  },
-  twitter: {
-    icon: FaTwitter,
-    gradient: "from-gray-900 to-black",
-    placeholder: "x.com/yourhandle",
-    label: "X / Twitter Profile"
-  }
-};
-
+  const platformConfig = {
+    instagram: {
+      icon: FaInstagram,
+      gradient: "from-purple-600 to-pink-500",
+      placeholder: "instagram.com/yourhandle",
+      label: "Instagram Profile"
+    },
+    whatsapp: {
+      icon: FaWhatsapp,
+      gradient: "from-green-500 to-emerald-600",
+      placeholder: "+1234567890 or whatsapp link",
+      label: "WhatsApp Number"
+    },
+    tiktok: {
+      icon: SiTiktok,
+      gradient: "from-black to-pink-500",
+      placeholder: "tiktok.com/@yourhandle",
+      label: "TikTok Profile"
+    },
+    youtube: {
+      icon: FaYoutube,
+      gradient: "from-red-600 to-red-700",
+      placeholder: "youtube.com/@yourchannel",
+      label: "YouTube Channel"
+    },
+    website: {
+      icon: TbWorld,
+      gradient: "from-blue-500 to-cyan-500",
+      placeholder: "https://yourwebsite.com",
+      label: "Personal Website"
+    },
+    spotify: {
+      icon: FaSpotify,
+      gradient: "from-green-400 to-green-600",
+      placeholder: "open.spotify.com/artist/...",
+      label: "Spotify Profile"
+    },
+    threads: {
+      icon: BsThreads,
+      gradient: "from-gray-800 to-black",
+      placeholder: "threads.net/@yourhandle",
+      label: "Threads Profile"
+    },
+    facebook: {
+      icon: FaFacebook,
+      gradient: "from-blue-600 to-blue-700",
+      placeholder: "facebook.com/yourpage",
+      label: "Facebook Page"
+    },
+    twitter: {
+      icon: FaTwitter,
+      gradient: "from-gray-900 to-black",
+      placeholder: "x.com/yourhandle",
+      label: "X / Twitter Profile"
+    },
+    linkedin: {
+      icon: FaLinkedin,
+      gradient: "from-blue-700 to-blue-800",
+      placeholder: "linkedin.com/in/yourprofile",
+      label: "LinkedIn Profile"
+    },
+    twitch: {
+      icon: FaTwitch,
+      gradient: "from-purple-600 to-purple-700",
+      placeholder: "twitch.tv/yourchannel",
+      label: "Twitch Channel"
+    },
+    snapchat: {
+      icon: FaSnapchat,
+      gradient: "from-yellow-400 to-yellow-500",
+      placeholder: "snapchat.com/add/yourhandle",
+      label: "Snapchat Profile"
+    }
+  };
 
   useEffect(() => {
     // Set initial visibility
@@ -217,64 +236,65 @@ const Q3 = ({ selectedPlatforms = [], onContinue, onBack, onSkip, direction = 1 
       initial="initial"
       animate="animate"
       exit="exit"
-      className="min-h-screen bg-[#f5f5f5] flex flex-col"
+      className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 flex flex-col"
     >
       {/* Top bar */}
       <motion.div 
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="w-full flex items-center justify-between px-4 sm:px-6 py-4"
+        className="w-full flex items-center justify-between px-6 py-5"
       >
         <button 
           onClick={onBack}
-          className="text-sm md:text-base font-semibold text-gray-600 hover:text-black transition-colors duration-200"
+          className="text-sm md:text-base font-semibold text-gray-600 hover:text-gray-900 transition-colors duration-200"
         >
           ← Back
         </button>
         <button 
           onClick={onSkip}
-          className="text-sm md:text-base font-semibold text-gray-600 hover:text-black transition-colors duration-200"
+          className="text-sm md:text-base font-semibold text-gray-500 hover:text-gray-700 transition-colors duration-200"
         >
           Skip
         </button>
       </motion.div>
 
       {/* Progress bar */}
-   <div className="w-full flex justify-center mb-2">
-        <div className="w-48 h-2 bg-gray-200 rounded-full overflow-hidden">
+      <div className="w-full flex justify-center mb-8">
+        <div className="w-64 h-1.5 bg-gray-200 rounded-full overflow-hidden">
           <div 
             ref={progressRef}
-            className="w-3/4 h-full bg-gradient-to-r from-purple-600 to-pink-500 rounded-full origin-left"
+            className="w-3/4 h-full bg-gradient-to-r from-purple-600 via-purple-500 to-pink-500 rounded-full origin-left"
           />
         </div>
       </div>
 
       {/* Title */}
-      <div ref={titleRef} className="text-center mt-8 sm:mt-12 px-4">
-        <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-gray-900">
+      <div ref={titleRef} className="text-center mt-8 px-6">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4 tracking-tight">
           Add your links
         </h1>
-        <p className="text-gray-500 mt-3 text-sm sm:text-base font-medium max-w-md mx-auto">
+        <p className="text-gray-600 mt-4 text-base sm:text-lg font-medium max-w-md mx-auto">
           Complete the fields below to add your content to your new LinkHub.
         </p>
       </div>
 
       {/* Selected platforms counter */}
-      <div className="text-center mt-6 px-4">
-        <motion.p 
+      <div className="text-center mt-6 px-6">
+        <motion.div
           key={filledCount}
-          initial={{ scale: 1.2, color: "#10b981" }}
-          animate={{ scale: 1, color: "#4b5563" }}
-          className="text-sm sm:text-base font-semibold text-gray-600"
+          initial={{ scale: 1.2 }}
+          animate={{ scale: 1 }}
+          className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-100 text-emerald-700 font-bold text-sm rounded-full"
         >
-          Your selection: {filledCount}/{selectedPlatforms.length} completed
-        </motion.p>
+          <span>✓</span>
+          <span>{filledCount}/{selectedPlatforms.length} completed</span>
+        </motion.div>
       </div>
 
       {/* Links input section */}
-      <div className="flex-1 w-full max-w-2xl mx-auto px-4 sm:px-6 py-8 overflow-y-auto">
-        <div className="space-y-4 sm:space-y-5">
+      <div className="flex-1 w-full max-w-2xl mx-auto px-6 py-8 overflow-y-auto">
+        <div className="space-y-5">
           {selectedPlatforms.map((platformId, index) => {
             const config = platformConfig[platformId];
             const hasError = errors[platformId];
@@ -284,15 +304,15 @@ const Q3 = ({ selectedPlatforms = [], onContinue, onBack, onSkip, direction = 1 
               <div 
                 key={platformId}
                 ref={el => cardsRef.current[index] = el}
-                className="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border-2 border-gray-200 hover:border-gray-300 transition-all duration-300 hover:shadow-md"
+                className="bg-white rounded-2xl p-6 shadow-sm border-2 border-gray-200 hover:border-gray-300 transition-all duration-300 hover:shadow-md"
               >
                 {/* Platform header */}
-                <div className="flex items-center gap-3 mb-4">
-                  <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br ${config.gradient} flex items-center justify-center text-xl sm:text-2xl shadow-md transition-transform duration-300 hover:scale-110`}>
-  <config.icon size={22} className="text-white" />
+                <div className="flex items-center gap-4 mb-4">
+                  <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${config.gradient} flex items-center justify-center shadow-md transition-transform duration-300 hover:scale-110`}>
+                    <config.icon size={24} className="text-white" />
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-bold text-base sm:text-lg text-gray-900">
+                    <h3 className="font-bold text-lg text-gray-900">
                       {config.label}
                     </h3>
                   </div>
@@ -303,9 +323,9 @@ const Q3 = ({ selectedPlatforms = [], onContinue, onBack, onSkip, direction = 1 
                         animate={{ scale: 1, rotate: 0 }}
                         exit={{ scale: 0, rotate: 180 }}
                         transition={{ type: "spring", stiffness: 500, damping: 25 }}
-                        className="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center"
+                        className="w-7 h-7 rounded-full bg-emerald-500 flex items-center justify-center shadow-lg"
                       >
-                        <span className="text-white text-xs font-bold">✓</span>
+                        <span className="text-white text-sm font-bold">✓</span>
                       </motion.div>
                     )}
                   </AnimatePresence>
@@ -318,11 +338,11 @@ const Q3 = ({ selectedPlatforms = [], onContinue, onBack, onSkip, direction = 1 
                     value={links[platformId] || ''}
                     onChange={(e) => handleInputChange(platformId, e.target.value)}
                     placeholder={config.placeholder}
-                    className={`w-full px-4 py-3 sm:py-3.5 rounded-xl border-2 text-sm sm:text-base transition-all duration-300 focus:outline-none ${
+                    className={`w-full px-4 py-4 rounded-xl border-2 text-base transition-all duration-300 focus:outline-none ${
                       hasError
                         ? 'border-red-400 bg-red-50 focus:border-red-500'
                         : isFilled
-                        ? 'border-green-400 bg-green-50 focus:border-green-500'
+                        ? 'border-emerald-400 bg-emerald-50 focus:border-emerald-500'
                         : 'border-gray-200 bg-gray-50 focus:border-purple-500 focus:bg-white focus:shadow-md'
                     }`}
                   />
@@ -332,7 +352,7 @@ const Q3 = ({ selectedPlatforms = [], onContinue, onBack, onSkip, direction = 1 
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
-                        className="text-red-500 text-xs sm:text-sm mt-2 ml-1"
+                        className="text-red-500 text-sm mt-2 ml-1 font-medium"
                       >
                         Please enter your {config.label.toLowerCase()}
                       </motion.p>
@@ -346,14 +366,14 @@ const Q3 = ({ selectedPlatforms = [], onContinue, onBack, onSkip, direction = 1 
       </div>
 
       {/* Continue button - Fixed at bottom */}
-      <div className="w-full max-w-2xl mx-auto px-4 sm:px-6 pb-6 sm:pb-8">
+      <div className="w-full max-w-2xl mx-auto px-6 pb-8">
         <button
           onClick={handleContinue}
           disabled={filledCount === 0}
-          className={`w-full py-3.5 sm:py-4 rounded-2xl font-bold text-sm sm:text-base transition-all duration-300 transform hover:scale-[1.02] active:scale-95 ${
+          className={`w-full py-4 rounded-full font-bold text-lg transition-all duration-300 transform hover:scale-[1.02] active:scale-95 shadow-lg ${
             filledCount > 0
-              ? 'bg-gradient-to-r from-purple-600 to-purple-700 text-white shadow-lg hover:shadow-xl'
-              : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+              ? 'bg-gradient-to-r from-purple-600 to-purple-700 text-white hover:shadow-xl'
+              : 'bg-gray-200 text-gray-400 cursor-not-allowed shadow-none'
           }`}
         >
           Continue

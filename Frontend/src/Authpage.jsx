@@ -36,11 +36,28 @@ export default function AuthPage() {
     } else if (token && refresh) {
       localStorage.setItem('accessToken', token);
       localStorage.setItem('refreshToken', refresh);
+    const user = JSON.parse(localStorage.getItem('user'));
+
+localStorage.setItem(
+  'onboarding_data',
+  JSON.stringify({
+    username: user?.username || '',
+    authToken: token
+  })
+);
+
+localStorage.setItem(
+  'onboarding_step',
+  user?.username ? '1' : '0'
+);
+
+localStorage.setItem('onboarding_step', '1');
+
       setSuccess('Login successful! Redirecting...');
       
       window.history.replaceState({}, document.title, window.location.pathname);
       setTimeout(() => {
-        window.location.href = '/dashboard';
+window.location.href = '/onboard';
       }, 1500);
     }
 
@@ -74,14 +91,27 @@ export default function AuthPage() {
 
       if (response.ok && data.success) {
         localStorage.setItem('accessToken', data.data.accessToken);
-        localStorage.setItem('refreshToken', data.data.refreshToken);
-        localStorage.setItem('user', JSON.stringify(data.data.user));
-        
-        setSuccess('Login successful! Redirecting...');
-        
-        setTimeout(() => {
-          window.location.href = '/dashboard';
-        }, 1500);
+localStorage.setItem('refreshToken', data.data.refreshToken);
+localStorage.setItem('user', JSON.stringify(data.data.user));
+
+// 👇 IMPORTANT
+localStorage.setItem(
+  'onboarding_data',
+  JSON.stringify({
+    username: data.data.user.username,
+    authToken: data.data.accessToken
+  })
+);
+
+// skip username step → go to Q1
+localStorage.setItem('onboarding_step', '1');
+
+setSuccess('Login successful! Redirecting...');
+
+setTimeout(() => {
+  window.location.href = '/edit';
+}, 1500);
+
       } else {
         setError(data.message || 'Login failed. Please try again.');
       }
@@ -122,15 +152,25 @@ export default function AuthPage() {
       const data = await response.json();
 
       if (response.ok && data.success) {
-        localStorage.setItem('accessToken', data.data.accessToken);
-        localStorage.setItem('refreshToken', data.data.refreshToken);
-        localStorage.setItem('user', JSON.stringify(data.data.user));
-        
-        setSuccess('Account created successfully! Redirecting...');
-        
-        setTimeout(() => {
-          window.location.href = '/dashboard';
-        }, 1500);
+   localStorage.setItem('accessToken', data.data.accessToken);
+localStorage.setItem('refreshToken', data.data.refreshToken);
+localStorage.setItem('user', JSON.stringify(data.data.user));
+
+localStorage.setItem(
+  'onboarding_data',
+  JSON.stringify({
+    username: data.data.user.username,
+    authToken: data.data.accessToken
+  })
+);
+
+// new signup → go directly to Q1
+localStorage.setItem('onboarding_step', '1');
+
+setTimeout(() => {
+  window.location.href = '/onboard';
+}, 1500);
+
       } else {
         setError(data.message || 'Registration failed. Please try again.');
       }

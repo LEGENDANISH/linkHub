@@ -1,4 +1,3 @@
-// Q2.jsx
 import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import gsap from "gsap";
@@ -8,9 +7,11 @@ import {
   FaSpotify,
   FaYoutube,
   FaFacebook,
-  FaTwitter 
+  FaTwitter,
+  FaLinkedin,
+  FaTwitch,
+  FaSnapchat
 } from "react-icons/fa";
-
 import { BsThreads } from "react-icons/bs";
 import { TbWorld } from "react-icons/tb";
 import { SiTiktok } from "react-icons/si";
@@ -21,19 +22,21 @@ const Q2 = ({ onContinue, onBack, onSkip, direction = 1 }) => {
   const gridRef = useRef(null);
   const titleRef = useRef(null);
   const progressRef = useRef(null);
-const platforms = [
-  { id: "instagram", name: "Instagram", icon: FaInstagram },
-  { id: "whatsapp", name: "WhatsApp", icon: FaWhatsapp },
-  { id: "tiktok", name: "TikTok", icon: SiTiktok },
-  { id: "youtube", name: "YouTube", icon: FaYoutube },
-  { id: "website", name: "Personal Website", icon: TbWorld },
-  { id: "spotify", name: "Spotify", icon: FaSpotify },
-  { id: "threads", name: "Threads", icon: BsThreads },
-  { id: "facebook", name: "Facebook", icon: FaFacebook },
-  { id: "twitter", name: "X / Twitter", icon: FaTwitter },
-];
 
-
+  const platforms = [
+    { id: "instagram", name: "Instagram", icon: FaInstagram, color: "from-purple-600 to-pink-500" },
+    { id: "whatsapp", name: "WhatsApp", icon: FaWhatsapp, color: "from-green-500 to-emerald-600" },
+    { id: "tiktok", name: "TikTok", icon: SiTiktok, color: "from-black to-pink-500" },
+    { id: "youtube", name: "YouTube", icon: FaYoutube, color: "from-red-600 to-red-700" },
+    { id: "website", name: "Website", icon: TbWorld, color: "from-blue-500 to-cyan-500" },
+    { id: "spotify", name: "Spotify", icon: FaSpotify, color: "from-green-400 to-green-600" },
+    { id: "threads", name: "Threads", icon: BsThreads, color: "from-gray-800 to-black" },
+    { id: "facebook", name: "Facebook", icon: FaFacebook, color: "from-blue-600 to-blue-700" },
+    { id: "twitter", name: "X / Twitter", icon: FaTwitter, color: "from-gray-900 to-black" },
+    { id: "linkedin", name: "LinkedIn", icon: FaLinkedin, color: "from-blue-700 to-blue-800" },
+    { id: "twitch", name: "Twitch", icon: FaTwitch, color: "from-purple-600 to-purple-700" },
+    { id: "snapchat", name: "Snapchat", icon: FaSnapchat, color: "from-yellow-400 to-yellow-500" },
+  ];
 
   useEffect(() => {
     // Set initial visibility
@@ -134,7 +137,7 @@ const platforms = [
       initial="initial"
       animate="animate"
       exit="exit"
-      className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex flex-col"
+      className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 flex flex-col"
     >
       {/* Top nav */}
       <motion.div 
@@ -145,51 +148,53 @@ const platforms = [
       >
         <button 
           onClick={onBack}
-          className="text-gray-700 font-medium hover:text-gray-900 transition-colors duration-200"
+          className="text-gray-600 font-semibold hover:text-gray-900 transition-colors duration-200 text-sm md:text-base"
         >
           ← Back
         </button>
         <button 
           onClick={onSkip}
-          className="text-gray-500 font-medium hover:text-gray-700 transition-colors duration-200"
+          className="text-gray-500 font-semibold hover:text-gray-700 transition-colors duration-200 text-sm md:text-base"
         >
           Skip
         </button>
       </motion.div>
 
       {/* Progress bar */}
-      <div className="w-full flex justify-center mb-2">
-        <div className="w-48 h-2 bg-gray-200 rounded-full overflow-hidden">
+      <div className="w-full flex justify-center mb-8">
+        <div className="w-64 h-1.5 bg-gray-200 rounded-full overflow-hidden">
           <div 
             ref={progressRef}
-            className="w-2/4 h-full bg-gradient-to-r from-purple-600 to-pink-500 rounded-full origin-left"
+            className="w-2/4 h-full bg-gradient-to-r from-purple-600 via-purple-500 to-pink-500 rounded-full origin-left"
           />
         </div>
       </div>
 
       {/* Title */}
-      <div ref={titleRef} className="text-center mt-10 px-6">
-        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight">
+      <div ref={titleRef} className="text-center mt-8 px-6">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 tracking-tight mb-4">
           Which platforms are you on?
         </h1>
-        <p className="text-gray-600 mt-3 text-base md:text-lg max-w-md mx-auto">
+        <p className="text-gray-600 mt-4 text-base md:text-lg max-w-md mx-auto">
           Pick up to {MAX_SELECT} to get started. You can always update these later.
         </p>
-        <motion.p 
+        <motion.div 
           key={selected.length}
-          initial={{ scale: 1.2, color: "#9333ea" }}
-          animate={{ scale: 1, color: "#9333ea" }}
-          className="text-sm text-purple-600 font-medium mt-2"
+          initial={{ scale: 1.2 }}
+          animate={{ scale: 1 }}
+          className="mt-4"
         >
-          {selected.length}/{MAX_SELECT} selected
-        </motion.p>
+          <span className="inline-flex items-center gap-2 px-4 py-2 bg-purple-100 text-purple-700 font-bold text-sm rounded-full">
+            {selected.length}/{MAX_SELECT} selected
+          </span>
+        </motion.div>
       </div>
 
       {/* Grid */}
-      <div className="mt-12 px-6 flex justify-center flex-1">
+      <div className="mt-12 px-6 flex justify-center flex-1 pb-8">
         <div 
           ref={gridRef}
-          className="grid grid-cols-2 sm:grid-cols-3 gap-4 max-w-lg w-full h-fit"
+          className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 max-w-4xl w-full h-fit"
         >
           {platforms.map((item) => {
             const isActive = selected.includes(item.id);
@@ -202,13 +207,13 @@ const platforms = [
                 onClick={() => !isDisabled && toggleSelect(item.id)}
                 className={`relative cursor-pointer border-2 rounded-2xl 
                             flex flex-col items-center justify-center
-                            py-8 transition-all duration-300 transform
+                            py-8 transition-all duration-300 transform bg-white
                             ${
                               isActive
-                                ? "border-purple-600 bg-white shadow-xl scale-105"
+                                ? "border-purple-500 shadow-xl scale-105"
                                 : isDisabled
-                                ? "border-gray-200 bg-gray-50 opacity-50 cursor-not-allowed"
-                                : "border-gray-200 bg-white hover:border-gray-300 hover:shadow-lg hover:scale-105"
+                                ? "border-gray-200 opacity-50 cursor-not-allowed"
+                                : "border-gray-200 hover:border-gray-300 hover:shadow-lg hover:scale-105"
                             }`}
               >
                 {/* Checkmark for selected items */}
@@ -218,7 +223,7 @@ const platforms = [
                     animate={{ scale: 1, rotate: 0 }}
                     exit={{ scale: 0, rotate: 180 }}
                     transition={{ type: "spring", stiffness: 500, damping: 25 }}
-                    className="absolute top-3 right-3 w-6 h-6 bg-purple-600 rounded-full flex items-center justify-center"
+                    className="absolute top-3 right-3 w-7 h-7 bg-purple-600 rounded-full flex items-center justify-center shadow-lg"
                   >
                     <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path>
@@ -226,16 +231,14 @@ const platforms = [
                   </motion.div>
                 )}
                 
-                <div className={`text-4xl mb-3 transition-transform duration-300 ${
+                <div className={`mb-3 transition-transform duration-300 ${
                   isActive ? "scale-110" : ""
                 }`}>
- <item.icon
-    size={32}
-    className={`transition-colors duration-300 ${
-      isActive ? "text-purple-600" : "text-gray-700"
-    }`}
-  />                </div>
-                <span className="text-sm font-semibold text-gray-800 text-center px-2">
+                  <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${item.color} flex items-center justify-center shadow-md`}>
+                    <item.icon size={24} className="text-white" />
+                  </div>
+                </div>
+                <span className="text-sm font-bold text-gray-800 text-center px-2">
                   {item.name}
                 </span>
               </div>
@@ -249,11 +252,11 @@ const platforms = [
         <button
           onClick={handleContinue}
           disabled={selected.length === 0}
-          className={`px-16 py-4 rounded-full text-base font-semibold transition-all duration-300
-            shadow-lg transform hover:scale-105 active:scale-95
+          className={`px-16 py-4 rounded-full text-lg font-bold transition-all duration-300
+            transform hover:scale-105 active:scale-95 shadow-lg
             ${
               selected.length > 0
-                ? "bg-gradient-to-r from-purple-600 to-purple-700 text-white hover:shadow-2xl"
+                ? "bg-gradient-to-r from-purple-600 to-purple-700 text-white hover:shadow-xl"
                 : "bg-gray-200 text-gray-400 cursor-not-allowed shadow-none"
             }`}
         >
