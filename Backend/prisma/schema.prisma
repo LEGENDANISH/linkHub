@@ -244,60 +244,56 @@ model Profile {
 // ============================================
 
 model Link {
-  id          String     @id @default(cuid())
+  id          BigInt     @id @default(autoincrement())  // Changed from String to BigInt
   profileId   String
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
 
-  // Link Content
-  title       String
+  // Link Content (matches frontend)
+  name        String                    // Changed from 'title'
   url         String
-  icon        String?
-  thumbnail   String?
+  iconType    String?    @default("auto")
+  thumbnail   String?    @db.Text       // Allow base64 images
   
-  // Link Styling
-  linkType    LinkType   @default(STANDARD)
-  buttonStyle String?    @default("rounded")
-  buttonColor String?
-  textColor   String?
-  borderColor String?
-  borderWidth Int?       @default(0)
+  // Link Styling (matches frontend)
+  layout      String     @default("classic")  // classic, pill, featured
+  animation   String     @default("none")     // none, spotlight, bounce, etc.
+  
+  // Thumbnail Crop Data
+  thumbnailCrop Json?                   // Store crop coordinates
   
   // Positioning & Visibility
-  order       Int        @default(0)
-  isActive    Boolean    @default(true)
-  isScheduled Boolean    @default(false)
-  scheduleStart DateTime?
-  scheduleEnd   DateTime?
+  active      Boolean    @default(true)       // Changed from 'isActive'
+  clicks      Int        @default(0)          // Changed from 'clickCount'
+  locked      Boolean    @default(false)
   
-  // Analytics
-  clickCount  Int        @default(0)
+  // Scheduling
+  schedule    Json?                           // Store schedule as JSON
+  redirect    String?                         // Redirect URL
   
   // Relations
   profile     Profile    @relation(fields: [profileId], references: [id], onDelete: Cascade)
-  clicks      LinkClick[]
+  clickEvents LinkClick[]
   
   @@index([profileId])
-  @@index([order])
-  @@index([isActive])
+  @@index([active])
 }
 
 model LinkClick {
-  id         String   @id @default(cuid())
-  linkId     String
-  clickedAt  DateTime @default(now())
-  
-  // Analytics data
-  ipAddress  String?
-  userAgent  String?  @db.Text
-  referer    String?  @db.Text
-  country    String?
-  city       String?
-  device     String?
-  browser    String?
-  
-  link       Link     @relation(fields: [linkId], references: [id], onDelete: Cascade)
-  
+  id        BigInt   @id @default(autoincrement())
+  linkId    BigInt   // Changed from String to BigInt
+  ipAddress String?
+  userAgent String?
+  referer   String?
+  country   String?
+  city      String?
+  device    String?
+  browser   String?
+  os        String?
+  clickedAt DateTime @default(now())
+
+  link      Link     @relation(fields: [linkId], references: [id], onDelete: Cascade)
+
   @@index([linkId])
   @@index([clickedAt])
 }

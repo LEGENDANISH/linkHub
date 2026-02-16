@@ -31,7 +31,7 @@ export const getPublicProfile = async (req, res) => {
               }
             ]
           },
-          orderBy: { order: 'asc' },
+           orderBy: { createdAt: 'asc' },
           select: {
             id: true,
             title: true,
@@ -103,8 +103,16 @@ export const getMyProfile = async (req, res) => {
     const profile = await prisma.profile.findUnique({
       where: { userId: req.user.id },
       include: {
+        user: {                     // 👈 add this relation
+          select: {
+            name: true,
+            username: true,
+            email: true,
+            image: true
+          }
+        },
         links: {
-          orderBy: { order: 'asc' }
+           orderBy: { createdAt: 'asc' }
         },
         _count: {
           select: {

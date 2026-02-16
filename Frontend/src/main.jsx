@@ -16,6 +16,7 @@ import SubscriptionSuccess from "./pages/Pricing/Subscriptionsuccess";
 import SubscriptionCancel from "./pages/Pricing/Subscriptioncancel";
 import SubscriptionManagement from "./pages/Pricing/Subscriptionmanagement";
 import AuthPage from "./Authpage";
+import AuthCallback from "./AuthCallback";
 
   function HomePage() {
     return (
@@ -47,6 +48,9 @@ import AuthPage from "./Authpage";
 <Route path="/subscription/success" element={<SubscriptionSuccess />} />
 <Route path="/subscription/cancel" element={<SubscriptionCancel />} />
 <Route path="/subscription" element={<SubscriptionManagement />} />
+
+<Route path="/auth/callback" element={<AuthCallback />} />
+
         </Routes>
       </BrowserRouter>
     </StrictMode>

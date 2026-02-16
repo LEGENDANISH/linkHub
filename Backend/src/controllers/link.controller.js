@@ -1,6 +1,27 @@
 import prisma from '../config/database.js';
 
 /**
+ * Format link for response (converts BigInt to Number)
+ */
+const formatLink = (link) => ({
+  id: Number(link.id),
+  name: link.name,
+  url: link.url,
+  active: link.active,
+  clicks: link.clicks,
+  layout: link.layout,
+  thumbnail: link.thumbnail,
+  animation: link.animation,
+  locked: link.locked,
+  schedule: link.schedule,
+  redirect: link.redirect,
+  createdAt: link.createdAt,
+  updatedAt: link.updatedAt,
+  iconType: link.iconType,
+  thumbnailCrop: link.thumbnailCrop
+});
+
+/**
  * @route   GET /api/links
  * @desc    Get all links for current user
  * @access  Private
@@ -21,17 +42,12 @@ export const getLinks = async (req, res) => {
 
     const links = await prisma.link.findMany({
       where: { profileId: profile.id },
-      orderBy: { order: 'asc' },
-      include: {
-        _count: {
-          select: { clicks: true }
-        }
-      }
+      orderBy: { createdAt: 'asc' }
     });
 
     res.json({
-      success: true,
-      data: links
+      links: links.map(formatLink),
+      isLoaded: true
     });
   } catch (error) {
     res.status(500).json({
@@ -50,15 +66,13 @@ export const getLinks = async (req, res) => {
 export const getLink = async (req, res) => {
   try {
     const { id } = req.params;
+    const linkId = BigInt(id);
 
     const link = await prisma.link.findUnique({
-      where: { id },
+      where: { id: linkId },
       include: {
         profile: {
           select: { userId: true }
-        },
-        _count: {
-          select: { clicks: true }
         }
       }
     });
@@ -80,7 +94,7 @@ export const getLink = async (req, res) => {
 
     res.json({
       success: true,
-      data: link
+      data: formatLink(link)
     });
   } catch (error) {
     res.status(500).json({
@@ -99,29 +113,22 @@ export const getLink = async (req, res) => {
 export const createLink = async (req, res) => {
   try {
     const {
-      title,
+      name,
       url,
-      icon,
+      active,
+      layout,
       thumbnail,
-      linkType,
-      buttonStyle,
-      buttonColor,
-      textColor,
-      borderColor,
-      borderWidth,
-      isActive,
-      isScheduled,
-      scheduleStart,
-      scheduleEnd
+      animation,
+      locked,
+      schedule,
+      redirect,
+      iconType,
+      thumbnailCrop
     } = req.body;
 
     const profile = await prisma.profile.findUnique({
       where: { userId: req.user.id },
-      include: {
-        links: {
-          where: { isActive: true }
-        }
-      }
+      select: { id: true }
     });
 
     if (!profile) {
@@ -131,40 +138,28 @@ export const createLink = async (req, res) => {
       });
     }
 
-    // Get the next order number
-    const maxOrder = await prisma.link.findFirst({
-      where: { profileId: profile.id },
-      orderBy: { order: 'desc' },
-      select: { order: true }
-    });
-
-    const nextOrder = maxOrder ? maxOrder.order + 1 : 0;
-
     const link = await prisma.link.create({
       data: {
         profileId: profile.id,
-        title,
+        name,
         url,
-        icon,
-        thumbnail,
-        linkType: linkType || 'STANDARD',
-        buttonStyle: buttonStyle || 'rounded',
-        buttonColor,
-        textColor,
-        borderColor,
-        borderWidth: borderWidth || 0,
-        order: nextOrder,
-        isActive: isActive !== undefined ? isActive : true,
-        isScheduled: isScheduled || false,
-        scheduleStart: scheduleStart ? new Date(scheduleStart) : null,
-        scheduleEnd: scheduleEnd ? new Date(scheduleEnd) : null
+        active: active !== undefined ? active : true,
+        layout: layout || 'classic',
+        thumbnail: thumbnail || null,
+        animation: animation || 'none',
+        locked: locked || false,
+        schedule: schedule || null,
+        redirect: redirect || null,
+        iconType: iconType || 'auto',
+        thumbnailCrop: thumbnailCrop || null,
+        clicks: 0
       }
     });
 
     res.status(201).json({
       success: true,
       message: 'Link created successfully',
-      data: link
+      data: formatLink(link)
     });
   } catch (error) {
     res.status(500).json({
@@ -183,11 +178,12 @@ export const createLink = async (req, res) => {
 export const updateLink = async (req, res) => {
   try {
     const { id } = req.params;
+    const linkId = BigInt(id);
     const updateData = req.body;
 
     // Check ownership
     const existingLink = await prisma.link.findUnique({
-      where: { id },
+      where: { id: linkId },
       include: {
         profile: {
           select: { userId: true }
@@ -209,35 +205,30 @@ export const updateLink = async (req, res) => {
       });
     }
 
+    // Build update object
+    const dataToUpdate = {};
+    if (updateData.name !== undefined) dataToUpdate.name = updateData.name;
+    if (updateData.url !== undefined) dataToUpdate.url = updateData.url;
+    if (updateData.active !== undefined) dataToUpdate.active = updateData.active;
+    if (updateData.layout !== undefined) dataToUpdate.layout = updateData.layout;
+    if (updateData.thumbnail !== undefined) dataToUpdate.thumbnail = updateData.thumbnail;
+    if (updateData.animation !== undefined) dataToUpdate.animation = updateData.animation;
+    if (updateData.locked !== undefined) dataToUpdate.locked = updateData.locked;
+    if (updateData.schedule !== undefined) dataToUpdate.schedule = updateData.schedule;
+    if (updateData.redirect !== undefined) dataToUpdate.redirect = updateData.redirect;
+    if (updateData.iconType !== undefined) dataToUpdate.iconType = updateData.iconType;
+    if (updateData.thumbnailCrop !== undefined) dataToUpdate.thumbnailCrop = updateData.thumbnailCrop;
+
     // Update link
     const link = await prisma.link.update({
-      where: { id },
-      data: {
-        ...(updateData.title && { title: updateData.title }),
-        ...(updateData.url && { url: updateData.url }),
-        ...(updateData.icon !== undefined && { icon: updateData.icon }),
-        ...(updateData.thumbnail !== undefined && { thumbnail: updateData.thumbnail }),
-        ...(updateData.linkType && { linkType: updateData.linkType }),
-        ...(updateData.buttonStyle && { buttonStyle: updateData.buttonStyle }),
-        ...(updateData.buttonColor !== undefined && { buttonColor: updateData.buttonColor }),
-        ...(updateData.textColor !== undefined && { textColor: updateData.textColor }),
-        ...(updateData.borderColor !== undefined && { borderColor: updateData.borderColor }),
-        ...(updateData.borderWidth !== undefined && { borderWidth: updateData.borderWidth }),
-        ...(updateData.isActive !== undefined && { isActive: updateData.isActive }),
-        ...(updateData.isScheduled !== undefined && { isScheduled: updateData.isScheduled }),
-        ...(updateData.scheduleStart !== undefined && { 
-          scheduleStart: updateData.scheduleStart ? new Date(updateData.scheduleStart) : null 
-        }),
-        ...(updateData.scheduleEnd !== undefined && { 
-          scheduleEnd: updateData.scheduleEnd ? new Date(updateData.scheduleEnd) : null 
-        })
-      }
+      where: { id: linkId },
+      data: dataToUpdate
     });
 
     res.json({
       success: true,
       message: 'Link updated successfully',
-      data: link
+      data: formatLink(link)
     });
   } catch (error) {
     res.status(500).json({
@@ -256,10 +247,11 @@ export const updateLink = async (req, res) => {
 export const deleteLink = async (req, res) => {
   try {
     const { id } = req.params;
+    const linkId = BigInt(id);
 
     // Check ownership
     const existingLink = await prisma.link.findUnique({
-      where: { id },
+      where: { id: linkId },
       include: {
         profile: {
           select: { userId: true }
@@ -282,7 +274,7 @@ export const deleteLink = async (req, res) => {
     }
 
     await prisma.link.delete({
-      where: { id }
+      where: { id: linkId }
     });
 
     res.json({
@@ -300,38 +292,14 @@ export const deleteLink = async (req, res) => {
 
 /**
  * @route   PUT /api/links/reorder
- * @desc    Reorder links
+ * @desc    Reorder links (deprecated - no order field anymore)
  * @access  Private
  */
 export const reorderLinks = async (req, res) => {
   try {
-    const { linkOrders } = req.body; // Array of { id, order }
-
-    const profile = await prisma.profile.findUnique({
-      where: { userId: req.user.id },
-      select: { id: true }
-    });
-
-    if (!profile) {
-      return res.status(404).json({
-        success: false,
-        message: 'Profile not found'
-      });
-    }
-
-    // Update all link orders in a transaction
-    await prisma.$transaction(
-      linkOrders.map(({ id, order }) =>
-        prisma.link.update({
-          where: { id },
-          data: { order }
-        })
-      )
-    );
-
-    res.json({
-      success: true,
-      message: 'Links reordered successfully'
+    res.status(400).json({
+      success: false,
+      message: 'Reordering is deprecated. Links are ordered by creation date.'
     });
   } catch (error) {
     res.status(500).json({
@@ -350,9 +318,10 @@ export const reorderLinks = async (req, res) => {
 export const trackClick = async (req, res) => {
   try {
     const { id } = req.params;
+    const linkId = BigInt(id);
 
     const link = await prisma.link.findUnique({
-      where: { id }
+      where: { id: linkId }
     });
 
     if (!link) {
@@ -364,14 +333,14 @@ export const trackClick = async (req, res) => {
 
     // Increment click count
     await prisma.link.update({
-      where: { id },
-      data: { clickCount: { increment: 1 } }
+      where: { id: linkId },
+      data: { clicks: { increment: 1 } }
     });
 
     // Track detailed click analytics
     await prisma.linkClick.create({
       data: {
-        linkId: id,
+        linkId: linkId,
         ipAddress: req.ip,
         userAgent: req.headers['user-agent'],
         referer: req.headers.referer,
@@ -382,7 +351,7 @@ export const trackClick = async (req, res) => {
     res.json({
       success: true,
       message: 'Click tracked',
-      redirectUrl: link.url
+      redirectUrl: link.redirect || link.url
     });
   } catch (error) {
     res.status(500).json({
@@ -401,10 +370,11 @@ export const trackClick = async (req, res) => {
 export const getLinkAnalytics = async (req, res) => {
   try {
     const { id } = req.params;
+    const linkId = BigInt(id);
     const { days = 30 } = req.query;
 
     const link = await prisma.link.findUnique({
-      where: { id },
+      where: { id: linkId },
       include: {
         profile: {
           select: { userId: true }
@@ -431,7 +401,7 @@ export const getLinkAnalytics = async (req, res) => {
 
     const clicks = await prisma.linkClick.findMany({
       where: {
-        linkId: id,
+        linkId: linkId,
         clickedAt: { gte: startDate }
       },
       orderBy: { clickedAt: 'desc' }
@@ -440,7 +410,7 @@ export const getLinkAnalytics = async (req, res) => {
     res.json({
       success: true,
       data: {
-        totalClicks: link.clickCount,
+        totalClicks: link.clicks,
         recentClicks: clicks.length,
         clicks
       }
