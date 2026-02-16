@@ -422,7 +422,7 @@ export const googleCallback = async (req, res) => {
 
     // Redirect to frontend with tokens
     const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
-    res.redirect(`${frontendUrl}/auth/callback?token=${accessToken}&refresh=${refreshToken}`);
+res.redirect(`${frontendUrl}/auth?token=${accessToken}&refresh=${refreshToken}`);
   } catch (error) {
     const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
     res.redirect(`${frontendUrl}/auth/error?message=${error.message}`);

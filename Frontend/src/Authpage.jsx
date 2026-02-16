@@ -142,9 +142,9 @@ export default function AuthPage() {
     }
   };
 
-  const handleGoogleAuth = () => {
-    window.location.href = `${API_BASE_URL}/auth/google`;
-  };
+const handleGoogleAuth = () => {
+  window.location.href = `${API_BASE_URL}/auth/google`;
+};
 
   return (
     <div className="min-h-screen bg-zinc-950 flex items-center justify-center p-5 relative overflow-hidden">

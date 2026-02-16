@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import ProductsDropdown from "./ProductsDropdown";
+import { useNavigate } from "react-router-dom";
 
 const Topbar = () => {
   const [open, setOpen] = useState(false);
@@ -7,6 +8,7 @@ const Topbar = () => {
   const [lastScroll, setLastScroll] = useState(0);
   const [showProducts, setShowProducts] = useState(false);
 
+  const navigate = useNavigate()
   useEffect(() => {
     const handleScroll = () => {
       const currentScroll = window.scrollY;
@@ -66,10 +68,18 @@ const Topbar = () => {
 
         {/* Desktop Buttons */}
         <div className="hidden md:flex items-center gap-2 lg:gap-3">
-          <button className="bg-[#f3f3f1] px-3 lg:px-4 py-2 rounded-xl text-xs lg:text-sm font-semibold hover:bg-gray-200 transition">
+          <button
+          onClick={()=>{
+            navigate('/login')
+          }}
+          className="bg-[#f3f3f1] px-3 lg:px-4 py-2 rounded-xl text-xs lg:text-sm font-semibold hover:bg-gray-200 transition">
             Log in
           </button>
-          <button className="bg-[#1e293b] text-white px-3 lg:px-5 py-2 rounded-full text-xs lg:text-sm font-semibold hover:bg-[#334155] transition">
+          <button 
+           onClick={()=>{
+            navigate('/login')
+          }}
+          className="bg-[#1e293b] text-white px-3 lg:px-5 py-2 rounded-full text-xs lg:text-sm font-semibold hover:bg-[#334155] transition">
             Sign up free
           </button>
         </div>
