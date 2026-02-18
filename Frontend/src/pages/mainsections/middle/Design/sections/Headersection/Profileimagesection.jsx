@@ -1,12 +1,55 @@
 import React from "react";
 import { User } from "lucide-react";
+import axios from "axios";
 
 const ProfileImageSection = ({ state, updateDesign }) => {
-  const handleImageUpload = (e) => {
+
+  const handleImageUpload = async (e) => {
     const file = e.target.files[0];
-    if (file) {
-      const imageUrl = URL.createObjectURL(file);
+    if (!file) return;
+
+    // size validation
+    if (file.size > 5 * 1024 * 1024) {
+      alert("Image must be under 5MB");
+      return;
+    }
+
+    // 🔹 instant preview (same UX as before)
+    const previewUrl = URL.createObjectURL(file);
+    updateDesign("profileImage", previewUrl);
+
+    try {
+      const token = localStorage.getItem("accessToken");
+
+      const formData = new FormData();
+      formData.append("profileImage", file); // must match multer field
+
+      const res = await axios.post(
+        "http://localhost:5000/api/upload/profile-image",
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      const imageUrl = res?.data?.data?.url;
+
+      if (!imageUrl) {
+        throw new Error("No image URL returned");
+      }
+
+      // 🔹 replace preview with real S3 URL
       updateDesign("profileImage", imageUrl);
+
+    } catch (err) {
+      console.error("Upload error:", err);
+      alert("Image upload failed");
+
+      // revert preview if upload failed
+      updateDesign("profileImage", null);
     }
   };
 
