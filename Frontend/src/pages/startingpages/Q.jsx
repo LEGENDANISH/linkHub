@@ -252,11 +252,7 @@ const [currentStep, setCurrentStep] = useState(() => {
   };
 
  const steps = [
-  <UsernameSelection 
-    key="username"
-    apiService={apiService}
-    storageService={storageService}
-  />,
+
   <Q1 key="q1" onContinue={handleQ1Continue} onSkip={handleSkip} direction={direction} />,
   <Q2 key="q2" onContinue={handleQ2Continue} onBack={handleBack} onSkip={handleSkip} direction={direction} />,
   <Q3 key="q3" selectedPlatforms={onboardingData.selectedPlatforms} onContinue={handleQ3Continue} onBack={handleBack} onSkip={handleSkip} direction={direction} />,
