@@ -53,35 +53,47 @@ router.put(
       .isLength({ min: 3, max: 30 })
       .matches(/^[a-zA-Z0-9_-]+$/)
       .withMessage('Slug must be 3-30 characters and contain only letters, numbers, hyphens, and underscores'),
+
     body('bio')
       .optional()
       .trim()
       .isLength({ max: 500 })
       .withMessage('Bio must be less than 500 characters'),
+
     body('titleType')
       .optional()
       .isIn(['TEXT', 'LOGO'])
       .withMessage('Invalid title type'),
+
+    // 🔥 ADD SANITIZER HERE
     body('profileLayout')
       .optional()
+      .customSanitizer(v => v?.toUpperCase())
       .isIn(['CLASSIC', 'HERO'])
       .withMessage('Invalid profile layout'),
+
     body('profileSize')
       .optional()
       .isIn(['SMALL', 'MEDIUM', 'LARGE'])
       .withMessage('Invalid profile size'),
+
+    // 🔥 ADD SANITIZER HERE
     body('wallpaperStyle')
       .optional()
+      .customSanitizer(v => v?.toUpperCase())
       .isIn(['SOLID', 'GRADIENT', 'IMAGE', 'VIDEO', 'PATTERN'])
       .withMessage('Invalid wallpaper style'),
+
     body('backgroundPattern')
       .optional()
+      .customSanitizer(v => v?.toUpperCase())
       .isIn(['DOTS', 'GRID', 'LINES', 'WAVES', 'DIAGONAL', 'CIRCLES'])
       .withMessage('Invalid pattern type')
   ],
   validate,
   updateProfile
 );
+
 
 /**
  * @route   GET /api/profile/analytics

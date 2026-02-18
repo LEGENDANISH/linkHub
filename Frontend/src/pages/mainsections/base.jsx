@@ -13,6 +13,8 @@ import { useDesign } from "./middle/Design/DesignSelectionManager";
 import { X, User, ArrowLeftRight, Plus, UserCircle, Zap, HelpCircle, BookOpen, MessageSquare, LogOut } from "lucide-react";
 import SettingsDropdown from "./components/SettingsDropdown";
 
+import axios from "axios";
+import { useSelection } from "./middle/links/Selectionmanager";
 
 
 export default function LinkhubDashboard() {
@@ -24,9 +26,48 @@ export default function LinkhubDashboard() {
   const [showPreview, setShowPreview] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
 
+
+  const { getActiveLinks } = useSelection();
+const token = localStorage.getItem("accessToken");
   // Use Zustand store instead of local state
   const { design, updateDesign, updateDesignBatch } = useDesign();
 
+const handleSaveAll = async () => {
+  try {
+    // save design
+    await axios.put(
+      "http://localhost:5000/api/profile/update",
+      design,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+
+    // save links
+    const activeLinks = getActiveLinks() || [];
+
+    for (const link of activeLinks) {
+      if (link.id) {
+        await axios.put(
+          `http://localhost:5000/api/links/${link.id}`,
+          link,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+      } else {
+        await axios.post(
+          "http://localhost:5000/api/links",
+          link,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+      }
+    }
+
+    alert("Saved successfully");
+  } catch (err) {
+    console.error(err);
+    alert("Save failed");
+  }
+};
   // Detect mobile screen size
   useEffect(() => {
     const mediaQuery = window.matchMedia("(max-width: 768px)");
@@ -459,7 +500,18 @@ export default function LinkhubDashboard() {
         {activeSection === "design" && <DesignMiddle />}
       </main>
 
-      {!isMobile && <MobilePreview activeSection={activeSection} />}
+      {!isMobile && (
+  <div className="flex">
+    <button
+      onClick={handleSaveAll}
+      className="absolute top-4 right-4 z-30 bg-purple-600 text-white px-4 py-2 rounded-xl shadow-lg hover:bg-purple-700 transition font-medium"
+    >
+      Save
+    </button>
+
+    <MobilePreview activeSection={activeSection} />
+  </div>
+)}
     </div>
   );
 }

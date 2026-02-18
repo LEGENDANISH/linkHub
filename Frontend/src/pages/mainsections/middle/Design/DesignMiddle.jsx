@@ -1,4 +1,4 @@
-  import React, { useState } from "react";
+  import React, { useEffect, useState } from "react";
   import DesignSidebar from "./DesignSidebar";
 
   import HeaderSection from "./sections/Headersection/HeaderSection";
@@ -14,7 +14,13 @@
   const DesignMiddle = () => {
     const [activeTab, setActiveTab] = useState("header");
     const { design, updateDesign, updateDesignBatch } = useDesign();
-
+useEffect(() => {
+  const draft = localStorage.getItem("designDraft");
+  console.log("hoi")
+  if (draft) {
+    updateDesignBatch(JSON.parse(draft));
+  }
+}, []);
     const renderSection = () => {
       // Props for sections that haven't been converted yet
       const sectionProps = {

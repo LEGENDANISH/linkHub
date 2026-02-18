@@ -14,8 +14,7 @@ export const getPublicProfile = async (req, res) => {
       include: {
         links: {
           where: { 
-            isActive: true,
-            OR: [
+active: true,            OR: [
               { isScheduled: false },
               {
                 AND: [
