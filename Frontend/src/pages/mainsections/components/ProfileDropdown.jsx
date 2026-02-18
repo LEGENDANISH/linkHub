@@ -7,40 +7,39 @@ export default function ProfileDropdown() {
   const ref = useRef();
 
   // fetch profile (slug, image etc.)
-useEffect(() => {
-  const fetchProfile = async () => {
-    try {
-      const res = await fetch("http://localhost:5000/api/profile/me/profile", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`
-        }
-      });
-
-      const data = await res.json();
-
-      if (data.success) {
-        const profileData = data.data;
-
-        // capitalize slug here
-        const capitalizedSlug =
-          profileData.slug?.charAt(0).toUpperCase() +
-          profileData.slug?.slice(1);
-
-        setProfile({
-          ...profileData,
-          slug: capitalizedSlug
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const res = await fetch("http://localhost:5000/api/profile/me/profile", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`
+          }
         });
+
+        const data = await res.json();
+
+        if (data.success) {
+          const profileData = data.data;
+
+          // capitalize slug here
+          const capitalizedSlug =
+            profileData.slug?.charAt(0).toUpperCase() +
+            profileData.slug?.slice(1);
+
+          setProfile({
+            ...profileData,
+            slug: capitalizedSlug
+          });
+        }
+      } catch (err) {
+        console.error("Failed to fetch profile:", err);
       }
-    } catch (err) {
-      console.error("Failed to fetch profile:", err);
-    }
-  };
+    };
 
-  fetchProfile();
-}, []);
-
+    fetchProfile();
+  }, []);
 
   // close when clicking outside
   useEffect(() => {
@@ -53,11 +52,12 @@ useEffect(() => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-const displayName = profile?.user?.name || "Loading...";
-console.log(displayName)
-const slug = profile?.slug;
-  const profileImage = profile?.profileImage;
+  const displayName = profile?.user?.name || "Loading...";
+  console.log(displayName)
+  const slug = profile?.slug;
 
+  // ONLY user image → else default icon
+  const profileImage = profile?.user?.image || null;
 
   return (
     <div className="relative" ref={ref}>
@@ -108,7 +108,7 @@ const slug = profile?.slug;
               <div>
                 <p className="font-semibold text-gray-900 text-base">  {displayName}</p>
                 <p className="text-sm text-gray-500">
-                  linktr.ee/{displayName  }
+                  linktr.ee/{displayName}
                 </p>
               </div>
             </div>

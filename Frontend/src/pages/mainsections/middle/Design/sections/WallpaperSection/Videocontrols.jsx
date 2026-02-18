@@ -1,19 +1,53 @@
 import React from "react";
+import axios from "axios";
 
 const VideoControls = ({ design, updateDesign }) => {
-  const handleVideoUpload = (e) => {
+
+  const handleVideoUpload = async (e) => {
     const file = e.target.files[0];
-    if (file) {
-      if (file.size > 5 * 1024 * 1024) {
-        alert("Video is too large (max 5MB). Please use a smaller video.");
-        return;
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      alert("Video is too large (max 5MB). Please use a smaller video.");
+      return;
+    }
+
+    // 🔹 instant preview (same UX as current)
+    const previewUrl = URL.createObjectURL(file);
+    updateDesign("backgroundVideo", previewUrl);
+
+    try {
+      const token = localStorage.getItem("accessToken");
+
+      const formData = new FormData();
+      formData.append("backgroundVideo", file); // must match multer field
+
+      const res = await axios.post(
+        "http://localhost:5000/api/upload/background-video",
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      const videoUrl = res?.data?.data?.url;
+
+      if (!videoUrl) {
+        throw new Error("No video URL returned");
       }
-      
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        updateDesign("backgroundVideo", reader.result);
-      };
-      reader.readAsDataURL(file);
+
+      // 🔹 replace preview with real S3 URL
+      updateDesign("backgroundVideo", videoUrl);
+
+    } catch (err) {
+      console.error("Video upload error:", err);
+      alert("Video upload failed");
+
+      // revert preview if upload failed
+      updateDesign("backgroundVideo", null);
     }
   };
 

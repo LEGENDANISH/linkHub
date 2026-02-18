@@ -209,7 +209,7 @@ model Profile {
   gradientTo        String?
   gradientAngle     Int?           @default(180)
   backgroundImage   String?
-  backgroundVideo   String?
+  backgroundVideo   String? 
   backgroundPattern PatternType?
   
   // Background Effects

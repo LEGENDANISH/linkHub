@@ -7,6 +7,8 @@ import {
   createCustomerPortalSession,
   constructWebhookEvent
 } from '../config/stripe.js';
+import Stripe from 'stripe';
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 /**
  * @route   POST /api/payments/create-checkout-session
@@ -213,17 +215,44 @@ export const stripeWebhook = async (req, res) => {
 };
 
 // Webhook handler functions
-async function handleCheckoutCompleted(session) {
-  const userId = session.metadata.userId;
-  const planName = session.metadata.planName;
 
-  const plan = await prisma.plan.findUnique({
-    where: { name: planName }
+async function handleCheckoutCompleted(session) {
+    console.log('🔍 handleCheckoutCompleted fired');
+  console.log('📋 Session metadata:', session.metadata);
+  console.log('💳 Customer:', session.customer);
+  console.log('📦 Subscription:', session.subscription);
+  const userId = session.metadata?.userId;
+  const planName = session.metadata?.planName;
+
+ console.log('👤 userId:', userId);
+  console.log('📌 planName:', planName);
+
+  if (!userId || !planName) {
+    console.error('❌ Missing metadata!');
+    return;
+  }
+
+  const plan = await prisma.plan.findFirst({
+    where: { name: { equals: planName, mode: 'insensitive' } }
   });
 
-  if (!plan) return;
+  console.log('🗂️ Plan found:', plan ? plan.name : 'NOT FOUND');
 
-  // Update or create subscription
+  if (!plan) {
+    console.error('Plan not found:', planName);
+    return;
+  }
+
+  // Fetch real subscription data from Stripe to get accurate period dates
+  let periodStart = new Date();
+  let periodEnd = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000);
+
+  if (session.subscription) {
+    const stripeSub = await stripe.subscriptions.retrieve(session.subscription);
+    periodStart = new Date(stripeSub.current_period_start * 1000);
+    periodEnd = new Date(stripeSub.current_period_end * 1000);
+  }
+
   await prisma.subscription.upsert({
     where: { userId },
     update: {
@@ -231,8 +260,8 @@ async function handleCheckoutCompleted(session) {
       status: 'ACTIVE',
       stripeCustomerId: session.customer,
       stripeSubscriptionId: session.subscription,
-      currentPeriodStart: new Date(),
-      currentPeriodEnd: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000) // 1 year
+      currentPeriodStart: periodStart,
+      currentPeriodEnd: periodEnd,
     },
     create: {
       userId,
@@ -240,45 +269,63 @@ async function handleCheckoutCompleted(session) {
       status: 'ACTIVE',
       stripeCustomerId: session.customer,
       stripeSubscriptionId: session.subscription,
-      currentPeriodStart: new Date(),
-      currentPeriodEnd: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000)
+      currentPeriodStart: periodStart,
+      currentPeriodEnd: periodEnd,
     }
   });
+
+  console.log(`✅ Subscription activated for user ${userId}`);
 }
 
 async function handleSubscriptionCreated(subscription) {
-  const userId = subscription.metadata.userId;
-  
+  const userId = subscription.metadata?.userId;
   if (!userId) return;
 
+  // Fetch full subscription data to get period dates
+  const fullSub = await stripe.subscriptions.retrieve(subscription.id);
+  
+  const priceId = fullSub.items.data[0].price.id;
+
   const plan = await prisma.plan.findFirst({
-    where: { stripePriceId: subscription.items.data[0].price.id }
+    where: {
+      OR: [
+        { stripePriceId: priceId },
+        { stripePriceIdMonthly: priceId }
+      ]
+    }
   });
 
-  if (!plan) return;
+  if (!plan) {
+    console.error('Plan not found for priceId:', priceId);
+    return;
+  }
 
   await prisma.subscription.upsert({
     where: { userId },
     update: {
+      planId: plan.id,
       status: 'ACTIVE',
-      stripeSubscriptionId: subscription.id,
-      currentPeriodStart: new Date(subscription.current_period_start * 1000),
-      currentPeriodEnd: new Date(subscription.current_period_end * 1000)
+      stripeCustomerId: fullSub.customer,
+      stripeSubscriptionId: fullSub.id,
+      currentPeriodStart: new Date(fullSub.current_period_start * 1000),
+      currentPeriodEnd: new Date(fullSub.current_period_end * 1000)
     },
     create: {
       userId,
       planId: plan.id,
       status: 'ACTIVE',
-      stripeCustomerId: subscription.customer,
-      stripeSubscriptionId: subscription.id,
-      currentPeriodStart: new Date(subscription.current_period_start * 1000),
-      currentPeriodEnd: new Date(subscription.current_period_end * 1000)
+      stripeCustomerId: fullSub.customer,
+      stripeSubscriptionId: fullSub.id,
+      currentPeriodStart: new Date(fullSub.current_period_start * 1000),
+      currentPeriodEnd: new Date(fullSub.current_period_end * 1000)
     }
   });
+
+  console.log(`✅ Subscription created for user ${userId}`);
 }
 
 async function handleSubscriptionUpdated(subscription) {
-  const dbSubscription = await prisma.subscription.findUnique({
+  const dbSubscription = await prisma.subscription.findFirst({  // ✅ findFirst
     where: { stripeSubscriptionId: subscription.id }
   });
 
@@ -301,14 +348,14 @@ async function handleSubscriptionUpdated(subscription) {
 }
 
 async function handleSubscriptionDeleted(subscription) {
-  const dbSubscription = await prisma.subscription.findUnique({
+  const dbSubscription = await prisma.subscription.findFirst({  // ✅ findFirst
     where: { stripeSubscriptionId: subscription.id }
   });
 
   if (!dbSubscription) return;
 
   // Move to FREE plan
-  const freePlan = await prisma.plan.findUnique({
+  const freePlan = await prisma.plan.findFirst({  // ✅ findFirst (name is unique but safer)
     where: { name: 'FREE' }
   });
 
@@ -325,7 +372,7 @@ async function handleSubscriptionDeleted(subscription) {
 }
 
 async function handlePaymentSucceeded(invoice) {
-  const subscription = await prisma.subscription.findUnique({
+  const subscription = await prisma.subscription.findFirst({  // ✅ findFirst
     where: { stripeSubscriptionId: invoice.subscription }
   });
 
@@ -346,7 +393,7 @@ async function handlePaymentSucceeded(invoice) {
 }
 
 async function handlePaymentFailed(invoice) {
-  const subscription = await prisma.subscription.findUnique({
+  const subscription = await prisma.subscription.findFirst({  // ✅ findFirst
     where: { stripeSubscriptionId: invoice.subscription }
   });
 
