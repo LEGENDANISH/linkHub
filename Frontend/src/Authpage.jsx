@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { rehydrateLinksForUser } from './pages/mainsections/middle/links/Selectionmanager';     // 👈 update path
+import { rehydrateDesignForUser } from './pages/mainsections/middle/Design/DesignSelectionManager'; // 👈 update path
 
 // Configuration - UPDATE THIS WITH YOUR BACKEND URL
 const API_BASE_URL = 'http://localhost:5000/api';
@@ -36,28 +38,34 @@ export default function AuthPage() {
     } else if (token && refresh) {
       localStorage.setItem('accessToken', token);
       localStorage.setItem('refreshToken', refresh);
-    const user = JSON.parse(localStorage.getItem('user'));
+      const user = JSON.parse(localStorage.getItem('user'));
 
-localStorage.setItem(
-  'onboarding_data',
-  JSON.stringify({
-    username: user?.username || '',
-    authToken: token
-  })
-);
+      localStorage.setItem(
+        'onboarding_data',
+        JSON.stringify({
+          username: user?.username || '',
+          authToken: token
+        })
+      );
 
-localStorage.setItem(
-  'onboarding_step',
-  user?.username ? '1' : '0'
-);
+      localStorage.setItem(
+        'onboarding_step',
+        user?.username ? '1' : '0'
+      );
 
-localStorage.setItem('onboarding_step', '1');
+      localStorage.setItem('onboarding_step', '1');
+
+      // ✅ Rehydrate stores for OAuth user
+      if (user?.id) {
+        rehydrateLinksForUser(user.id);
+        rehydrateDesignForUser(user.id);
+      }
 
       setSuccess('Login successful! Redirecting...');
       
       window.history.replaceState({}, document.title, window.location.pathname);
       setTimeout(() => {
-window.location.href = '/onboard';
+        window.location.href = '/onboard';
       }, 1500);
     }
 
@@ -91,26 +99,30 @@ window.location.href = '/onboard';
 
       if (response.ok && data.success) {
         localStorage.setItem('accessToken', data.data.accessToken);
-localStorage.setItem('refreshToken', data.data.refreshToken);
-localStorage.setItem('user', JSON.stringify(data.data.user));
+        localStorage.setItem('refreshToken', data.data.refreshToken);
+        localStorage.setItem('user', JSON.stringify(data.data.user));
 
-// 👇 IMPORTANT
-localStorage.setItem(
-  'onboarding_data',
-  JSON.stringify({
-    username: data.data.user.username,
-    authToken: data.data.accessToken
-  })
-);
+        // 👇 IMPORTANT
+        localStorage.setItem(
+          'onboarding_data',
+          JSON.stringify({
+            username: data.data.user.username,
+            authToken: data.data.accessToken
+          })
+        );
 
-// skip username step → go to Q1
-localStorage.setItem('onboarding_step', '1');
+        // skip username step → go to Q1
+        localStorage.setItem('onboarding_step', '1');
 
-setSuccess('Login successful! Redirecting...');
+        // ✅ Rehydrate stores — mounts saved data if userId matches, resets if different user
+        rehydrateLinksForUser(data.data.user.id);
+        rehydrateDesignForUser(data.data.user.id);
 
-setTimeout(() => {
-  window.location.href = '/edit';
-}, 1500);
+        setSuccess('Login successful! Redirecting...');
+
+        setTimeout(() => {
+          window.location.href = '/edit';
+        }, 1500);
 
       } else {
         setError(data.message || 'Login failed. Please try again.');
@@ -152,24 +164,28 @@ setTimeout(() => {
       const data = await response.json();
 
       if (response.ok && data.success) {
-   localStorage.setItem('accessToken', data.data.accessToken);
-localStorage.setItem('refreshToken', data.data.refreshToken);
-localStorage.setItem('user', JSON.stringify(data.data.user));
+        localStorage.setItem('accessToken', data.data.accessToken);
+        localStorage.setItem('refreshToken', data.data.refreshToken);
+        localStorage.setItem('user', JSON.stringify(data.data.user));
 
-localStorage.setItem(
-  'onboarding_data',
-  JSON.stringify({
-    username: data.data.user.username,
-    authToken: data.data.accessToken
-  })
-);
+        localStorage.setItem(
+          'onboarding_data',
+          JSON.stringify({
+            username: data.data.user.username,
+            authToken: data.data.accessToken
+          })
+        );
 
-// new signup → go directly to Q1
-localStorage.setItem('onboarding_step', '1');
+        // new signup → go directly to Q1
+        localStorage.setItem('onboarding_step', '1');
 
-setTimeout(() => {
-  window.location.href = '/onboard';
-}, 1500);
+        // ✅ Rehydrate stores — new user gets fresh defaults automatically
+        rehydrateLinksForUser(data.data.user.id);
+        rehydrateDesignForUser(data.data.user.id);
+
+        setTimeout(() => {
+          window.location.href = '/onboard';
+        }, 1500);
 
       } else {
         setError(data.message || 'Registration failed. Please try again.');
@@ -182,9 +198,9 @@ setTimeout(() => {
     }
   };
 
-const handleGoogleAuth = () => {
-  window.location.href = `${API_BASE_URL}/auth/google`;
-};
+  const handleGoogleAuth = () => {
+    window.location.href = `${API_BASE_URL}/auth/google`;
+  };
 
   return (
     <div className="min-h-screen bg-zinc-950 flex items-center justify-center p-5 relative overflow-hidden">
@@ -455,47 +471,23 @@ const handleGoogleAuth = () => {
         }
 
         @keyframes slide-up {
-          from {
-            opacity: 0;
-            transform: translateY(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
+          from { opacity: 0; transform: translateY(30px); }
+          to { opacity: 1; transform: translateY(0); }
         }
 
         @keyframes fade-in {
-          from {
-            opacity: 0;
-            transform: translateY(10px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
         }
 
         @keyframes fade-in-delayed {
-          from {
-            opacity: 0;
-            transform: translateY(10px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
         }
 
         @keyframes fade-in-form {
-          from {
-            opacity: 0;
-            transform: translateY(10px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
         }
 
         @keyframes shake {
@@ -505,51 +497,19 @@ const handleGoogleAuth = () => {
         }
 
         @keyframes slide-down {
-          from {
-            opacity: 0;
-            transform: translateY(-10px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
+          from { opacity: 0; transform: translateY(-10px); }
+          to { opacity: 1; transform: translateY(0); }
         }
 
-        .animate-drift {
-          animation: drift 30s ease-in-out infinite;
-        }
-
-        .animate-drift-delayed {
-          animation: drift-delayed 25s ease-in-out infinite;
-        }
-
-        .animate-drift-slow {
-          animation: drift-slow 35s ease-in-out infinite;
-        }
-
-        .animate-slide-up {
-          animation: slide-up 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .animate-fade-in {
-          animation: fade-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
-        }
-
-        .animate-fade-in-delayed {
-          animation: fade-in-delayed 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
-        }
-
-        .animate-fade-in-form {
-          animation: fade-in-form 0.4s ease-out;
-        }
-
-        .animate-shake {
-          animation: shake 0.5s ease;
-        }
-
-        .animate-slide-down {
-          animation: slide-down 0.3s ease;
-        }
+        .animate-drift { animation: drift 30s ease-in-out infinite; }
+        .animate-drift-delayed { animation: drift-delayed 25s ease-in-out infinite; }
+        .animate-drift-slow { animation: drift-slow 35s ease-in-out infinite; }
+        .animate-slide-up { animation: slide-up 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+        .animate-fade-in { animation: fade-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both; }
+        .animate-fade-in-delayed { animation: fade-in-delayed 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both; }
+        .animate-fade-in-form { animation: fade-in-form 0.4s ease-out; }
+        .animate-shake { animation: shake 0.5s ease; }
+        .animate-slide-down { animation: slide-down 0.3s ease; }
       `}</style>
     </div>
   );

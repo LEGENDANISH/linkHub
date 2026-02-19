@@ -1,46 +1,52 @@
 import { useNavigate } from "react-router-dom";
 import { LogOut } from "lucide-react";
+import { useSelection } from "../mainsections/middle/links/Selectionmanager"; // 👈 update path
+import { useDesign } from "../mainsections/middle/Design/DesignSelectionManager"; // 👈 update path
 
 function LogoutMenuItem() {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-  try {
-    // SAVE DRAFT FIRST
-    const user = JSON.parse(localStorage.getItem("user"));
-    const userId = user?.id;
+    try {
+      // ✅ Step 1: Read userId BEFORE touching localStorage
+      const user = JSON.parse(localStorage.getItem("user") || "null");
+      const userId = user?.id;
 
-    const linksData = localStorage.getItem("Linkhub_links_data");
-    const designData = localStorage.getItem("linkhub_design");
+      if (userId) {
+        // ✅ Step 2: Manually flush current Zustand in-memory state to localStorage
+        // This guarantees the latest unsaved state is persisted before we remove 'user'.
+        // Zustand's persist middleware is async and may not have written yet.
+        const currentLinks = useSelection.getState().links;
+        const currentDesign = useDesign.getState().design;
 
-    if (userId && (linksData || designData)) {
-      localStorage.setItem(
-        `linkhub_draft_${userId}`,
-        JSON.stringify({
-          links: linksData,
-          design: designData,
-          savedAt: new Date().toISOString()
-        })
-      );
+        localStorage.setItem(
+          `Linkhub_links_data_${userId}`,
+          JSON.stringify({ state: { links: currentLinks }, version: 0 })
+        );
+
+        localStorage.setItem(
+          `linkhub_design_${userId}`,
+          JSON.stringify({ state: { design: currentDesign }, version: 0 })
+        );
+
+        console.log("💾 Flushed state to localStorage for user:", userId);
+      }
+
+      // ✅ Step 3: Remove ONLY auth — keyed data is now safely written above
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      localStorage.removeItem("user");
+
+      navigate("/login", { replace: true });
+    } catch (e) {
+      console.error("Logout error:", e);
+      // Still navigate even if flush fails
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      localStorage.removeItem("user");
+      navigate("/login", { replace: true });
     }
-
-    // REMOVE ONLY AUTH DATA
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    localStorage.removeItem("user");
-
-    // DO NOT clear whole storage
-    // ❌ localStorage.clear()
-    // ❌ sessionStorage.clear()
-
-    navigate("/login", { replace: true });
-
-    window.location.reload();
-  } catch (e) {
-    console.error(e);
-  }
-};
-
+  };
 
   return (
     <MenuItem

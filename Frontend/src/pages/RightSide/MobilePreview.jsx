@@ -20,6 +20,11 @@ import { LinksSection } from "./Linkssection";
 import { FooterSection } from "./Footersection";
 
 export default function MobilePreview() {
+
+    const user = JSON.parse(localStorage.getItem("user"));
+
+  // 🚨 DO NOT mount zustand stores before user exists
+  if (!user) return null;
   const { design } = useDesign();
   const { getActiveLinks } = useSelection();
 

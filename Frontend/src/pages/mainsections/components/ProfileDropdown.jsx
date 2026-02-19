@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import { User, ArrowLeftRight, Plus, UserCircle, Zap, HelpCircle, BookOpen, MessageSquare, LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-
+import { useSelection } from "../middle/links/Selectionmanager"; // update path
+import { useDesign } from "../middle/Design/DesignSelectionManager"; // update path
 export default function ProfileDropdown() {
   const [open, setOpen] = useState(false);
   const [profile, setProfile] = useState(null);
@@ -133,10 +134,30 @@ const navigate = useNavigate();
   icon={<LogOut className="w-5 h-5" />}
   text="Log out"
   onClick={() => {
-    localStorage.clear();
-    sessionStorage.clear();
-    navigate("/login", { replace: true });
-    window.location.reload();
+    const user = JSON.parse(localStorage.getItem("user") || "null");
+    const userId = user?.id;
+
+    // Flush current Zustand state before removing auth
+    if (userId) {
+      const currentLinks = useSelection.getState().links;
+      const currentDesign = useDesign.getState().design;
+
+      localStorage.setItem(
+        `Linkhub_links_data_${userId}`,
+        JSON.stringify({ state: { links: currentLinks }, version: 0 })
+      );
+      localStorage.setItem(
+        `linkhub_design_${userId}`,
+        JSON.stringify({ state: { design: currentDesign }, version: 0 })
+      );
+    }
+
+    // Remove ONLY auth — never clear()
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    localStorage.removeItem("user");
+
+    window.location.href = "/login";
   }}
 />
           </div>

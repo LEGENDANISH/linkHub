@@ -1,7 +1,11 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-const STORAGE_KEY = 'Linkhub_links_data';
+// ✅ KEY INSIGHT: Freeze the storage key at module load time.
+// It reads whatever user is in localStorage RIGHT NOW (at app boot / after login).
+// On logout we only remove auth keys — this key stays valid until next page load.
+const STORAGE_KEY =
+  `Linkhub_links_data_${JSON.parse(localStorage.getItem("user"))?.id || "guest"}`;
 
 // Ensure link has all required fields
 const normalizeLink = (link) => ({
@@ -20,44 +24,33 @@ const normalizeLink = (link) => ({
   updatedAt: new Date().toISOString()
 });
 
-/**
- * Zustand store for managing links with localStorage persistence
- */
 export const useSelection = create(
   persist(
     (set, get) => ({
       links: [],
       isLoaded: true,
 
-      // Sync external link updates
       syncLink: (link) => {
         const normalized = normalizeLink(link);
         set((state) => {
           const exists = state.links.find(l => l.id === link.id);
           if (exists) {
-            return {
-              links: state.links.map(l => l.id === link.id ? normalized : l)
-            };
+            return { links: state.links.map(l => l.id === link.id ? normalized : l) };
           } else {
-            return {
-              links: [...state.links, normalized]
-            };
+            return { links: [...state.links, normalized] };
           }
         });
       },
 
-      // Sync multiple links
       syncLinks: (linksArray) => {
         const normalized = linksArray.map(normalizeLink);
         set({ links: normalized });
       },
 
-      // Get single link
       getLink: (linkId) => {
         return get().links.find(link => link.id === linkId);
       },
 
-      // Update link
       updateLink: (linkId, updates) => {
         set((state) => ({
           links: state.links.map(link =>
@@ -68,14 +61,12 @@ export const useSelection = create(
         }));
       },
 
-      // Delete link
       deleteLink: (linkId) => {
         set((state) => ({
           links: state.links.filter(link => link.id !== linkId)
         }));
       },
 
-      // Toggle link active
       toggleLinkActive: (linkId) => {
         const link = get().links.find(l => l.id === linkId);
         if (link) {
@@ -83,22 +74,18 @@ export const useSelection = create(
         }
       },
 
-      // Update layout
       updateLayout: (linkId, layout) => {
         get().updateLink(linkId, { layout });
       },
 
-      // Update animation
       updateAnimation: (linkId, animation) => {
         get().updateLink(linkId, { animation });
       },
 
-      // Update thumbnail
       updateThumbnail: (linkId, thumbnail) => {
         get().updateLink(linkId, { thumbnail });
       },
 
-      // Toggle locked
       toggleLinkLocked: (linkId) => {
         const link = get().links.find(l => l.id === linkId);
         if (link) {
@@ -106,12 +93,10 @@ export const useSelection = create(
         }
       },
 
-      // Get active links
       getActiveLinks: () => {
         return get().links.filter(link => link.active);
       },
 
-      // Add new link
       addLink: (link) => {
         const normalized = normalizeLink({
           ...link,
@@ -127,3 +112,26 @@ export const useSelection = create(
     }
   )
 );
+
+// ✅ Call after localStorage.setItem('user', ...) on login
+// Reads saved links for that userId and mounts them into the store.
+// If userId doesn't match any saved data (new or different user) → resets to empty.
+export const rehydrateLinksForUser = (userId) => {
+  try {
+    const key = `Linkhub_links_data_${userId}`;
+    const raw = localStorage.getItem(key);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (parsed?.state?.links) {
+        useSelection.setState({ links: parsed.state.links });
+        console.log("✅ Links rehydrated for user:", userId);
+        return;
+      }
+    }
+    useSelection.setState({ links: [] });
+    console.log("ℹ️ No saved links for user:", userId, "— starting fresh");
+  } catch (e) {
+    console.error("Failed to rehydrate links:", e);
+    useSelection.setState({ links: [] });
+  }
+};

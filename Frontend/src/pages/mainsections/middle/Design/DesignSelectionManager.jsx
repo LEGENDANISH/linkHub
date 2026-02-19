@@ -11,8 +11,7 @@ const defaultDesignState = {
   titleSize: "small",
   titleFont: "Inter",
   titleColor: "#000000",
-    titleFontColor: "#000000", // Add this
-
+  titleFontColor: "#000000",
 
   // Theme
   theme: "custom",
@@ -31,8 +30,7 @@ const defaultDesignState = {
   backgroundVideo: null,
 
   // Text
-    pageTextFont: "Inter", // Add this
-
+  pageTextFont: "Inter",
   pageTextColor: "#ffffff",
 
   // Buttons
@@ -54,7 +52,6 @@ export const useDesign = create(
     (set, get) => ({
       design: defaultDesignState,
 
-      // Update single design property
       updateDesign: (key, value) => {
         console.log(`🔧 Zustand updateDesign called:`, key, '=', value);
         set((state) => ({
@@ -65,7 +62,6 @@ export const useDesign = create(
         }));
       },
 
-      // Batch update multiple design properties
       updateDesignBatch: (updates) => {
         console.log('🔧 Zustand updateDesignBatch called:', updates);
         set((state) => ({
@@ -76,20 +72,45 @@ export const useDesign = create(
         }));
       },
 
-      // Reset design to defaults
       resetDesign: () =>
         set({
           design: defaultDesignState,
         }),
 
-      // Get specific design value
       getDesignValue: (key) => {
         return get().design[key];
       },
     }),
     {
-      name: 'linkhub_design',
-      storage: createJSONStorage(() => localStorage), // ← THIS WAS MISSING!
+      name: `linkhub_design_${JSON.parse(localStorage.getItem("user"))?.id || "guest"}`,
+      storage: createJSONStorage(() => localStorage),
+
+      onRehydrateStorage: () => (state) => {
+        console.log("✅ Zustand design hydrated", state);
+      },
     }
   )
 );
+
+// ✅ Call after localStorage.setItem('user', ...) on login
+// Reads saved design for that userId and mounts it into the store.
+// If userId doesn't match any saved data (new or different user) → resets to defaults.
+export const rehydrateDesignForUser = (userId) => {
+  try {
+    const key = `linkhub_design_${userId}`;
+    const raw = localStorage.getItem(key);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (parsed?.state?.design) {
+        useDesign.setState({ design: parsed.state.design });
+        console.log("✅ Design rehydrated for user:", userId);
+        return;
+      }
+    }
+    useDesign.setState({ design: defaultDesignState });
+    console.log("ℹ️ No saved design for user:", userId, "— using defaults");
+  } catch (e) {
+    console.error("Failed to rehydrate design:", e);
+    useDesign.setState({ design: defaultDesignState });
+  }
+};
