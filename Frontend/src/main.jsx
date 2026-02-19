@@ -47,7 +47,7 @@ createRoot(document.getElementById("root")).render(
 
 
 
-<Route path="/cards" element={<Test/>}/>
+<Route path="/cards/:slug" element={<Test />} />
 
 
 

@@ -9,7 +9,7 @@ import WallpaperSection from "./middle/Design/sections/WallpaperSection/Wallpape
 import ColorsSection from "./middle/Design/sections/ColorsSection";
 import ButtonsSection from "./middle/Design/sections/Buttonsection/ButtonsSection";
 import TextSection from "./middle/Design/sections/TextSection/TextSection";
-import { X, User, ArrowLeftRight, Plus, UserCircle, Zap, HelpCircle, BookOpen, MessageSquare, LogOut } from "lucide-react";
+import { X, User, ArrowLeftRight, Plus, UserCircle, Zap, HelpCircle, BookOpen, MessageSquare, LogOut,ExternalLink  } from "lucide-react";
 import SettingsDropdown from "./components/SettingsDropdown";
 
 
@@ -20,6 +20,7 @@ import axios from "axios";
 // AFTER
 import { useDesign, rehydrateDesignForUser } from "./middle/Design/DesignSelectionManager";
 import { useSelection, rehydrateLinksForUser } from "./middle/links/Selectionmanager";
+import { useNavigate } from "react-router-dom";
 const DEFAULT_DESIGN = {
   wallpaperStyle: "SOLID",
   backgroundColor: "#ffffff",
@@ -57,7 +58,7 @@ const design = useDesign((state) => state.design);
 const updateDesign = useDesign((state) => state.updateDesign);
 const updateDesignBatch = useDesign((state) => state.updateDesignBatch);
 
-
+const navigate = useNavigate()
 // replace this entire block in base.jsx
 
 useEffect(() => {
@@ -94,6 +95,7 @@ useEffect(() => {
 
       if (profileData.success && profileData.data) {
         const { links, _count, user: u, ...designOnly } = profileData.data;
+        localStorage.setItem("profileSlug", profileData.data.slug);
 
        const normalizeDesign = (d) => ({
   ...d,
@@ -126,6 +128,13 @@ useEffect(() => {
   initBuilder();
 }, []);
 
+
+const handleOpenCard = () => {
+  const slug = localStorage.getItem("profileSlug");
+  if (!slug) return;
+
+  window.open(`/cards/${slug}`, "_blank");
+};
 
 
 console.log(design.profileLayout);
@@ -630,19 +639,38 @@ const handleSaveAll = async () => {
         {activeSection === "links" && <Middle />}
         {activeSection === "design" && <DesignMiddle />}
       </main>
+{!isMobile && (
+  <>
+    {/* TOP ACTION BAR */}
+    <div className="absolute top-4 right-4 z-30 flex items-center gap-3 bg-white/80 backdrop-blur-md border border-gray-200 shadow-lg rounded-2xl px-3 py-2">
 
-      {!isMobile && (
-  <div className="flex">
-    <button
-      onClick={handleSaveAll}
-      className="absolute top-4 right-4 z-30 bg-purple-600 text-white px-4 py-2 rounded-xl shadow-lg hover:bg-purple-700 transition font-medium"
-    >
-      Save
-    </button>
+      {/* Save (secondary) */}
+      <button
+        onClick={handleSaveAll}
+        className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-100 transition"
+      >
+        Save
+      </button>
+
+      {/* Divider */}
+      <div className="w-px h-6 bg-gray-200" />
+
+      {/* Open Card (primary CTA) */}
+      <button
+        onClick={handleOpenCard}
+        className="flex items-center gap-2 bg-black text-white px-4 py-2 rounded-xl shadow-md hover:bg-gray-900 transition font-semibold text-sm"
+      >
+        <ExternalLink className="w-4 h-4" />
+        Open
+      </button>
+    </div>
 
     <MobilePreview activeSection={activeSection} />
-  </div>
+  </>
 )}
+
+
+
     </div>
   );
 }
