@@ -3,9 +3,9 @@
 
 import React from "react";
 import { X, User } from "lucide-react";
-import Middle from "./middle/links/linksMiddle";
-import MobilePreview from "../RightSide/MobilePreview";
-import MobileProfileDropdown from "./components/MobileProfileDropdown";
+import Middle from "../middle/links/linksMiddle";
+import MobilePreview from "../../RightSide/MobilePreview";
+import MobileProfileDropdown from "../components/MobileProfileDropdown";
 import { NavItem, DesignNavButton, renderDesignPanelContent } from "./LinkhubDashboard.constants";
 
 export default function MobileDashboard({

@@ -2,12 +2,12 @@
 // Contains: DEFAULT_DESIGN, NavItem, DesignNavButton, renderDesignPanelContent
 
 import React from "react";
-import ThemeSection from "./middle/Design/sections/ThemeSection/ThemeSection";
-import HeaderSection from "./middle/Design/sections/Headersection/HeaderSection";
-import WallpaperSection from "./middle/Design/sections/WallpaperSection/WallpaperSection";
-import ColorsSection from "./middle/Design/sections/ColorsSection";
-import ButtonsSection from "./middle/Design/sections/Buttonsection/ButtonsSection";
-import TextSection from "./middle/Design/sections/TextSection/TextSection";
+import ThemeSection from "../middle/Design/sections/ThemeSection/ThemeSection";
+import HeaderSection from "../middle/Design/sections/Headersection/HeaderSection";
+import WallpaperSection from "../middle/Design/sections/WallpaperSection/WallpaperSection";
+import ColorsSection from "../middle/Design/sections/ColorsSection";
+import ButtonsSection from "../middle/Design/sections/Buttonsection/ButtonsSection";
+import TextSection from "../middle/Design/sections/TextSection/TextSection";
 
 // ── Default design state ──────────────────────────────────────────────────────
 export const DEFAULT_DESIGN = {
@@ -39,7 +39,7 @@ export const NavItem = ({ label, icon, active, onClick }) => (
   >
     <div
       className={`w-10 h-10 rounded-xl flex items-center justify-center ${
-        active ? "bg-purple-600" : "bg-gray-100"
+        active ? "bg-purpl  e-600" : "bg-gray-100"
       }`}
     >
       <svg

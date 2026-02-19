@@ -14,6 +14,7 @@ import axios from "axios";
 import { useDesign, rehydrateDesignForUser } from "../middle/Design/DesignSelectionManager";
 import { useSelection, rehydrateLinksForUser } from "../middle/links/Selectionmanager";
 import { useNavigate } from "react-router-dom";
+import MobileDashboard from "./Linkhubdashboard.mobile";
 
 export default function LinkhubDashboard() {
   const [showProfile, setShowProfile] = useState(false);
