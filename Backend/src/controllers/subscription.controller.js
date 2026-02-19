@@ -8,7 +8,7 @@ import prisma from '../config/database.js';
 export const getPlans = async (req, res) => {
   try {
     const plans = await prisma.plan.findMany({
-      where: { active: true }
+where: { isActive: true }
 ,
       orderBy: { price: 'asc' }
     });

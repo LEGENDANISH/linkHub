@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { FiUser, FiLock, FiZap, FiAlertTriangle } from "react-icons/fi";
+import { useNavigate } from "react-router-dom";
 
 const API_BASE = "http://localhost:5000/api";
 
@@ -292,7 +293,7 @@ function SubscriptionSection({ user, onToast }) {
   const [cancelLoading, setCancelLoading] = useState(false);
   const sub = user.subscription;
   const plan = sub?.plan;
-
+const navigate = useNavigate()
   useEffect(() => {
     apiFetch("/subscriptions/payment-history").then((r) => r.success && setHistory(r.data));
     apiFetch("/subscriptions/features").then((r) => r.success && setFeatures(r.data));
@@ -352,7 +353,11 @@ function SubscriptionSection({ user, onToast }) {
           </div>
         </div>
         <div className="px-6 py-4 flex flex-wrap gap-3 border-t border-gray-100">
-          <PrimaryButton className="flex-1 sm:flex-none">Upgrade Plan</PrimaryButton>
+          <PrimaryButton
+          onClick={()=>{
+            navigate("/pricing")
+          }}
+          className="flex-1 sm:flex-none">Upgrade Plan</PrimaryButton>
           {sub?.status === "ACTIVE" && !sub?.cancelAtPeriodEnd && (
             <GhostButton onClick={handleCancel} className="flex-1 sm:flex-none">
               {cancelLoading ? "Cancelling…" : "Cancel Plan"}

@@ -5,6 +5,7 @@ import { useSelection } from "../middle/links/Selectionmanager"; // update path
 import { useDesign } from "../middle/Design/DesignSelectionManager"; // update path
 export default function ProfileDropdown() {
   const [open, setOpen] = useState(false);
+  const [subscription, setSubscription] = useState(null);
   const [profile, setProfile] = useState(null);
   const ref = useRef();
 const navigate = useNavigate();
@@ -42,6 +43,42 @@ const navigate = useNavigate();
 
     fetchProfile();
   }, []);
+
+
+useEffect(() => {
+  const fetchData = async () => {
+    try {
+      const headers = {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`
+      };
+
+      const [profileRes, subRes] = await Promise.all([
+        fetch("http://localhost:5000/api/profile/me/profile", { headers }),
+        fetch("http://localhost:5000/api/subscriptions/my-subscription", { headers })
+      ]);
+
+      const profileData = await profileRes.json();
+      const subData = await subRes.json();
+
+      if (profileData.success) {
+        const capitalizedSlug =
+          profileData.data.slug?.charAt(0).toUpperCase() +
+          profileData.data.slug?.slice(1);
+        setProfile({ ...profileData.data, slug: capitalizedSlug });
+      }
+
+      if (subData.success) {
+        setSubscription(subData.data);
+      }
+    } catch (err) {
+      console.error("Failed to fetch data:", err);
+    }
+  };
+
+  fetchData();
+}, []);
+
 
   // close when clicking outside
   useEffect(() => {
@@ -115,9 +152,13 @@ const navigate = useNavigate();
               </div>
             </div>
 
-            <span className="text-sm font-medium bg-gray-100 text-gray-700 px-3 py-1.5 rounded-full">
-              Free
-            </span>
+            <span className={`text-sm font-medium px-3 py-1.5 rounded-full ${
+  subscription?.plan?.name === "PRO"
+    ? "bg-purple-100 text-purple-700"
+    : "bg-gray-100 text-gray-700"
+}`}>
+  {subscription?.plan?.displayName || "Free"}
+</span>
           </div>
 
           {/* menu items */}
