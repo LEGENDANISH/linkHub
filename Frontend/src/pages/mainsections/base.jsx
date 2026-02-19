@@ -90,20 +90,26 @@ useEffect(() => {
       if (profileData.success && profileData.data) {
         const { links, _count, user: u, ...designOnly } = profileData.data;
 
-        const normalizeDesign = (d) => ({
-          ...d,
-          profileLayout: d.profileLayout?.toLowerCase(),
-          wallpaperStyle: d.wallpaperStyle?.toLowerCase(),
-          titleType: d.titleType?.toLowerCase(),
-          profileSize: d.profileSize?.toLowerCase(),
-        });
+       const normalizeDesign = (d) => ({
+  ...d,
+
+  profileLayout: d.profileLayout?.toLowerCase(),
+  wallpaperStyle: d.wallpaperStyle?.toLowerCase(),
+  profileSize: d.profileSize?.toLowerCase(),
+  titleAlignment: d.titleAlignment?.toLowerCase(),
+
+  // ✅ KEEP ENUMS ORIGINAL
+  titleType: d.titleType,
+});
+
 
         updateDesignBatch(normalizeDesign(designOnly));
       }
 
-      const linksArray = Array.isArray(linksData.data)
-        ? linksData.data
-        : [];
+    const linksArray = Array.isArray(linksData.links)
+  ? linksData.links
+  : [];
+
 
       useSelection.getState().syncLinks(linksArray);
 
@@ -124,15 +130,18 @@ const handleSaveAll = async () => {
   console.log(design);
 
   try {
-    // ---- PROFILE (unchanged logic) ----
+    // ---- PROFILE SAVE (same logic) ----
     const profilePayload = {
       ...design,
+
       titleType: design.titleType
         ? design.titleType.toUpperCase()
         : design.titleType,
+
       profileSize: design.profileSize
         ? design.profileSize.toUpperCase()
         : design.profileSize,
+
       id: undefined,
       userId: undefined,
       createdAt: undefined,
@@ -148,29 +157,33 @@ const handleSaveAll = async () => {
       }
     );
 
-    // ---- LINKS (same loop logic, only payload formatted) ----
+    // ---- LINKS SAVE (same loop logic) ----
     const activeLinks = getActiveLinks() || [];
 
     for (const link of activeLinks) {
+
       const linkPayload = {
         ...link,
 
-        // validation expects title
+        // backend validation requires title
         title: link.name,
 
-        // ensure valid URL format
+        // ensure valid URL
         url: link.url?.startsWith("http")
           ? link.url
           : `https://${link.url}`,
 
-        // remove DB fields
+        // remove DB-only fields
         id: undefined,
         clicks: undefined,
         createdAt: undefined,
         updatedAt: undefined,
       };
 
-      if (link.id) {
+      // IMPORTANT:
+      // frontend-generated numeric ids should NOT trigger update
+      // only DB string ids should
+      if (link.id && typeof link.id === "string") {
         await axios.put(
           `http://localhost:5000/api/links/${link.id}`,
           linkPayload,
@@ -191,6 +204,7 @@ const handleSaveAll = async () => {
     alert("Save failed");
   }
 };
+
 
 
   // Detect mobile screen size

@@ -3,15 +3,17 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 
 // Default design state with all possible options
 const defaultDesignState = {
-  // Header
-  profileImage: null,
   profileLayout: "classic",
-titleText: "",
-  titleStyle: "text",
-  titleSize: "small",
+
+  // TITLE SYSTEM (backend aligned)
+  titleType: "text",
+  titleText: "",
+  titleAlignment: "center",
+  titleFontSize: "24px",
+  titleFontWeight: "bold",
   titleFont: "Inter",
   titleColor: "#000000",
-  titleFontColor: "#000000",
+
 
   // Theme
   theme: "custom",

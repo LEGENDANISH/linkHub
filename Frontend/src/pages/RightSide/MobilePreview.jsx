@@ -28,7 +28,7 @@ export default function MobilePreview() {
 const design = useDesign((state) => state.design);
 // const getActiveLinks = useSelection((state) => state.getActiveLinks);
 const links = useSelection((state) => state.links);
-const activeLinks = links.filter((l) => l.active);
+const activeLinks = links.filter((l) => l.active !== false);
 
   // Active links from Zustand
   // const activeLinks = getActiveLinks() || [];

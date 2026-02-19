@@ -61,7 +61,7 @@ export function HeroProfile({ design }) {
  * Text Title Component
  */
 export function TextTitle({ design, titleStyle }) {
-  if (design.titleStyle !== "text" || !design.title) return null;
+  if (design.titleStyle !== "text" || !design.titleText   ) return null;
 
   return (
     <h1
@@ -72,7 +72,7 @@ export function TextTitle({ design, titleStyle }) {
         color: design.titleFontColor || '#000000',
       }}
     >
-      {design.title}
+      {design.titleText}
     </h1>
   );
 }
@@ -81,7 +81,7 @@ export function TextTitle({ design, titleStyle }) {
  * Logo Title Component (with logo image + text)
  */
 export function LogoTitle({ design, titleStyle }) {
-  if (!design.title || design.titleStyle !== "logo" || !design.profileImage) {
+  if (!design.titleText || design.titleStyle !== "logo" || !design.profileImage) {
     return null;
   }
 
@@ -100,7 +100,7 @@ export function LogoTitle({ design, titleStyle }) {
           color: design.titleFontColor || '#000000',
         }}
       >
-        {design.title}
+      {design.titleText}
       </p>
     </div>
   );

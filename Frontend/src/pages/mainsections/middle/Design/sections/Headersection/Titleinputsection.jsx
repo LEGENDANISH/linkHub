@@ -8,8 +8,9 @@ const TitleInputSection = ({ state, updateDesign }) => {
       <input
         className="w-full border border-gray-300 bg-white text-black rounded-xl p-3 sm:p-4 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-black"
         placeholder="Enter your name"
-        value={state.title || ""}
-        onChange={(e) => updateDesign("title", e.target.value)}
+       value={state.titleText || ""}
+onChange={(e) => updateDesign("titleText", e.target.value)}
+
       />
     </section>
   );

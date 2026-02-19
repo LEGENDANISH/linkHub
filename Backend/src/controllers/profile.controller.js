@@ -129,10 +129,19 @@ export const getMyProfile = async (req, res) => {
       });
     }
 
-    res.json({
-      success: true,
-      data: profile
-    });
+    const formattedProfile = {
+  ...profile,
+  links: profile.links?.map(link => ({
+    ...link,
+    id: Number(link.id)
+  }))
+};
+
+res.json({
+  success: true,
+  data: formattedProfile
+});
+
   } catch (error) {
     res.status(500).json({
       success: false,

@@ -136,7 +136,7 @@ export const checkLinkLimit = async (req, res, next) => {
       where: { userId: req.user.id },
       include: {
         links: {
-          where: { isActive: true }
+where: { active: true }
         }
       }
     });
@@ -153,17 +153,19 @@ export const checkLinkLimit = async (req, res, next) => {
       maxLinks = subscription.plan.maxLinks;
     }
 
-    const currentLinkCount = profile?.links?.length || 0;
 
-    if (currentLinkCount >= maxLinks) {
-      return res.status(403).json({
-        success: false,
-        message: `Link limit reached. You can have maximum ${maxLinks} links in your current plan.`,
-        currentCount: currentLinkCount,
-        maxLinks,
-        code: 'LINK_LIMIT_REACHED'
-      });
-    }
+   const currentLinkCount = profile?.links?.length || 0;
+
+if (maxLinks !== -1 && currentLinkCount >= maxLinks) {
+  return res.status(403).json({
+    success: false,
+    message: `Link limit reached. You can have maximum ${maxLinks} links in your current plan.`,
+    currentCount: currentLinkCount,
+    maxLinks,
+    code: 'LINK_LIMIT_REACHED'
+  });
+}
+
 
     req.linkLimit = {
       current: currentLinkCount,

@@ -21,9 +21,10 @@ const Middle = () => {
           setProfileImage(design.profileImage);
         }
 
-        if (design?.title) {
-          setTitle(design.title);
-        }
+        if (design?.titleText) {
+  setTitle(design.titleText);
+}
+
       }
     } catch (err) {
       console.error("Error reading design from localStorage:", err);
