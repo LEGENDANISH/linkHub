@@ -37,8 +37,10 @@ useEffect(() => {
 }, []);
 
   console.log("hi",title)
-
+const MAX_LINKS = 5;
+const isAtLimit = Array.isArray(links) && links.length >= MAX_LINKS;
   const handleAddLink = (linkName) => {
+    if (links.length >= MAX_LINKS) return; // ← guard
     const newLink = {
       id: Date.now(),
       name: linkName,

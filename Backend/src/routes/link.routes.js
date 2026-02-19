@@ -8,7 +8,8 @@ import {
   deleteLink,
   reorderLinks,
   trackClick,
-  getLinkAnalytics
+  getLinkAnalytics,
+  deleteAllLinks
 } from '../controllers/link.controller.js';
 import { authenticate, optionalAuth } from '../middleware/auth.middleware.js';
 import { checkLinkLimit, requireFeature } from '../middleware/subscription.middleware.js';
@@ -116,6 +117,26 @@ router.put(
   updateLink
 );
 
+// ✅ Add this BEFORE the existing /:id delete route
+router.delete("/all", authenticate, deleteAllLinks);
+
+/**
+ * @route   DELETE /api/links/:id
+ * @desc    Delete link
+ * @access  Private
+ */
+router.delete(
+  '/:id',
+  authenticate,
+  [
+    param('id').notEmpty().withMessage('Link ID is required')
+  ],
+  validate,
+  deleteLink
+);
+
+
+
 /**
  * @route   DELETE /api/links/:id
  * @desc    Delete link
@@ -183,5 +204,8 @@ router.get(
   validate,
   getLinkAnalytics
 );
+
+
+
 
 export default router;

@@ -21,6 +21,51 @@ const formatLink = (link) => ({
   thumbnailCrop: link.thumbnailCrop
 });
 
+
+
+
+
+
+
+
+
+/**
+ * @route   DELETE /api/links/all
+ * @desc    Delete ALL links for the current user before bulk re-save
+ * @access  Private
+ */
+export const deleteAllLinks = async (req, res) => {
+  try {
+    const profile = await prisma.profile.findUnique({
+      where: { userId: req.user.id },
+      select: { id: true },
+    });
+
+    if (!profile) {
+      return res.status(404).json({
+        success: false,
+        message: "Profile not found",
+      });
+    }
+
+    await prisma.link.deleteMany({
+      where: { profileId: profile.id },
+    });
+
+    res.json({ success: true, message: "All links deleted" });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Error deleting all links",
+      error: error.message,
+    });
+  }
+};
+
+
+
+
+
 /**
  * @route   GET /api/links
  * @desc    Get all links for current user

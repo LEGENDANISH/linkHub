@@ -125,6 +125,7 @@ useEffect(() => {
 
 console.log(design.profileLayout);
 
+const MAX_LINKS = 5;
 
 const handleSaveAll = async () => {
   console.log(design);
@@ -158,44 +159,29 @@ const handleSaveAll = async () => {
     );
 
     // ---- LINKS SAVE (same loop logic) ----
-    const activeLinks = getActiveLinks() || [];
 
+    const activeLinks = (getActiveLinks() || []).slice(0, MAX_LINKS); // cap at 5
+
+    // Step 1: wipe all existing links for this user
+    await axios.delete("http://localhost:5000/api/links/all", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    // Step 2: re-create all links fresh (always POST)
     for (const link of activeLinks) {
-
       const linkPayload = {
         ...link,
-
-        // backend validation requires title
         title: link.name,
-
-        // ensure valid URL
-        url: link.url?.startsWith("http")
-          ? link.url
-          : `https://${link.url}`,
-
-        // remove DB-only fields
+        url: link.url?.startsWith("http") ? link.url : `https://${link.url}`,
         id: undefined,
         clicks: undefined,
         createdAt: undefined,
         updatedAt: undefined,
       };
 
-      // IMPORTANT:
-      // frontend-generated numeric ids should NOT trigger update
-      // only DB string ids should
-      if (link.id && typeof link.id === "string") {
-        await axios.put(
-          `http://localhost:5000/api/links/${link.id}`,
-          linkPayload,
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-      } else {
-        await axios.post(
-          "http://localhost:5000/api/links",
-          linkPayload,
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-      }
+      await axios.post("http://localhost:5000/api/links", linkPayload, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
     }
 
     alert("Saved successfully");
