@@ -276,9 +276,8 @@ function LinkCard({ link, profile, index }) {
 // ─── Avatar ───────────────────────────────────────────────────────────────────
 function Avatar({ profile }) {
   const size = profile.profileSize === "SMALL" ? "80px" : profile.profileSize === "LARGE" ? "120px" : "96px";
-  const radius = profile.profileShape === "square" ? "16px"
-    : profile.profileShape === "hexagon" ? "20px" : "50%";
-
+ const radius = profile.profileShape === "circle" ? "50%"
+  : profile.profileShape === "hexagon" ? "20px" : "16px";
   return (
     <div
       style={{
