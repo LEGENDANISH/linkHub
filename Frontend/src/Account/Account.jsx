@@ -198,7 +198,7 @@ function ProfileSection({ user, onToast }) {
 
       <Card className="p-6">
         <div className="flex items-center gap-5 mb-6 pb-6 border-b border-gray-50">
-          <Avatar src={user.profile?.profileImage || user.image} name={user.name} />
+<Avatar src={ user.image||user.profile?.profileImage} name={user.name} />
           <div>
             <p className="font-bold text-gray-900 text-lg">{user.name}</p>
             <p className="text-sm text-gray-400">{user.email}</p>
@@ -309,9 +309,9 @@ const navigate = useNavigate()
   };
 
   const formatDate = (d) => d ? new Date(d).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }) : "—";
-  const formatCurrency = (amt, cur = "INR") =>
-    new Intl.NumberFormat("en-IN", { style: "currency", currency: cur, maximumFractionDigits: 0 }).format(amt / 100);
-
+  
+const formatCurrency = (amt, cur = "INR") =>
+  new Intl.NumberFormat("en-IN", { style: "currency", currency: cur, maximumFractionDigits: 0 }).format(amt);
   const daysLeft = sub?.currentPeriodEnd
     ? Math.max(0, Math.ceil((new Date(sub.currentPeriodEnd) - Date.now()) / 86400000))
     : 0;
@@ -483,6 +483,10 @@ const SECTIONS = [
 ];
 
 export default function AccountPage() {
+
+  const localUser = JSON.parse(localStorage.getItem("user") || "{}");
+  const profileImage =  localUser.image || localUser.profile?.profileImage  || null;
+
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -554,7 +558,9 @@ export default function AccountPage() {
           </button>
 
           <div className="flex items-center gap-3">
-            <Avatar src={user.profile?.profileImage || user.image} name={user.name} size="sm" />
+            <Avatar 
+            src={profileImage} 
+            name={user.name} size="sm" />
             <div className="hidden sm:block">
               <p className="text-sm font-semibold text-gray-800 leading-tight">{user.name}</p>
               <p className="text-xs text-gray-400">{user.email}</p>
