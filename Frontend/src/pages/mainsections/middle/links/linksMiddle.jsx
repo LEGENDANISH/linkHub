@@ -108,15 +108,15 @@ const Middle = () => {
         )}
 
         {/* Links List */}
-        <div className="space-y-3 sm:space-y-4 pb-4 sm:pb-6">
-          {links.map((link) => (
-            <LinkCard 
-              key={link.id} 
-              link={link}
-              onDelete={deleteLinkHandler}
-            />
-          ))}
-        </div>
+      <div className="space-y-3 sm:space-y-4 pb-4 sm:pb-6">
+  {Array.isArray(links) && links.map((link) => (
+    <LinkCard 
+      key={link.id} 
+      link={link}
+      onDelete={deleteLinkHandler}
+    />
+  ))}
+</div>
 
         {/* Empty State */}
         {links.length === 0 && (

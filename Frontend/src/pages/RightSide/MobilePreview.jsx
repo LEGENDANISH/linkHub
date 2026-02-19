@@ -25,11 +25,13 @@ export default function MobilePreview() {
 
   // 🚨 DO NOT mount zustand stores before user exists
   if (!user) return null;
-  const { design } = useDesign();
-  const { getActiveLinks } = useSelection();
+const design = useDesign((state) => state.design);
+// const getActiveLinks = useSelection((state) => state.getActiveLinks);
+const links = useSelection((state) => state.links);
+const activeLinks = links.filter((l) => l.active);
 
   // Active links from Zustand
-  const activeLinks = getActiveLinks() || [];
+  // const activeLinks = getActiveLinks() || [];
 
   // Custom hooks
   useDesignDebug(design);

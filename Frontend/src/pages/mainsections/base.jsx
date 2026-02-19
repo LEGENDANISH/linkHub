@@ -9,15 +9,33 @@ import WallpaperSection from "./middle/Design/sections/WallpaperSection/Wallpape
 import ColorsSection from "./middle/Design/sections/ColorsSection";
 import ButtonsSection from "./middle/Design/sections/Buttonsection/ButtonsSection";
 import TextSection from "./middle/Design/sections/TextSection/TextSection";
-import { useDesign } from "./middle/Design/DesignSelectionManager";
 import { X, User, ArrowLeftRight, Plus, UserCircle, Zap, HelpCircle, BookOpen, MessageSquare, LogOut } from "lucide-react";
 import SettingsDropdown from "./components/SettingsDropdown";
 
 import axios from "axios";
-import { useSelection } from "./middle/links/Selectionmanager";
-
-
+// AFTER
+import { useDesign, rehydrateDesignForUser } from "./middle/Design/DesignSelectionManager";
+import { useSelection, rehydrateLinksForUser } from "./middle/links/Selectionmanager";
+const DEFAULT_DESIGN = {
+  wallpaperStyle: "SOLID",
+  backgroundColor: "#ffffff",
+  profileLayout: "CLASSIC",
+  profileSize: "MEDIUM",
+  profileShape: "circle",
+  titleType: "TEXT",
+  titleText: null,
+  titleColor: "#000000",
+  titleFontSize: "24px",
+  titleFontWeight: "bold",
+  titleAlignment: "center",
+  blurEffect: false,
+  blurIntensity: 10,
+  noiseEffect: false,
+  footerVisible: true,
+  footerText: "",
+};
 export default function LinkhubDashboard() {
+  
   const [open, setOpen] = useState(true);
   const [activeSection, setActiveSection] = useState("links");
   const [isMobile, setIsMobile] = useState(false);
@@ -27,36 +45,141 @@ export default function LinkhubDashboard() {
   const [showSettings, setShowSettings] = useState(false);
 
 
-  const { getActiveLinks } = useSelection();
+const getActiveLinks = useSelection((state) => state.getActiveLinks);
 const token = localStorage.getItem("accessToken");
   // Use Zustand store instead of local state
-  const { design, updateDesign, updateDesignBatch } = useDesign();
+const design = useDesign((state) => state.design);
+const updateDesign = useDesign((state) => state.updateDesign);
+const updateDesignBatch = useDesign((state) => state.updateDesignBatch);
+
+
+// replace this entire block in base.jsx
+
+useEffect(() => {
+  const initBuilder = async () => {
+    try {
+      const user = JSON.parse(localStorage.getItem("user"));
+      if (!user) return;
+
+      const userId = user.id;
+      const accessToken = localStorage.getItem("accessToken");
+
+      // wait for zustand hydration
+      const currentLinks = useSelection.getState().links;
+
+      // if links already exist → skip backend
+      if (currentLinks && currentLinks.length > 0) {
+        console.log("Using local links");
+        return;
+      }
+
+      console.log("Fetching links from backend");
+
+      const [profileRes, linksRes] = await Promise.all([
+        fetch("http://localhost:5000/api/profile/me/profile", {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        }),
+        fetch("http://localhost:5000/api/links", {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        }),
+      ]);
+
+      const profileData = await profileRes.json();
+      const linksData = await linksRes.json();
+
+      if (profileData.success && profileData.data) {
+        const { links, _count, user: u, ...designOnly } = profileData.data;
+
+        const normalizeDesign = (d) => ({
+          ...d,
+          profileLayout: d.profileLayout?.toLowerCase(),
+          wallpaperStyle: d.wallpaperStyle?.toLowerCase(),
+          titleType: d.titleType?.toLowerCase(),
+          profileSize: d.profileSize?.toLowerCase(),
+        });
+
+        updateDesignBatch(normalizeDesign(designOnly));
+      }
+
+      const linksArray = Array.isArray(linksData.data)
+        ? linksData.data
+        : [];
+
+      useSelection.getState().syncLinks(linksArray);
+
+    } catch (err) {
+      console.error("initBuilder failed:", err);
+    }
+  };
+
+  initBuilder();
+}, []);
+
+
+
+console.log(design.profileLayout);
+
 
 const handleSaveAll = async () => {
+  console.log(design);
+
   try {
-    // save design
+    // ---- PROFILE (unchanged logic) ----
+    const profilePayload = {
+      ...design,
+      titleType: design.titleType
+        ? design.titleType.toUpperCase()
+        : design.titleType,
+      profileSize: design.profileSize
+        ? design.profileSize.toUpperCase()
+        : design.profileSize,
+      id: undefined,
+      userId: undefined,
+      createdAt: undefined,
+      updatedAt: undefined,
+      viewCount: undefined,
+    };
+
     await axios.put(
       "http://localhost:5000/api/profile/update",
-      design,
+      profilePayload,
       {
         headers: { Authorization: `Bearer ${token}` },
       }
     );
 
-    // save links
+    // ---- LINKS (same loop logic, only payload formatted) ----
     const activeLinks = getActiveLinks() || [];
 
     for (const link of activeLinks) {
+      const linkPayload = {
+        ...link,
+
+        // validation expects title
+        title: link.name,
+
+        // ensure valid URL format
+        url: link.url?.startsWith("http")
+          ? link.url
+          : `https://${link.url}`,
+
+        // remove DB fields
+        id: undefined,
+        clicks: undefined,
+        createdAt: undefined,
+        updatedAt: undefined,
+      };
+
       if (link.id) {
         await axios.put(
           `http://localhost:5000/api/links/${link.id}`,
-          link,
+          linkPayload,
           { headers: { Authorization: `Bearer ${token}` } }
         );
       } else {
         await axios.post(
           "http://localhost:5000/api/links",
-          link,
+          linkPayload,
           { headers: { Authorization: `Bearer ${token}` } }
         );
       }
@@ -68,6 +191,8 @@ const handleSaveAll = async () => {
     alert("Save failed");
   }
 };
+
+
   // Detect mobile screen size
   useEffect(() => {
     const mediaQuery = window.matchMedia("(max-width: 768px)");

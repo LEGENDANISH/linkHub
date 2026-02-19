@@ -155,11 +155,15 @@ export const updateProfile = async (req, res) => {
       bio,
       titleType,
       titleText,
+      title,        // frontend sends 'title', maps to titleText
       logoUrl,
       titleAlignment,
       titleFontSize,
       titleFontWeight,
       titleColor,
+      titleFont,
+      titleStyle,
+      titleSize,
       profileLayout,
       profileSize,
       profileShape,
@@ -168,6 +172,8 @@ export const updateProfile = async (req, res) => {
       gradientFrom,
       gradientTo,
       gradientAngle,
+      gradientColor,
+      gradientDirection,
       backgroundImage,
       backgroundVideo,
       backgroundPattern,
@@ -175,11 +181,22 @@ export const updateProfile = async (req, res) => {
       blurIntensity,
       noiseEffect,
       noiseOpacity,
+      noise,
       imageEffects,
+      imageEffect,
+      imageTint,
       footerText,
       footerVisible,
       metaTitle,
-      metaDescription
+      metaDescription,
+      buttonStyle,
+      cornerRoundness,
+      buttonColor,
+      buttonTextColor,
+      buttonShadow,
+      pageTextFont,
+      pageTextColor,
+      theme,
     } = req.body;
 
     // Check if slug is taken by another user
@@ -204,36 +221,72 @@ export const updateProfile = async (req, res) => {
     const profile = await prisma.profile.update({
       where: { userId: req.user.id },
       data: {
+        // Basic
         ...(slug && { slug }),
         ...(profileImage !== undefined && { profileImage }),
         ...(bio !== undefined && { bio }),
+
+        // Title
         ...(titleType && { titleType }),
         ...(titleText !== undefined && { titleText }),
+        ...(title !== undefined && { titleText: title }), // map frontend 'title' → 'titleText'
         ...(logoUrl !== undefined && { logoUrl }),
         ...(titleAlignment && { titleAlignment }),
         ...(titleFontSize && { titleFontSize }),
         ...(titleFontWeight && { titleFontWeight }),
         ...(titleColor && { titleColor }),
+        ...(titleFont !== undefined && { titleFont }),
+        ...(titleStyle !== undefined && { titleStyle }),
+        ...(titleSize !== undefined && { titleSize }),
+
+        // Profile Style
         ...(profileLayout && { profileLayout }),
         ...(profileSize && { profileSize }),
         ...(profileShape && { profileShape }),
+
+        // Background
         ...(wallpaperStyle && { wallpaperStyle }),
         ...(backgroundColor !== undefined && { backgroundColor }),
         ...(gradientFrom !== undefined && { gradientFrom }),
         ...(gradientTo !== undefined && { gradientTo }),
         ...(gradientAngle !== undefined && { gradientAngle }),
+        ...(gradientColor !== undefined && { gradientColor }),
+        ...(gradientDirection !== undefined && { gradientDirection }),
         ...(backgroundImage !== undefined && { backgroundImage }),
         ...(backgroundVideo !== undefined && { backgroundVideo }),
         ...(backgroundPattern !== undefined && { backgroundPattern }),
+
+        // Effects
         ...(blurEffect !== undefined && { blurEffect }),
         ...(blurIntensity !== undefined && { blurIntensity }),
         ...(noiseEffect !== undefined && { noiseEffect }),
         ...(noiseOpacity !== undefined && { noiseOpacity }),
+        ...(noise !== undefined && { noise }),
         ...(imageEffects !== undefined && { imageEffects }),
+        ...(imageEffect !== undefined && { imageEffect }),
+        ...(imageTint !== undefined && { imageTint }),
+
+        // Footer
         ...(footerText !== undefined && { footerText }),
         ...(footerVisible !== undefined && { footerVisible }),
+
+        // SEO
         ...(metaTitle !== undefined && { metaTitle }),
-        ...(metaDescription !== undefined && { metaDescription })
+        ...(metaDescription !== undefined && { metaDescription }),
+
+        // Buttons
+        ...(buttonStyle !== undefined && { buttonStyle }),
+        ...(cornerRoundness !== undefined && { cornerRoundness }),
+        ...(buttonColor !== undefined && { buttonColor }),
+        ...(buttonTextColor !== undefined && { buttonTextColor }),
+        ...(buttonShadow !== undefined && { buttonShadow }),
+
+        // Text
+        ...(pageTextFont !== undefined && { pageTextFont }),
+        ...(pageTextColor !== undefined && { pageTextColor }),
+
+        // Theme
+        ...(theme !== undefined && { theme }),
       }
     });
 
@@ -242,6 +295,7 @@ export const updateProfile = async (req, res) => {
       message: 'Profile updated successfully',
       data: profile
     });
+
   } catch (error) {
     res.status(500).json({
       success: false,

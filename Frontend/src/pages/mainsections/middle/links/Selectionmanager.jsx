@@ -30,45 +30,48 @@ export const useSelection = create(
       links: [],
       isLoaded: true,
 
-      syncLink: (link) => {
-        const normalized = normalizeLink(link);
-        set((state) => {
-          const exists = state.links.find(l => l.id === link.id);
-          if (exists) {
-            return { links: state.links.map(l => l.id === link.id ? normalized : l) };
-          } else {
-            return { links: [...state.links, normalized] };
-          }
-        });
-      },
+     syncLink: (link) => {
+  const normalized = normalizeLink(link);
+  set((state) => {
+    const currentLinks = Array.isArray(state.links) ? state.links : [];
+    const exists = currentLinks.find(l => l.id === link.id);
+    if (exists) {
+      return { links: currentLinks.map(l => l.id === link.id ? normalized : l) };
+    } else {
+      return { links: [...currentLinks, normalized] };
+    }
+  });
+},
 
       syncLinks: (linksArray) => {
         const normalized = linksArray.map(normalizeLink);
         set({ links: normalized });
       },
 
-      getLink: (linkId) => {
-        return get().links.find(link => link.id === linkId);
-      },
+     getLink: (linkId) => {
+  const links = get().links;
+  return Array.isArray(links) ? links.find(link => link.id === linkId) : undefined;
+},
 
-      updateLink: (linkId, updates) => {
-        set((state) => ({
-          links: state.links.map(link =>
-            link.id === linkId
-              ? { ...link, ...updates, updatedAt: new Date().toISOString() }
-              : link
-          )
-        }));
-      },
+  updateLink: (linkId, updates) => {
+  set((state) => ({
+    links: Array.isArray(state.links) ? state.links.map(link =>
+      link.id === linkId
+        ? { ...link, ...updates, updatedAt: new Date().toISOString() }
+        : link
+    ) : []
+  }));
+},
 
-      deleteLink: (linkId) => {
-        set((state) => ({
-          links: state.links.filter(link => link.id !== linkId)
-        }));
-      },
+deleteLink: (linkId) => {
+  set((state) => ({
+    links: Array.isArray(state.links) ? state.links.filter(link => link.id !== linkId) : []
+  }));
+},
 
       toggleLinkActive: (linkId) => {
-        const link = get().links.find(l => l.id === linkId);
+const links = get().links;
+const link = Array.isArray(links) && links.find(l => l.id === linkId);
         if (link) {
           get().updateLink(linkId, { active: !link.active });
         }
@@ -87,15 +90,17 @@ export const useSelection = create(
       },
 
       toggleLinkLocked: (linkId) => {
-        const link = get().links.find(l => l.id === linkId);
-        if (link) {
+const links = get().links;
+const link = Array.isArray(links) && links.find(l => l.id === linkId);        if (link) {
           get().updateLink(linkId, { locked: !link.locked });
         }
       },
 
-      getActiveLinks: () => {
-        return get().links.filter(link => link.active);
-      },
+   
+getActiveLinks: () => {
+  const links = get().links;
+  return Array.isArray(links) ? links.filter(link => link.active) : [];
+},
 
       addLink: (link) => {
         const normalized = normalizeLink({
@@ -134,4 +139,4 @@ export const rehydrateLinksForUser = (userId) => {
     console.error("Failed to rehydrate links:", e);
     useSelection.setState({ links: [] });
   }
-};
+};  

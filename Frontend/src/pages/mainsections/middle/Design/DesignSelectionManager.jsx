@@ -6,7 +6,7 @@ const defaultDesignState = {
   // Header
   profileImage: null,
   profileLayout: "classic",
-  title: "",
+titleText: "",
   titleStyle: "text",
   titleSize: "small",
   titleFont: "Inter",

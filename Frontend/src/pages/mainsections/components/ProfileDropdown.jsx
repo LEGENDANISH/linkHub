@@ -126,7 +126,11 @@ const navigate = useNavigate();
 
             <div className="my-3 border-t border-gray-200" />
 
-            <MenuItem icon={<UserCircle className="w-5 h-5" />} text="Account" />
+            <MenuItem 
+            onClick={()=>{
+              navigate('/account')
+            }}
+            icon={<UserCircle className="w-5 h-5" />} text="Account" />
             <MenuItem icon={<Zap className="w-5 h-5" />} text="Upgrade" />
 
             <div className="my-1 border-t border-gray-200" />

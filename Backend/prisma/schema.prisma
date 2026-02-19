@@ -230,6 +230,24 @@ model Profile {
   // Analytics
   viewCount         Int            @default(0)
   
+
+buttonStyle      String?   @default("fill")
+cornerRoundness  String?   @default("round")
+buttonColor      String?   @default("#E058D6")
+buttonTextColor  String?   @default("#000000")
+buttonShadow     String?   @default("none")
+pageTextFont     String?   @default("Inter")
+pageTextColor    String?   @default("#ffffff")
+
+gradientColor     String?
+gradientDirection String?  @default("linear-down")
+noise             Boolean? @default(false)
+imageEffect       String?  @default("none")
+imageTint         Int?     @default(0)
+titleFont         String?  @default("Inter")
+titleStyle        String?  @default("text")
+titleSize         String?  @default("small")
+theme             String?  @default("custom")
   // Relations
   user              User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   links             Link[]
