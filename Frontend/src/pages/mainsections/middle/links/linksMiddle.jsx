@@ -10,26 +10,33 @@ const Middle = () => {
 
   const { links, syncLink, deleteLink } = useSelection();
 
-  useEffect(() => {
-    try {
-      const stored = localStorage.getItem("linkhub_design");
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        const design = parsed?.state?.design;
+useEffect(() => {
+  try {
+    const user = JSON.parse(localStorage.getItem("user"));
 
-        if (design?.profileImage) {
-          setProfileImage(design.profileImage);
-        }
+    if (!user?.id) return;
 
-        if (design?.titleText) {
-  setTitle(design.titleText);
-}
+    const storageKey = `linkhub_design_${user.id}`;
+    const stored = localStorage.getItem(storageKey);
 
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      const design = parsed?.state?.design;
+
+      if (design?.profileImage) {
+        setProfileImage(design.profileImage);
       }
-    } catch (err) {
-      console.error("Error reading design from localStorage:", err);
+
+      if (design?.titleText) {
+        setTitle(design.titleText);
+      }
     }
-  }, []);
+  } catch (err) {
+    console.error("Error reading design from localStorage:", err);
+  }
+}, []);
+
+  console.log("hi",title)
 
   const handleAddLink = (linkName) => {
     const newLink = {
