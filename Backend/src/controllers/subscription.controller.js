@@ -439,22 +439,18 @@ export const resumeSubscription = async (req, res) => {
 export const getPaymentHistory = async (req, res) => {
   try {
     const subscription = await prisma.subscription.findUnique({
-      where: { userId: req.user.id }
+      where: { userId: req.user.id },
+      include: { payments: { orderBy: { createdAt: 'desc' } } } // ← fetch via relation
     });
 
     if (!subscription) {
-      return res.json({
-        success: true,
-        data: []
-      });
+      return res.json({ success: true, data: { payments: [] } });
     }
 
-    const payments = await prisma.payment.findMany({
-      where: { subscriptionId: subscription.id },
-      orderBy: { createdAt: 'desc' }
-    });
+    console.log("Current user subscription ID:", subscription.id);
+    console.log("Payments on this subscription:", subscription.payments);
 
-    res.json({ success: true, data: { payments } });
+    res.json({ success: true, data: { payments: subscription.payments } });
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -463,7 +459,6 @@ export const getPaymentHistory = async (req, res) => {
     });
   }
 };
-
 /**
  * @route   GET /api/subscriptions/features
  * @desc    Get available features based on subscription

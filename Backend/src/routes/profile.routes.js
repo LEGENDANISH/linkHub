@@ -18,6 +18,7 @@ const router = express.Router();
  * @desc    Get public profile by slug
  * @access  Public
  */
+
 router.get(
   '/:slug',
   [

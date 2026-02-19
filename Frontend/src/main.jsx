@@ -21,6 +21,7 @@ import AuthCallback from "./AuthCallback";
 import OnboardingFlow from "./pages/startingpages/Q";
 import AccountPage from "./Account/Account";
 import UpgradeModal from "./pages/component/UpgradeModal";
+import Test from "./Test";
 
 function HomePage() {
   return (
@@ -43,6 +44,12 @@ createRoot(document.getElementById("root")).render(
 
       <AuthWrapper>
         <Routes>
+
+
+
+<Route path="/cards" element={<Test/>}/>
+
+
 
           {/* Public homepage */}
           <Route path="/" element={<HomePage />} />

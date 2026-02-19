@@ -20,43 +20,37 @@ const SubscriptionManagement = () => {
   const [subscription, setSubscription] = useState(null);
   const [portalLoading, setPortalLoading] = useState(false);
 
-  const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+  const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
   useEffect(() => {
     fetchSubscriptionDetails();
   }, []);
 
-  const fetchSubscriptionDetails = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      
-      if (!token) {
-        navigate('/login');
-        return;
-      }
-
-      const response = await axios.get(`${API_BASE_URL}/subscription`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-
-      if (response.data.success) {
-        setSubscription(response.data.data);
-      }
-    } catch (error) {
-      console.error('Failed to fetch subscription:', error);
-      toast.error('Failed to load subscription details');
-    } finally {
-      setLoading(false);
+const fetchSubscriptionDetails = async () => {
+  const token = localStorage.getItem('accessToken');
+  console.log("Token:", token); // ← is it null?
+  console.log("URL:", `${API_BASE_URL}/subscriptions/my-subscription`); // ← what URL?
+  
+  try {
+    const response = await axios.get(`${API_BASE_URL}/subscriptions/my-subscription`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    console.log("Response:", response.data); // ← what comes back?
+    
+    if (response.data.success) {
+      setSubscription(response.data.data);
     }
-  };
-
+  } catch (error) {
+    console.error("Full error:", error.response?.data || error.message); // ← actual error
+  } finally {
+    setLoading(false);
+  }
+};
   const handleManageSubscription = async () => {
     setPortalLoading(true);
 
     try {
-      const token = localStorage.getItem('token');
+const token = localStorage.getItem('accessToken');
       
       const response = await axios.post(
         `${API_BASE_URL}/payments/create-portal-session`,

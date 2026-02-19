@@ -13,37 +13,23 @@ export const getPublicProfile = async (req, res) => {
       where: { slug },
       include: {
         links: {
-          where: { 
-active: true,            OR: [
-              { isScheduled: false },
-              {
-                AND: [
-                  { isScheduled: true },
-                  { scheduleStart: { lte: new Date() } },
-                  {
-                    OR: [
-                      { scheduleEnd: null },
-                      { scheduleEnd: { gte: new Date() } }
-                    ]
-                  }
-                ]
-              }
-            ]
+          where: {
+            active: true,
           },
-           orderBy: { createdAt: 'asc' },
+          orderBy: { createdAt: 'asc' },
           select: {
             id: true,
-            title: true,
+            name: true,
             url: true,
-            icon: true,
+            iconType: true,
             thumbnail: true,
-            linkType: true,
-            buttonStyle: true,
-            buttonColor: true,
-            textColor: true,
-            borderColor: true,
-            borderWidth: true,
-            order: true
+            layout: true,
+            animation: true,
+            schedule: true,
+            active: true,
+            clicks: true,
+            locked: true,
+            redirect: true,
           }
         },
         user: {
@@ -61,6 +47,27 @@ active: true,            OR: [
         message: 'Profile not found'
       });
     }
+
+    // Filter scheduled links in application code
+    const now = new Date();
+    const filteredLinks = profile.links.filter(link => {
+      if (!link.schedule) return true; // No schedule = always visible
+
+      const { start, end } = link.schedule;
+
+      if (!start && !end) return true; // No dates set = always visible
+
+      const afterStart = start ? new Date(start) <= now : true;
+      const beforeEnd = end ? new Date(end) >= now : true;
+
+      return afterStart && beforeEnd;
+    });
+
+    // Serialize BigInt ids to Number
+    const serializedLinks = filteredLinks.map(link => ({
+      ...link,
+      id: Number(link.id)
+    }));
 
     // Increment view count
     await prisma.profile.update({
@@ -81,8 +88,12 @@ active: true,            OR: [
 
     res.json({
       success: true,
-      data: profile
+      data: {
+        ...profile,
+        links: serializedLinks
+      }
     });
+
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -91,7 +102,6 @@ active: true,            OR: [
     });
   }
 };
-
 /**
  * @route   GET /api/profile/me
  * @desc    Get current user's profile

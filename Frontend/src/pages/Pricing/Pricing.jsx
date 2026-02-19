@@ -236,13 +236,11 @@ const Pricing = () => {
                       <Loader2 className="animate-spin mr-2" size={20} />
                       Processing...
                     </>
-                  ) : isFree ? (
-                    'Get started'
-                  ) : isPro ? (
-                    'Try free for 7 days'
-                  ) : (
-                    'Get started'
-                  )}
+              ) : isFree ? (
+  'Get started'
+) : (
+  'Get started'
+)}
                 </button>
 
                 {/* Features */}

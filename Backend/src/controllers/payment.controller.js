@@ -372,26 +372,44 @@ async function handleSubscriptionDeleted(subscription) {
 }
 
 async function handlePaymentSucceeded(invoice) {
-  const subscription = await prisma.subscription.findFirst({  // ✅ findFirst
+  console.log("💰 handlePaymentSucceeded fired, invoice:", invoice.id);
+  console.log("amount_paid:", invoice.amount_paid);
+  console.log("paid_at:", invoice.status_transitions?.paid_at);
+
+  let subscription = await prisma.subscription.findFirst({
     where: { stripeSubscriptionId: invoice.subscription }
   });
 
-  if (!subscription) return;
+  if (!subscription) {
+    subscription = await prisma.subscription.findFirst({
+      where: { stripeCustomerId: invoice.customer }
+    });
+  }
 
-  // Create payment record
+  if (!subscription) {
+    console.error("❌ No subscription found for invoice:", invoice.id);
+    return;
+  }
+
+  // ← FIX: handle null paid_at
+  const paidAt = invoice.status_transitions?.paid_at
+    ? new Date(invoice.status_transitions.paid_at * 1000)
+    : new Date(); // fallback to now
+
   await prisma.payment.create({
     data: {
       subscriptionId: subscription.id,
-amount: invoice.amount_paid,
+      amount: invoice.amount_paid / 100,
       currency: invoice.currency.toUpperCase(),
       status: 'SUCCEEDED',
-      stripePaymentId: invoice.payment_intent,
+      stripePaymentId: invoice.payment_intent || null,
       stripeInvoiceId: invoice.id,
-      paidAt: new Date(invoice.status_transitions.paid_at * 1000)
+      paidAt // ← uses safe value
     }
   });
-}
 
+  console.log("✅ Payment saved for subscription:", subscription.id);
+}
 async function handlePaymentFailed(invoice) {
   const subscription = await prisma.subscription.findFirst({  // ✅ findFirst
     where: { stripeSubscriptionId: invoice.subscription }

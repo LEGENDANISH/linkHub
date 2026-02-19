@@ -12,6 +12,10 @@ import TextSection from "./middle/Design/sections/TextSection/TextSection";
 import { X, User, ArrowLeftRight, Plus, UserCircle, Zap, HelpCircle, BookOpen, MessageSquare, LogOut } from "lucide-react";
 import SettingsDropdown from "./components/SettingsDropdown";
 
+
+
+import MobileProfileDropdown from "./components/MobileProfileDropdown";
+
 import axios from "axios";
 // AFTER
 import { useDesign, rehydrateDesignForUser } from "./middle/Design/DesignSelectionManager";
@@ -35,7 +39,8 @@ const DEFAULT_DESIGN = {
   footerText: "",
 };
 export default function LinkhubDashboard() {
-  
+  const [showProfile, setShowProfile] = useState(false);
+
   const [open, setOpen] = useState(true);
   const [activeSection, setActiveSection] = useState("links");
   const [isMobile, setIsMobile] = useState(false);
@@ -325,13 +330,13 @@ const handleSaveAll = async () => {
         {/* ---------- MOBILE HEADER ---------- */}
         <div className="bg-white/80 backdrop-blur-md border-b px-4 py-3 flex items-center justify-between shadow-sm z-20">
           <button
-            onClick={() => setActiveSection("links")}
-            className="p-2 rounded-xl hover:bg-gray-100 transition"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-          </button>
+  onClick={() => setShowProfile(true)}
+  className="p-1 rounded-xl hover:bg-gray-100 transition"
+>
+  <div className="w-9 h-9 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
+    <User className="w-5 h-5 text-gray-500" />
+  </div>
+</button>
 
           <h1 className="font-semibold text-gray-900 text-lg tracking-tight">
             {activeSection === "links" ? "Links" : "Design"}
@@ -509,7 +514,7 @@ const handleSaveAll = async () => {
                 </>
               }
             />
-
+{/* 
            <NavItem
   label="Enhance"
   active={false}
@@ -520,7 +525,7 @@ const handleSaveAll = async () => {
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
     </>
   }
-/>
+/> */}
           </div>
         </div>
 
@@ -544,7 +549,8 @@ const handleSaveAll = async () => {
 
         {/* ---------- SETTINGS DROPDOWN ---------- */}
        {/* ---------- SETTINGS DROPDOWN ---------- */}
-{showSettings && <SettingsDropdown onClose={() => setShowSettings(false)} />}
+  <MobileProfileDropdown open={showProfile} onClose={() => setShowProfile(false)} />
+
       </div>
     );
   }

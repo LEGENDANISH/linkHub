@@ -42,7 +42,6 @@ export const createCheckoutSession = async ({ customerId, priceId, userId, planN
         userId,
         planName
       },
-      trial_period_days: planName === 'PRO' ? 7 : undefined, // 7-day trial for PRO
     },
     metadata: {
       userId,

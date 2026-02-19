@@ -151,7 +151,7 @@ async function seed() {
         prioritySupport: true,
         linkhubShops: true,
         digitalProducts: true,
-        trialDays: 7,
+        trialDays: 0,
         isActive: true
       }
     ];
