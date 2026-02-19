@@ -453,10 +453,7 @@ export const getPaymentHistory = async (req, res) => {
       orderBy: { createdAt: 'desc' }
     });
 
-    res.json({
-      success: true,
-      data: payments
-    });
+    res.json({ success: true, data: { payments } });
   } catch (error) {
     res.status(500).json({
       success: false,

@@ -1,13 +1,34 @@
 import React, { useState, useEffect } from 'react';
 import AddLinkModal from "./AddLinkModal";
 import LinkCard from "./LinkCard";
-// import { useSelectionManager } from './SelectionManager';
 import { useSelection } from './SelectionManager';
 
 const Middle = () => {
   const [openModal, setOpenModal] = useState(false);
+  const [profileImage, setProfileImage] = useState(null);
+  const [title, setTitle] = useState("linkhub_design");
 
   const { links, syncLink, deleteLink } = useSelection();
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem("linkhub_design");
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        const design = parsed?.state?.design;
+
+        if (design?.profileImage) {
+          setProfileImage(design.profileImage);
+        }
+
+        if (design?.title) {
+          setTitle(design.title);
+        }
+      }
+    } catch (err) {
+      console.error("Error reading design from localStorage:", err);
+    }
+  }, []);
 
   const handleAddLink = (linkName) => {
     const newLink = {
@@ -27,19 +48,47 @@ const Middle = () => {
 
   return (
     <main className="flex-1 bg-gray-50 overflow-y-auto">
-      {/* Header - sticky on mobile for better UX */}
+      {/* Header */}
       <div className="sticky top-0 bg-gray-50 z-10 px-4 sm:px-6 pt-4 sm:pt-6 pb-4 border-b-2 border-gray-200">
         <h1 className="text-xl sm:text-2xl font-semibold">Links</h1>
       </div>
       
-      {/* Scrollable Content */}
+      {/* Content */}
       <div className="px-4 sm:px-6 md:px-8 lg:px-12 py-4 sm:py-6">
+        
         {/* Profile Section */}
         <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
-          <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-gradient-to-br from-purple-400 to-pink-500 flex-shrink-0" />
+          
+          {/* Profile Image */}
+          {profileImage ? (
+            <img
+              src={profileImage}
+              alt="Profile"
+              className="w-14 h-14 sm:w-16 sm:h-16 rounded-full object-cover flex-shrink-0"
+            />
+          ) : (
+            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-gray-200 flex items-center justify-center flex-shrink-0">
+              <svg
+                className="w-7 h-7 sm:w-8 sm:h-8 text-gray-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M5.121 17.804A9 9 0 1118.88 6.196M15 11a3 3 0 11-6 0 3 3 0 016 0zm-6 8h6"
+                />
+              </svg>
+            </div>
+          )}
+
+          {/* Title */}
           <div className="min-w-0 flex-1">
-            <p className="font-semibold text-base sm:text-lg">Anish</p>
-           
+            <p className="font-semibold text-base sm:text-lg">
+              {title || "linkhub_design"}
+            </p>
           </div>
         </div>
 
@@ -51,7 +100,12 @@ const Middle = () => {
           + Add
         </button>
 
-        {openModal && <AddLinkModal onClose={() => setOpenModal(false)} onAddLink={handleAddLink} />}
+        {openModal && (
+          <AddLinkModal
+            onClose={() => setOpenModal(false)}
+            onAddLink={handleAddLink}
+          />
+        )}
 
         {/* Links List */}
         <div className="space-y-3 sm:space-y-4 pb-4 sm:pb-6">

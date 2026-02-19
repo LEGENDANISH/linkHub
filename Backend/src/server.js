@@ -75,7 +75,7 @@ const limiter = rateLimit({
   legacyHeaders: false
 });
 
-app.use('/api', limiter);
+// app.use('/api', limiter);
 
 // ============================================
 // ROUTES

@@ -382,7 +382,7 @@ async function handlePaymentSucceeded(invoice) {
   await prisma.payment.create({
     data: {
       subscriptionId: subscription.id,
-      amount: invoice.amount_paid / 100, // Convert from paise to rupees
+amount: invoice.amount_paid,
       currency: invoice.currency.toUpperCase(),
       status: 'SUCCEEDED',
       stripePaymentId: invoice.payment_intent,

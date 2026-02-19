@@ -1,11 +1,12 @@
 import React, { useState, useRef, useEffect } from "react";
 import { User, ArrowLeftRight, Plus, UserCircle, Zap, HelpCircle, BookOpen, MessageSquare, LogOut } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export default function ProfileDropdown() {
   const [open, setOpen] = useState(false);
   const [profile, setProfile] = useState(null);
   const ref = useRef();
-
+const navigate = useNavigate();
   // fetch profile (slug, image etc.)
   useEffect(() => {
     const fetchProfile = async () => {
@@ -128,7 +129,16 @@ export default function ProfileDropdown() {
             <MenuItem icon={<Zap className="w-5 h-5" />} text="Upgrade" />
 
             <div className="my-1 border-t border-gray-200" />
-            <MenuItem icon={<LogOut className="w-5 h-5" />} text="Log out" />
+<MenuItem
+  icon={<LogOut className="w-5 h-5" />}
+  text="Log out"
+  onClick={() => {
+    localStorage.clear();
+    sessionStorage.clear();
+    navigate("/login", { replace: true });
+    window.location.reload();
+  }}
+/>
           </div>
         </div>
       )}
@@ -136,9 +146,12 @@ export default function ProfileDropdown() {
   );
 }
 
-function MenuItem({ icon, text }) {
+function MenuItem({ icon, text, onClick }) {
   return (
-    <div className="flex items-center gap-3 px-5 py-3 cursor-pointer hover:bg-gray-50 transition-colors">
+    <div
+      onClick={onClick}
+      className="flex items-center gap-3 px-5 py-3 cursor-pointer hover:bg-gray-50 transition-colors"
+    >
       <span className="text-gray-700">{icon}</span>
       <span className="text-[15px] font-medium text-gray-900">{text}</span>
     </div>
