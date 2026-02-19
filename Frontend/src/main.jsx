@@ -12,7 +12,7 @@ import Section3 from "./pages/homepage/Section3";
 import Section4 from "./pages/homepage/Section4";
 import Section5 from "./pages/homepage/Section5";
 import Pricing from "./pages/Pricing/Pricing";
-import LinkhubDashboard from "./pages/mainsections/base";
+import LinkhubDashboard from "./pages/mainsections/base/Linkhubdashboard";
 import SubscriptionSuccess from "./pages/Pricing/Subscriptionsuccess";
 import SubscriptionCancel from "./pages/Pricing/Subscriptioncancel";
 import SubscriptionManagement from "./pages/Pricing/Subscriptionmanagement";
