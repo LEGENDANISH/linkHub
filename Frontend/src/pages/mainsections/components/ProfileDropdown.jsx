@@ -163,7 +163,7 @@ useEffect(() => {
 
           {/* menu items */}
           <div className="py-1">
-            <MenuItem icon={<ArrowLeftRight className="w-5 h-5" />} text="Switch Linkhubs" />
+              {/* <MenuItem icon={<ArrowLeftRight className="w-5 h-5" />} text="Switch Linkhubs" /> */}
 
             <div className="my-3 border-t border-gray-200" />
 
@@ -172,7 +172,11 @@ useEffect(() => {
               navigate('/account')
             }}
             icon={<UserCircle className="w-5 h-5" />} text="Account" />
-            <MenuItem icon={<Zap className="w-5 h-5" />} text="Upgrade" />
+            <MenuItem
+            onClick={()=>{
+             navigate("/pricing") 
+            }}
+            icon={<Zap className="w-5 h-5" />} text="Subscriptions  " />
 
             <div className="my-1 border-t border-gray-200" />
 <MenuItem
