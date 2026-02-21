@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { CheckCircle, Loader2, XCircle } from 'lucide-react';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
+import { useSubscription } from '../../wrapper/SubscriptionManager';
 
 const SubscriptionSuccess = () => {
   const [searchParams] = useSearchParams();
@@ -38,6 +39,14 @@ const SubscriptionSuccess = () => {
             const subscription = response.data.data.subscription;
             
             if (subscription && subscription.status === 'ACTIVE') {
+
+
+              const setActive = useSubscription.getState().setActive;
+setActive(
+  response.data.data.subscription?.plan?.name,   // "Pro" / "Business"
+  response.data.data.subscription?.currentPeriodEnd
+);
+
               setSuccess(true);
               toast.success('Subscription activated successfully! 🎉');
             } else {
@@ -61,7 +70,7 @@ const SubscriptionSuccess = () => {
   }, [sessionId]);
 
   const handleContinue = () => {
-    navigate('/dashboard');
+    navigate('/edit');
   };
 
   if (verifying) {

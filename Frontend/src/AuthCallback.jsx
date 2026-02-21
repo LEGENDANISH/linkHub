@@ -1,4 +1,7 @@
 import { useEffect } from "react";
+import { rehydrateLinksForUser } from './pages/mainsections/middle/links/Selectionmanager';
+import { rehydrateDesignForUser } from './pages/mainsections/middle/Design/DesignSelectionManager';
+import { useSubscription } from './wrapper/SubscriptionManager';
 
 const API_BASE_URL = "http://localhost:5000/api";
 
@@ -13,23 +16,25 @@ export default function AuthCallback() {
       return;
     }
 
-    // store tokens
     localStorage.setItem("accessToken", token);
     localStorage.setItem("refreshToken", refresh);
 
-    // fetch user data
     fetch(`${API_BASE_URL}/auth/me`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
     })
       .then(res => res.json())
-      .then(data => {
+      .then(async (data) => {
         if (data.success) {
-          localStorage.setItem("user", JSON.stringify(data.data));
+          const user = data.data;
+          localStorage.setItem("user", JSON.stringify(user));
+
+          rehydrateLinksForUser(user.id);
+          rehydrateDesignForUser(user.id);
+          await useSubscription.getState().fetchSubscription();
         }
 
-        // redirect to dashboard
         window.location.href = "/edit";
       });
   }, []);

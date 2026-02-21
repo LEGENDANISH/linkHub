@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { rehydrateLinksForUser } from './pages/mainsections/middle/links/Selectionmanager';     // 👈 update path
 import { rehydrateDesignForUser } from './pages/mainsections/middle/Design/DesignSelectionManager'; // 👈 update path
 import { Twitter, Instagram, Youtube, Linkedin, Globe } from "lucide-react";
+import { initSubscriptionForUser, useSubscription } from './wrapper/SubscriptionManager';
 // Configuration - UPDATE THIS WITH YOUR BACKEND URL
 const API_BASE_URL = 'http://localhost:5000/api';
 
@@ -25,8 +26,11 @@ export default function AuthPage() {
     password: ''
   });
 
-  useEffect(() => {
-    // Handle OAuth callback
+useEffect(() => {
+  const handleOAuth = async () => {
+
+      console.log('🚀 handleOAuth running, URL:', window.location.href); // ← add this
+
     const urlParams = new URLSearchParams(window.location.search);
     const token = urlParams.get('token');
     const refresh = urlParams.get('refresh');
@@ -38,43 +42,45 @@ export default function AuthPage() {
     } else if (token && refresh) {
       localStorage.setItem('accessToken', token);
       localStorage.setItem('refreshToken', refresh);
-      const user = JSON.parse(localStorage.getItem('user'));
 
-      localStorage.setItem(
-        'onboarding_data',
-        JSON.stringify({
-          username: user?.username || '',
-          authToken: token
-        })
-      );
+      try {
+        const res = await fetch(`${API_BASE_URL}/auth/me`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const data = await res.json();
 
-      localStorage.setItem(
-        'onboarding_step',
-        user?.username ? '1' : '0'
-      );
+        if (data.success) {
+          const user = data.data.user || data.data;
+          localStorage.setItem('user', JSON.stringify(user));
+          localStorage.setItem('onboarding_data', JSON.stringify({
+            username: user?.username || '',
+            authToken: token
+          }));
+          localStorage.setItem('onboarding_step', user?.username ? '1' : '0');
 
-      localStorage.setItem('onboarding_step', '1');
+          rehydrateLinksForUser(user.id);
+          rehydrateDesignForUser(user.id);
+          initSubscriptionForUser();
 
-      // ✅ Rehydrate stores for OAuth user
-      if (user?.id) {
-        rehydrateLinksForUser(user.id);
-        rehydrateDesignForUser(user.id);
+          // ✅ Wait for subscription fetch to complete BEFORE redirecting
+          await useSubscription.getState().fetchSubscription();
+        }
+      } catch (err) {
+        console.error('OAuth user fetch failed:', err);
       }
 
       setSuccess('Login successful! Redirecting...');
-      
       window.history.replaceState({}, document.title, window.location.pathname);
-      setTimeout(() => {
-        window.location.href = '/onboard';
-      }, 1500);
+      setTimeout(() => { window.location.href = '/onboard'; }, 1500);
     }
 
-    // Check if already logged in
     if (localStorage.getItem('accessToken')) {
-      // Optionally redirect to dashboard
       // window.location.href = '/dashboard';
     }
-  }, []);
+  };
+
+  handleOAuth();
+}, []);
 
   const hideMessages = () => {
     setError('');
@@ -117,6 +123,7 @@ export default function AuthPage() {
         // ✅ Rehydrate stores — mounts saved data if userId matches, resets if different user
         rehydrateLinksForUser(data.data.user.id);
         rehydrateDesignForUser(data.data.user.id);
+initSubscriptionForUser();                 
 
         setSuccess('Login successful! Redirecting...');
 
@@ -182,7 +189,7 @@ export default function AuthPage() {
         // ✅ Rehydrate stores — new user gets fresh defaults automatically
         rehydrateLinksForUser(data.data.user.id);
         rehydrateDesignForUser(data.data.user.id);
-
+initSubscriptionForUser();  
         setTimeout(() => {
           window.location.href = '/onboard';
         }, 1500);

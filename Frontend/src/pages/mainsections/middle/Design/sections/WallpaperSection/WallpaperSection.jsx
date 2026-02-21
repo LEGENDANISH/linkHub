@@ -6,6 +6,7 @@ import PatternOption from "./Patternoption";
 import GradientControls from "./Gradientcontrols";
 import ImageControls from "./Imagecontrols";
 import VideoControls from "./Videocontrols";
+import ProWrapper from "../../../../../../wrapper/ProGate";
 
 const WallpaperSection = () => {
   const { design, updateDesign } = useDesign();
@@ -112,6 +113,7 @@ const WallpaperSection = () => {
                 </div>
               }
             />
+            <ProWrapper label ="Image">
             <WallpaperStyleOption
               value="image"
               label="Image"
@@ -130,6 +132,8 @@ const WallpaperSection = () => {
               }
               isPro={true}
             />
+            </ProWrapper>
+            <ProWrapper label="Video">
             <WallpaperStyleOption
               value="video"
               label="Video"
@@ -145,6 +149,7 @@ const WallpaperSection = () => {
               }
               isPro={true}
             />
+            </ProWrapper>
           </div>
         </section>
 
@@ -205,6 +210,7 @@ const WallpaperSection = () => {
                 isSelected={design.pattern === "organic"}
                 onClick={() => updateDesign("pattern", "organic")}
               />
+              <ProWrapper label="Pattern Matrix">
               <PatternOption
                 value="matrix"
                 label="Matrix"
@@ -212,6 +218,7 @@ const WallpaperSection = () => {
                 isSelected={design.pattern === "matrix"}
                 onClick={() => updateDesign("pattern", "matrix")}
               />
+              </ProWrapper>
             </div>
           </section>
         )}

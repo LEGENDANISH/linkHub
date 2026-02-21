@@ -1,6 +1,7 @@
 import React from "react";
 import OptionButton from "./OptionButton";
 import { TextStyleIcon, LogoStyleIcon } from "./Icons";
+import ProWrapper from "../../../../../../wrapper/ProGate";
 
 const TitleStyleSection = ({ state, updateDesign }) => {
   return (
@@ -21,12 +22,14 @@ const TitleStyleSection = ({ state, updateDesign }) => {
         </div>
 
         <div className="flex flex-col items-center">
+          <ProWrapper label="logo">
           <OptionButton
             selected={state.titleStyle === "logo"}
             onClick={() => updateDesign("titleStyle", "logo")}
             icon={<LogoStyleIcon />}
             isPro={true}
           />
+          </ProWrapper>
           <span className="mt-3 text-sm font-medium">Logo</span>
         </div>
       </div>

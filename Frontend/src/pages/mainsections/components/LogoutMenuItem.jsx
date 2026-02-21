@@ -31,6 +31,8 @@ function LogoutMenuItem() {
 
         console.log("💾 Flushed state to localStorage for user:", userId);
       }
+ useSubscription.getState().reset();
+      localStorage.removeItem("linkhub_subscription");
 
       // ✅ Step 3: Remove ONLY auth — keyed data is now safely written above
       localStorage.removeItem("accessToken");

@@ -3,6 +3,7 @@ import { User, ArrowLeftRight, Plus, UserCircle, Zap, HelpCircle, BookOpen, Mess
 import { useNavigate } from "react-router-dom";
 import { useSelection } from "../middle/links/Selectionmanager"; // update path
 import { useDesign } from "../middle/Design/DesignSelectionManager"; // update path
+import { useSubscription } from "../../../wrapper/SubscriptionManager";
 export default function ProfileDropdown() {
   const [open, setOpen] = useState(false);
   const [subscription, setSubscription] = useState(null);
@@ -200,7 +201,8 @@ useEffect(() => {
         JSON.stringify({ state: { design: currentDesign }, version: 0 })
       );
     }
-
+  useSubscription.getState().reset();
+      localStorage.removeItem("linkhub_subscription");
     // Remove ONLY auth — never clear()
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");

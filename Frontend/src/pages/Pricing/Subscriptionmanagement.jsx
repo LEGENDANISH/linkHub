@@ -28,7 +28,7 @@ const SubscriptionManagement = () => {
 
 const fetchSubscriptionDetails = async () => {
   const token = localStorage.getItem('accessToken');
-  console.log("Token:", token); // ← is it null?
+  console.log("Token:", token); // ← is it nul  l?
   console.log("URL:", `${API_BASE_URL}/subscriptions/my-subscription`); // ← what URL?
   
   try {

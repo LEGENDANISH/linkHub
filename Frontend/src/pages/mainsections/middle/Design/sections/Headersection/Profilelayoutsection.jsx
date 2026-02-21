@@ -1,6 +1,7 @@
 import React from "react";
 import OptionButton from "./OptionButton";
 import { ClassicLayoutIcon, HeroLayoutIcon } from "./Icons";
+import ProWrapper from "../../../../../../wrapper/ProGate";
 
 const ProfileLayoutSection = ({ state, updateDesign }) => {
   return (
@@ -21,12 +22,14 @@ const ProfileLayoutSection = ({ state, updateDesign }) => {
         </div>
 
         <div className="flex flex-col items-center">
+          <ProWrapper label="hero">
           <OptionButton
             selected={state.profileLayout === "hero"}
             onClick={() => updateDesign("profileLayout", "hero")}
             icon={<HeroLayoutIcon />}
             isPro={true}
           />
+          </ProWrapper>
           <span className="mt-2 text-sm font-medium">Hero</span>
         </div>
       </div>

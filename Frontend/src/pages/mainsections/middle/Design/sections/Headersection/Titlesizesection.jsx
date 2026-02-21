@@ -1,6 +1,7 @@
 import React from "react";
 import OptionButton from "./OptionButton";
 import { SmallSizeIcon, LargeSizeIcon } from "./Icons";
+import ProWrapper from "../../../../../../wrapper/ProGate";
 
 const TitleSizeSection = ({ state, updateDesign }) => {
   return (
@@ -19,12 +20,14 @@ const TitleSizeSection = ({ state, updateDesign }) => {
         </div>
 
         <div className="flex flex-col items-center">
+          <ProWrapper label="large size">
           <OptionButton
             selected={state.titleSize === "large"}
             onClick={() => updateDesign("titleSize", "large")}
             icon={<LargeSizeIcon />}
             isPro={true}
           />
+          </ProWrapper>
           <span className="mt-3 text-sm font-medium">Large</span>
         </div>
       </div>

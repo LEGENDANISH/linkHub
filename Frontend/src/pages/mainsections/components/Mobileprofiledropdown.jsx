@@ -12,6 +12,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useSelection } from "../middle/links/Selectionmanager";
 import { useDesign } from "../middle/Design/DesignSelectionManager";
+import { useSubscription } from "../../../wrapper/SubscriptionManager";
 
 export default function MobileProfileDropdown({ open, onClose }) {
   const [subscription, setSubscription] = useState(null);
@@ -76,7 +77,8 @@ export default function MobileProfileDropdown({ open, onClose }) {
         JSON.stringify({ state: { design: currentDesign }, version: 0 })
       );
     }
-
+useSubscription.getState().reset();
+localStorage.removeItem("linkhub_subscription");
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
     localStorage.removeItem("user");

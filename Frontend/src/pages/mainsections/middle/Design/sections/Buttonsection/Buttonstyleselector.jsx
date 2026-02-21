@@ -1,4 +1,5 @@
 import React from "react";
+import ProWrapper from "../../../../../../wrapper/ProGate";
 
 const ButtonStyleSelector = ({ selectedStyle, onStyleChange }) => {
   const ButtonStyleOption = ({ value, label, isSelected, onClick, isPro }) => (
@@ -23,6 +24,7 @@ const ButtonStyleSelector = ({ selectedStyle, onStyleChange }) => {
         />
         <span className="text-xs sm:text-sm font-medium">{label}</span>
       </div>
+      
       {isPro && (
         <span className="absolute top-2 right-2 w-6 h-6 rounded-full bg-gray-400 text-white text-xs flex items-center justify-center">
           ✓
@@ -36,27 +38,33 @@ const ButtonStyleSelector = ({ selectedStyle, onStyleChange }) => {
       <label className="block text-sm font-semibold mb-4">Button style</label>
 
       <div className="grid grid-cols-3 gap-3 sm:gap-4">
-        <ButtonStyleOption
-          value="solid"
-          label="Solid"
-          isSelected={selectedStyle === "solid"}
-          onClick={() => onStyleChange("solid")}
-          isPro={false}
-        />
-        <ButtonStyleOption
-          value="glass"
-          label="Glass"
-          isSelected={selectedStyle === "glass"}
-          onClick={() => onStyleChange("glass")}
-          isPro={true}
-        />
-        <ButtonStyleOption
-          value="outline"
-          label="Outline"
-          isSelected={selectedStyle === "outline"}
-          onClick={() => onStyleChange("outline")}
-          isPro={false}
-        />
+        <ProWrapper label="Solid style">
+          <ButtonStyleOption
+            isPro={false}
+            value="solid"
+            label="Solid"
+            isSelected={selectedStyle === "solid"}
+            onClick={() => onStyleChange("solid")}
+          />
+        </ProWrapper>
+        <ProWrapper label="Glass style">
+          <ButtonStyleOption
+            isPro={true}
+            value="glass"
+            label="Glass"
+            isSelected={selectedStyle === "glass"}
+            onClick={() => onStyleChange("glass")}
+          />
+        </ProWrapper>
+        <ProWrapper label="Outline style">
+          <ButtonStyleOption
+            isPro={false}
+            value="outline"
+            label="Outline"
+            isSelected={selectedStyle === "outline"}
+            onClick={() => onStyleChange("outline")}
+          />
+        </ProWrapper>
       </div>
     </section>
   );

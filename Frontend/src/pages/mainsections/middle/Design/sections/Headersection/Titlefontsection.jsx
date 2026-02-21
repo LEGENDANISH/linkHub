@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import ProWrapper from "../../../../../../wrapper/ProGate";
 
 const TitleFontSection = ({ state, updateDesign }) => {
   const [showTitleFontPicker, setShowTitleFontPicker] = useState(false);
@@ -66,7 +67,7 @@ const TitleFontSection = ({ state, updateDesign }) => {
             />
             
             {/* Modal - Fixed positioning for mobile, absolute for desktop */}
-<div className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 
+            <div className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 
 w-[90vw] sm:w-full max-w-md bg-white rounded-2xl shadow-2xl z-50 
 max-h-[80vh] overflow-hidden flex flex-col">
                 {/* Header */}
@@ -96,24 +97,26 @@ max-h-[80vh] overflow-hidden flex flex-col">
               <div className="overflow-y-auto flex-1">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 p-4">
                   {fonts.map((font) => (
-                    <button
-                      key={font.name}
-                      onClick={() => handleFontSelect(font.name)}
-                      className={`p-3 sm:p-4 rounded-xl text-left transition-all relative ${
-                        state.titleFont === font.name
-                          ? "bg-white border-2 border-black"
-                          : "bg-gray-100 hover:bg-gray-200 border-2 border-transparent"
-                      }`}
-                    >
-                      <span className="text-sm sm:text-base font-medium">
-                        {font.name}
-                      </span>
-                      {font.isPro && (
-                        <span className="absolute top-2 right-2 sm:top-3 sm:right-3 w-6 h-6 rounded-full bg-gray-400 text-white text-xs flex items-center justify-center">
-                          {font.proLevel ? font.proLevel : "✓"}
+                    <ProWrapper key={font.name} label={`${font.name} font`}>
+                      <button
+                        isPro={font.isPro}
+                        onClick={() => handleFontSelect(font.name)}
+                        className={`p-3 sm:p-4 rounded-xl text-left transition-all relative w-full ${
+                          state.titleFont === font.name
+                            ? "bg-white border-2 border-black"
+                            : "bg-gray-100 hover:bg-gray-200 border-2 border-transparent"
+                        }`}
+                      >
+                        <span className="text-sm sm:text-base font-medium">
+                          {font.name}
                         </span>
-                      )}
-                    </button>
+                        {font.isPro && (
+                          <span className="absolute top-2 right-2 sm:top-3 sm:right-3 w-6 h-6 rounded-full bg-gray-400 text-white text-xs flex items-center justify-center">
+                            {font.proLevel ? font.proLevel : "✓"}
+                          </span>
+                        )}
+                      </button>
+                    </ProWrapper>
                   ))}
                 </div>
               </div>
