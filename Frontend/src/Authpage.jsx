@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { rehydrateLinksForUser } from './pages/mainsections/middle/links/Selectionmanager';     // 👈 update path
 import { rehydrateDesignForUser } from './pages/mainsections/middle/Design/DesignSelectionManager'; // 👈 update path
-
+import { Twitter, Instagram, Youtube, Linkedin, Globe } from "lucide-react";
 // Configuration - UPDATE THIS WITH YOUR BACKEND URL
 const API_BASE_URL = 'http://localhost:5000/api';
 
@@ -201,24 +201,26 @@ export default function AuthPage() {
   const handleGoogleAuth = () => {
     window.location.href = `${API_BASE_URL}/auth/google`;
   };
-
-  return (
-  <div className="min-h-screen bg-white flex">
+return (
+  <div className="min-h-screen bg-white flex flex-col lg:flex-row">
     
     {/* LEFT SIDE — AUTH */}
-    <div className="flex-1 flex items-center justify-center px-6 py-12">
-      <div className="w-full max-w-md">
+    <div className="flex-1 flex flex-col justify-between px-6 py-10 lg:px-16">
 
+      {/* TOP */}
+      <div>
         {/* Logo */}
-        <div className="mb-10">
-          <h1 className="text-2xl font-bold text-black">
-            Linktree<span className="text-emerald-500">*</span>
-          </h1>
+        <div className="mb-10 flex items-center gap-2">
+          <img src="/logo.png" alt="Handles logo" className="h-8 w-auto" />
         </div>
 
         {/* Heading */}
-        <h2 className="text-3xl font-bold mb-2">Welcome back</h2>
-        <p className="text-gray-500 mb-8">Log in to your Linktree</p>
+        <h2 className="text-3xl font-bold mb-2">
+          {activeTab === "login" ? "Welcome back" : "Create your account"}
+        </h2>
+        <p className="text-gray-500 mb-8">
+          {activeTab === "login" ? "Log in to your Handles" : "Join Handles today"}
+        </p>
 
         {/* Error */}
         {error && (
@@ -234,7 +236,7 @@ export default function AuthPage() {
           </div>
         )}
 
-        {/* LOGIN FORM */}
+        {/* LOGIN */}
         {activeTab === "login" && (
           <>
             <form onSubmit={handleLogin} className="space-y-4">
@@ -245,7 +247,7 @@ export default function AuthPage() {
                 onChange={(e) =>
                   setLoginData({ ...loginData, email: e.target.value })
                 }
-                className="w-full px-4 py-3 rounded-lg bg-gray-100 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-black"
+                className="w-full px-4 py-3 rounded-lg bg-gray-100 border border-gray-200 focus:ring-2 focus:ring-black outline-none"
               />
 
               <input
@@ -255,7 +257,7 @@ export default function AuthPage() {
                 onChange={(e) =>
                   setLoginData({ ...loginData, password: e.target.value })
                 }
-                className="w-full px-4 py-3 rounded-lg bg-gray-100 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-black"
+                className="w-full px-4 py-3 rounded-lg bg-gray-100 border border-gray-200 focus:ring-2 focus:ring-black outline-none"
               />
 
               <button
@@ -269,30 +271,23 @@ export default function AuthPage() {
 
             <div className="text-center my-6 text-gray-400">OR</div>
 
-            {/* Google */}
             <button
               onClick={handleGoogleAuth}
-              className="w-full border border-gray-200 py-3 rounded-xl font-semibold flex items-center justify-center gap-3 hover:bg-gray-50"
+              className="w-full border border-gray-200 py-3 rounded-xl font-semibold hover:bg-gray-50"
             >
               Continue with Google
             </button>
 
-            {/* Apple */}
-            <button className="w-full border border-gray-200 py-3 rounded-xl font-semibold flex items-center justify-center gap-3 mt-3 hover:bg-gray-50">
-              Continue with Apple
-            </button>
-
             <div className="mt-6 text-sm text-center">
-              <a href="#" className="text-purple-600">
-                Forgot password?
-              </a>
+              <a href="#" className="text-purple-600">Forgot password?</a>
             </div>
 
+            {/* ROUTE SWITCH */}
             <div className="mt-4 text-center text-sm">
               Don’t have an account?{" "}
               <span
                 onClick={() => setActiveTab("signup")}
-                className="text-purple-600 cursor-pointer"
+                className="text-purple-600 cursor-pointer font-semibold"
               >
                 Sign up
               </span>
@@ -300,7 +295,7 @@ export default function AuthPage() {
           </>
         )}
 
-        {/* SIGNUP FORM */}
+        {/* SIGNUP */}
         {activeTab === "signup" && (
           <>
             <form onSubmit={handleSignup} className="space-y-4">
@@ -352,33 +347,40 @@ export default function AuthPage() {
                 {loading ? "Creating..." : "Create account"}
               </button>
             </form>
+
+            {/* ROUTE SWITCH */}
+            <div className="mt-6 text-center text-sm">
+              Already have an account?{" "}
+              <span
+                onClick={() => setActiveTab("login")}
+                className="text-purple-600 cursor-pointer font-semibold"
+              >
+                Sign in
+              </span>
+            </div>
           </>
         )}
+      </div>
+
+      {/* SOCIAL ONLY */}
+      <div className="mt-12 border-t pt-6">
+        <div className="flex items-center gap-5 text-gray-600">
+          <Twitter size={18} className="hover:text-black cursor-pointer" />
+          <Instagram size={18} className="hover:text-black cursor-pointer" />
+          <Youtube size={18} className="hover:text-black cursor-pointer" />
+          <Linkedin size={18} className="hover:text-black cursor-pointer" />
+          <Globe size={18} className="hover:text-black cursor-pointer" />
+        </div>
       </div>
     </div>
 
     {/* RIGHT SIDE — IMAGE PANEL */}
-    <div className="hidden lg:flex flex-1 relative overflow-hidden bg-lime-400">
-      
-      {/* Background shapes */}
-      <div className="absolute inset-0 bg-blue-600 w-[60%] right-0" />
-
-      {/* Main image */}
+    <div className="hidden lg:flex flex-1 bg-[#C4F000] items-center justify-center p-12">
       <img
-        src="/signin-visual.png" 
+        src="L1.png"
         alt="signin visual"
-        className="absolute bottom-0 right-10 h-[85%] object-contain"
+        className="max-h-[80vh] w-auto object-contain"
       />
-
-      {/* Floating UI cards */}
-      <div className="absolute top-16 left-10 bg-white rounded-2xl shadow-lg p-3">
-        <img src="/demo-video.png" className="w-48 rounded-xl" />
-      </div>
-
-      <div className="absolute bottom-20 right-10 bg-white rounded-2xl shadow-lg p-4">
-        <img src="/demo-product.png" className="w-24" />
-        <p className="text-center mt-2 font-semibold">$36</p>
-      </div>
     </div>
   </div>
 );

@@ -66,8 +66,10 @@ const TitleFontSection = ({ state, updateDesign }) => {
             />
             
             {/* Modal - Fixed positioning for mobile, absolute for desktop */}
-            <div className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 sm:absolute sm:left-0 sm:top-full sm:translate-x-0 sm:translate-y-0 sm:mt-2 w-[90vw] sm:w-full max-w-md sm:max-w-none bg-white rounded-2xl shadow-2xl z-50 max-h-[80vh] sm:max-h-96 overflow-hidden flex flex-col">
-              {/* Header */}
+<div className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 
+w-[90vw] sm:w-full max-w-md bg-white rounded-2xl shadow-2xl z-50 
+max-h-[80vh] overflow-hidden flex flex-col">
+                {/* Header */}
               <div className="sticky top-0 bg-white border-b border-gray-200 px-4 sm:px-5 py-3 sm:py-4 flex items-center justify-between rounded-t-2xl flex-shrink-0">
                 <h3 className="text-lg font-semibold">Title font</h3>
                 <button

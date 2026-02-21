@@ -42,8 +42,10 @@ const TitleColorSection = ({ state, updateDesign }) => {
             />
             
             {/* Modal - Centered on mobile, positioned near button on desktop */}
-            <div className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 sm:absolute sm:left-0 sm:top-full sm:translate-x-0 sm:translate-y-0 sm:mt-2 w-[90vw] sm:w-96 bg-white rounded-2xl shadow-2xl z-50 p-4 sm:p-5 max-h-[90vh] overflow-y-auto">
-              {/* Header */}
+<div className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 
+w-[90vw] sm:w-full max-w-md bg-white rounded-2xl shadow-2xl z-50 
+max-h-[80vh] overflow-hidden flex flex-col">
+                {/* Header */}
               <div className="flex items-center justify-between mb-4">
                 <label className="block text-sm font-semibold">
                   Title font color

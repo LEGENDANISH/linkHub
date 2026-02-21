@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 
 // ─── Storage Helpers ────────────────────────────────────────────────────────
 
@@ -1145,7 +1146,7 @@ function PersonalTemplate({ profileData, selectedPlatforms }) {
 
 function Final({ userGoal, profileData, selectedPlatforms, onContinue }) {
   const confettiRef = useRef(null);
-
+const navigate = useNavigate()
   useEffect(() => {
     const colors = ["#ef4444", "#f59e0b", "#10b981", "#a855f7", "#ec4899", "#6366f1", "#06b6d4"];
     if (!confettiRef.current) return;
@@ -1179,7 +1180,7 @@ function Final({ userGoal, profileData, selectedPlatforms, onContinue }) {
       </div>
       <div className="ob-template-wrap">{renderTemplate()}</div>
       <div className="ob-final-btn-wrap">
-        <button className="ob-btn-primary ob-btn-full" onClick={onContinue}>
+        <button className="ob-btn-primary ob-btn-full" onClick={()=>{navigate("/edit")}}>
           Continue building this LinkHub
         </button>
       </div>
