@@ -82,6 +82,7 @@ localStorage.removeItem("linkhub_subscription");
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
     localStorage.removeItem("user");
+localStorage.removeItem("profileSlug");
 
     window.location.href = "/login";
   };

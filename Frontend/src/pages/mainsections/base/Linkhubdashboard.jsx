@@ -98,6 +98,7 @@ export default function LinkhubDashboard() {
   // ── Helpers ──────────────────────────────────────────────────────────────────
   const handleOpenCard = () => {
     const slug = localStorage.getItem("profileSlug");
+    console.log(slug)
     if (!slug) return;
     window.open(`/cards/${slug}`, "_blank");
   };

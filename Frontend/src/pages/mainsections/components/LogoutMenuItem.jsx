@@ -38,6 +38,7 @@ function LogoutMenuItem() {
       localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");
       localStorage.removeItem("user");
+localStorage.removeItem("profileSlug");
 
       navigate("/login", { replace: true });
     } catch (e) {
