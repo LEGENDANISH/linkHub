@@ -278,12 +278,24 @@ return (
 
             <div className="text-center my-6 text-gray-400">OR</div>
 
-            <button
-              onClick={handleGoogleAuth}
-              className="w-full border border-gray-200 py-3 rounded-xl font-semibold hover:bg-gray-50"
-            >
-              Continue with Google
-            </button>
+        <button
+  onClick={handleGoogleAuth}
+  className="w-full flex items-center justify-center gap-3 
+             border border-gray-300 bg-white 
+             py-3 rounded-xl font-medium text-gray-700
+             shadow-sm hover:shadow-md 
+             hover:bg-gray-50 transition-all duration-200"
+>
+  {/* Google Logo SVG */}
+  <svg width="20" height="20" viewBox="0 0 48 48">
+    <path fill="#EA4335" d="M24 9.5c3.54 0 6.7 1.22 9.2 3.6l6.9-6.9C35.6 2.3 30.2 0 24 0 14.6 0 6.6 5.8 2.7 14.1l8.1 6.3C12.6 14.1 17.8 9.5 24 9.5z"/>
+    <path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-2.7-.4-3.9H24v7.4h12.7c-.3 2-1.9 5-5.3 7l8.1 6.3c4.7-4.4 7-10.8 7-16.8z"/>
+    <path fill="#FBBC05" d="M10.8 28.4c-.5-1.3-.8-2.7-.8-4.4s.3-3.1.8-4.4l-8.1-6.3C1 17.4 0 20.6 0 24s1 6.6 2.7 9.7l8.1-6.3z"/>
+    <path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.7l-8.1-6.3c-2.2 1.5-5 2.5-7.8 2.5-6.2 0-11.4-4.6-13.2-10.9l-8.1 6.3C6.6 42.2 14.6 48 24 48z"/>
+  </svg>
+
+  Continue with Google
+</button>
 
             <div className="mt-6 text-sm text-center">
               <a href="#" className="text-purple-600">Forgot password?</a>

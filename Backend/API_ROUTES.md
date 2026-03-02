@@ -36,7 +36,7 @@
 
 ### Subscription Routes (`/api/subscriptions`)
 | Method | Endpoint | Description | Auth Required |
-|--------|----------|-------------|---------------|
+|--------|----------|-- -----------|---------------|
 | GET | `/plans` | Get all plans | ❌ |
 | GET | `/plans/:id` | Get plan details | ❌ |
 | GET | `/my-subscription` | Get my subscription | ✅ |
