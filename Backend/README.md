@@ -477,6 +477,7 @@ npm run prisma:generate # Generate Prisma Client
 npm run prisma:push    # Push schema to database
 npm run prisma:studio  # Open Prisma Studio
 npm run prisma:migrate # Create migration
+stripe listen --forward-to localhost:5000/api/payments/webhook
 ```
 
 ---
