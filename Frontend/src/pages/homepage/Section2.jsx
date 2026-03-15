@@ -8,7 +8,6 @@ const Section2 = () => {
     <section className="w-full bg-[#2665d6] min-h-screen py-12 sm:py-16 md:py-20 px-4 sm:px-6 md:px-12 lg:px-20">
       <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center min-h-[calc(100vh-8rem)] lg:min-h-screen">
 
-        {/* Left space - image/video area (Desktop only) */}
         <div className="hidden lg:flex w-1/2 items-center justify-center pr-8 xl:pr-12">
           <div className="w-full h-[500px] xl:h-[600px] rounded-3xl flex items-center justify-center z-10">
             <img

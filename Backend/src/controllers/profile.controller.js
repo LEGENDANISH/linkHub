@@ -112,7 +112,7 @@ export const getMyProfile = async (req, res) => {
     const profile = await prisma.profile.findUnique({
       where: { userId: req.user.id },
       include: {
-        user: {                     // 👈 add this relation
+        user: {                     
           select: {
             name: true,
             username: true,

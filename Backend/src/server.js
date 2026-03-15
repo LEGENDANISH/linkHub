@@ -13,13 +13,11 @@ import routes from './routes/index.js';
 import passport from './config/passport.js';
 import { errorHandler, notFound } from './middleware/error.middleware.js';
 
-// Load environment variables
-// require('dotenv').config()
+
 
 // Initialize Express app
 const app = express();
 
-// Get __dirname for ES modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -60,7 +58,7 @@ if (process.env.NODE_ENV === 'development') {
 if (process.env.UPLOAD_STORAGE === 'local' || !process.env.UPLOAD_STORAGE) {
   const uploadDir = path.join(__dirname, '..', process.env.UPLOAD_DIR || 'uploads');
   app.use('/uploads', express.static(uploadDir));
-  console.log(`📁 Serving static files from: ${uploadDir}`);
+  console.log(` Serving static files from: ${uploadDir}`);
 }
 
 // Rate limiting
@@ -98,7 +96,6 @@ app.use('/api', routes);
 // ERROR HANDLING
 // ============================================
 
-// 404 handler
 app.use(notFound);
 
 // Global error handler
@@ -109,23 +106,8 @@ app.use(errorHandler);
 // ============================================
 
 const PORT = process.env.PORT || 5000;
-
 app.listen(PORT, () => {
-  console.log(`
-╔═══════════════════════════════════════════════════╗
-║       LinkHub API Server Started 🚀              ║
-╠═══════════════════════════════════════════════════╣
-║  Environment: ${process.env.NODE_ENV || 'development'}${' '.repeat(32 - (process.env.NODE_ENV || 'development').length)}║
-║  Port: ${PORT}${' '.repeat(40 - PORT.toString().length)}║
-║  URL: http://localhost:${PORT}${' '.repeat(27 - PORT.toString().length)}║
-║                                                   ║
-║  Features Enabled:                                ║
-║  ✅ Google OAuth Login                            ║
-║  ✅ Stripe Payments (INR)                         ║
-║  ✅ File Upload (${process.env.UPLOAD_STORAGE === 's3' ? 'S3/MinIO' : 'Local'})${' '.repeat(26 - (process.env.UPLOAD_STORAGE === 's3' ? 9 : 5))}║
-║  ✅ 3-Tier Subscription (Free/Starter/Pro)        ║
-╚═══════════════════════════════════════════════════╝
-  `);
+  console.log(`🚀 LinkHub running at http://localhost:${PORT}`);
 });
 
 // Handle unhandled promise rejections

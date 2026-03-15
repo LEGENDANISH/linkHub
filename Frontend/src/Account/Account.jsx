@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 
 const API_BASE = "http://localhost:5000/api";
 
-// Utility: get token from localStorage
 const getToken = () => localStorage.getItem("accessToken") || "";
 
 async function apiFetch(endpoint, options = {}) {
