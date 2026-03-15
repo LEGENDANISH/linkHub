@@ -107,13 +107,13 @@ app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`🚀 LinkHub running at http://localhost:${PORT}`);
+  console.log(`LinkHub running at http://localhost:${PORT}`);
 });
 
 // Handle unhandled promise rejections
 process.on('unhandledRejection', (err) => {
   console.error('Unhandled Promise Rejection:', err);
-  // Close server & exit process
+
   process.exit(1);
 });
 
