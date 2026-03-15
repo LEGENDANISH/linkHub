@@ -1,9 +1,6 @@
 import React from "react";
 
-/**
- * Reusable option button component matching the reference design
- * Accepts custom SVG icons as children
- */
+
 const OptionButton = ({ selected, onClick, icon, isPro }) => {
   return (
     <button

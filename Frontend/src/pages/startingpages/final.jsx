@@ -116,7 +116,7 @@ const Final = ({ userGoal, profileData, platformLinks, selectedPlatforms }) => {
             transition={{ duration: 0.5, delay: 0.5 }}
             className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-gray-900 mb-4"
           >
-            Looking good! 🎉
+            Looking good! 
           </motion.h1>
           <motion.p
             initial={{ y: -20, opacity: 0 }}

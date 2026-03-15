@@ -83,7 +83,7 @@ export function useBackgroundStyle(design) {
  */
 export function useDesignDebug(design) {
   useEffect(() => {
-    console.log("🎨 Design updated in preview:", {
+    console.log("Design updated in preview:", {
       wallpaperStyle: design.wallpaperStyle,
       backgroundColor: design.backgroundColor,
       gradientColor: design.gradientColor,

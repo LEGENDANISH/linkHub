@@ -29,19 +29,19 @@ const SubscriptionManagement = () => {
 const fetchSubscriptionDetails = async () => {
   const token = localStorage.getItem('accessToken');
   console.log("Token:", token); // ← is it nul  l?
-  console.log("URL:", `${API_BASE_URL}/subscriptions/my-subscription`); // ← what URL?
+  console.log("URL:", `${API_BASE_URL}/subscriptions/my-subscription`); 
   
   try {
     const response = await axios.get(`${API_BASE_URL}/subscriptions/my-subscription`, {
       headers: { Authorization: `Bearer ${token}` }
     });
-    console.log("Response:", response.data); // ← what comes back?
+    console.log("Response:", response.data); 
     
     if (response.data.success) {
       setSubscription(response.data.data);
     }
   } catch (error) {
-    console.error("Full error:", error.response?.data || error.message); // ← actual error
+    console.error("Full error:", error.response?.data || error.message); 
   } finally {
     setLoading(false);
   }

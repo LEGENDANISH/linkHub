@@ -49,7 +49,7 @@ const Pricing = () => {
     fetchPlans();
   }, []);
 
-  const handlePlanSelection = async (plan) => { // 👈 Accept entire plan object
+  const handlePlanSelection = async (plan) => { //  Accept entire plan object
     const token = localStorage.getItem('accessToken');
     
     if (!token) {
@@ -59,7 +59,7 @@ const Pricing = () => {
     }
 
     // Free plan - just navigate to dashboard
-    if (plan.name === 'FREE') { // 👈 Check by plan name from database
+    if (plan.name === 'FREE') { //  Check by plan name from database
       toast.success('Welcome to the Free plan!');
       navigate('/dashboard');
       return;
@@ -73,7 +73,7 @@ const Pricing = () => {
       const response = await axios.post(
         `${API_BASE_URL}/payments/create-checkout-session`,
         {
-          planId: plan.id, // 👈 Use plan.id from parameter
+          planId: plan.id, // Use plan.id from parameter
           billingInterval: billingInterval
         },
         {
@@ -166,7 +166,7 @@ const Pricing = () => {
 
         {/* Pricing Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {plans.map((plan) => { // 👈 Now using fetched plans
+          {plans.map((plan) => { //  Now using fetched plans
             const isPro = plan.name === 'PRO';
             const isFree = plan.name === 'FREE';
             
@@ -222,7 +222,7 @@ const Pricing = () => {
 
                 {/* CTA Button */}
                 <button
-                  onClick={() => handlePlanSelection(plan)} // 👈 Pass entire plan object
+                  onClick={() => handlePlanSelection(plan)} // Pass entire plan object
                   disabled={loadingPlan === plan.id}
                   className={`w-full py-3.5 rounded-full font-semibold transition-all mb-8 
                     ${isPro 

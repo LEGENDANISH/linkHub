@@ -8,73 +8,73 @@
 export const platformConfig = {
   instagram: { 
     name: 'Instagram', 
-    icon: '📷',
+    icon: '',
     urlPattern: 'instagram.com/',
     layout: 'pill' 
   },
   whatsapp: { 
     name: 'WhatsApp', 
-    icon: '💬',
+    icon: '',
     urlPattern: 'wa.me/',
     layout: 'classic' 
   },
   tiktok: { 
     name: 'TikTok', 
-    icon: '🎵',
+    icon: '',
     urlPattern: 'tiktok.com/@',
     layout: 'pill' 
   },
   youtube: { 
     name: 'YouTube', 
-    icon: '▶️',
+    icon: '▶',
     urlPattern: 'youtube.com/',
     layout: 'classic' 
   },
   website: { 
     name: 'Website', 
-    icon: '🌐',
+    icon: '',
     urlPattern: '',
     layout: 'classic' 
   },
   spotify: { 
     name: 'Spotify', 
-    icon: '🎧',
+    icon: '',
     urlPattern: 'open.spotify.com/',
     layout: 'pill' 
   },
   threads: { 
     name: 'Threads', 
-    icon: '🧵',
+    icon: '',
     urlPattern: 'threads.net/@',
     layout: 'pill' 
   },
   facebook: { 
     name: 'Facebook', 
-    icon: '👥',
+    icon: '',
     urlPattern: 'facebook.com/',
     layout: 'classic' 
   },
   twitter: { 
     name: 'X / Twitter', 
-    icon: '🐦',
+    icon: '',
     urlPattern: 'x.com/',
     layout: 'pill' 
   },
   linkedin: { 
     name: 'LinkedIn', 
-    icon: '💼',
+    icon: '',
     urlPattern: 'linkedin.com/in/',
     layout: 'classic' 
   },
   twitch: { 
     name: 'Twitch', 
-    icon: '🎮',
+    icon: '',
     urlPattern: 'twitch.tv/',
     layout: 'pill' 
   },
   snapchat: { 
     name: 'Snapchat', 
-    icon: '👻',
+    icon: '',
     urlPattern: 'snapchat.com/add/',
     layout: 'classic' 
   },

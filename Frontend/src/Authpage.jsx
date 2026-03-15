@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { rehydrateLinksForUser } from './pages/mainsections/middle/links/Selectionmanager';     // 👈 update path
-import { rehydrateDesignForUser } from './pages/mainsections/middle/Design/DesignSelectionManager'; // 👈 update path
+import { rehydrateLinksForUser } from './pages/mainsections/middle/links/Selectionmanager';    
+import { rehydrateDesignForUser } from './pages/mainsections/middle/Design/DesignSelectionManager'; 
 import { Twitter, Instagram, Youtube, Linkedin, Globe } from "lucide-react";
 import { initSubscriptionForUser, useSubscription } from './wrapper/SubscriptionManager';
 // Configuration - UPDATE THIS WITH YOUR BACKEND URL
@@ -29,7 +29,7 @@ export default function AuthPage() {
 useEffect(() => {
   const handleOAuth = async () => {
 
-      console.log('🚀 handleOAuth running, URL:', window.location.href); // ← add this
+      console.log(' handleOAuth running, URL:', window.location.href); 
 
     const urlParams = new URLSearchParams(window.location.search);
     const token = urlParams.get('token');
@@ -62,7 +62,7 @@ useEffect(() => {
           rehydrateDesignForUser(user.id);
           initSubscriptionForUser();
 
-          // ✅ Wait for subscription fetch to complete BEFORE redirecting
+          // Wait for subscription fetch to complete BEFORE redirecting
           await useSubscription.getState().fetchSubscription();
         }
       } catch (err) {
@@ -108,7 +108,7 @@ useEffect(() => {
         localStorage.setItem('refreshToken', data.data.refreshToken);
         localStorage.setItem('user', JSON.stringify(data.data.user));
 
-        // 👇 IMPORTANT
+        // IMPORTANT
         localStorage.setItem(
           'onboarding_data',
           JSON.stringify({
@@ -120,7 +120,7 @@ useEffect(() => {
         // skip username step → go to Q1
         localStorage.setItem('onboarding_step', '1');
 
-        // ✅ Rehydrate stores — mounts saved data if userId matches, resets if different user
+        //  Rehydrate stores — mounts saved data if userId matches, resets if different user
         rehydrateLinksForUser(data.data.user.id);
         rehydrateDesignForUser(data.data.user.id);
 initSubscriptionForUser();                 
@@ -186,7 +186,7 @@ initSubscriptionForUser();
         // new signup → go directly to Q1
         localStorage.setItem('onboarding_step', '1');
 
-        // ✅ Rehydrate stores — new user gets fresh defaults automatically
+        //  Rehydrate stores — new user gets fresh defaults automatically
         rehydrateLinksForUser(data.data.user.id);
         rehydrateDesignForUser(data.data.user.id);
 initSubscriptionForUser();  

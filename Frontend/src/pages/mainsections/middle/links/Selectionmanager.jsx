@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-// ✅ KEY INSIGHT: Freeze the storage key at module load time.
+// KEY INSIGHT: Freeze the storage key at module load time.
 // It reads whatever user is in localStorage RIGHT NOW (at app boot / after login).
 // On logout we only remove auth keys — this key stays valid until next page load.
 const STORAGE_KEY =

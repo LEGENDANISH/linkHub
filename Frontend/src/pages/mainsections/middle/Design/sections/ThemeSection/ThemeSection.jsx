@@ -7,7 +7,7 @@ const ThemeSection = ({ state, updateDesign }) => {
   const [activeTab, setActiveTab] = React.useState("customizable");
 
   const applyTheme = (theme) => {
-    console.log("🎨 Applying theme:", theme.id, theme.settings);
+    console.log(" Applying theme:", theme.id, theme.settings);
     
     // Apply all theme settings
     Object.entries(theme.settings).forEach(([key, value]) => {

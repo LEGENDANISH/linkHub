@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { LogOut } from "lucide-react";
-import { useSelection } from "../mainsections/middle/links/Selectionmanager"; // 👈 update path
-import { useDesign } from "../mainsections/middle/Design/DesignSelectionManager"; // 👈 update path
+import { useSelection } from "../mainsections/middle/links/Selectionmanager"; 
+import { useDesign } from "../mainsections/middle/Design/DesignSelectionManager"; 
 
 function LogoutMenuItem() {
   const navigate = useNavigate();
@@ -13,7 +13,7 @@ function LogoutMenuItem() {
       const userId = user?.id;
 
       if (userId) {
-        // ✅ Step 2: Manually flush current Zustand in-memory state to localStorage
+        //  Step 2: Manually flush current Zustand in-memory state to localStorage
         // This guarantees the latest unsaved state is persisted before we remove 'user'.
         // Zustand's persist middleware is async and may not have written yet.
         const currentLinks = useSelection.getState().links;
@@ -29,12 +29,12 @@ function LogoutMenuItem() {
           JSON.stringify({ state: { design: currentDesign }, version: 0 })
         );
 
-        console.log("💾 Flushed state to localStorage for user:", userId);
+        console.log(" Flushed state to localStorage for user:", userId);
       }
  useSubscription.getState().reset();
       localStorage.removeItem("linkhub_subscription");
 
-      // ✅ Step 3: Remove ONLY auth — keyed data is now safely written above
+      //  Step 3: Remove ONLY auth — keyed data is now safely written above
       localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");
       localStorage.removeItem("user");

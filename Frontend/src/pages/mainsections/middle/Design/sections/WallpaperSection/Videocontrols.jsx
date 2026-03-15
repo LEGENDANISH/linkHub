@@ -39,7 +39,7 @@ const VideoControls = ({ design, updateDesign }) => {
         throw new Error("No video URL returned");
       }
 
-      // 🔹 replace preview with real S3 URL
+      //  replace preview with real S3 URL
       updateDesign("backgroundVideo", videoUrl);
 
     } catch (err) {

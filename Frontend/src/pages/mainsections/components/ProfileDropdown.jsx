@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import { User, ArrowLeftRight, Plus, UserCircle, Zap, HelpCircle, BookOpen, MessageSquare, LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useSelection } from "../middle/links/Selectionmanager"; // update path
-import { useDesign } from "../middle/Design/DesignSelectionManager"; // update path
+import { useSelection } from "../middle/links/Selectionmanager";
+import { useDesign } from "../middle/Design/DesignSelectionManager"; 
 import { useSubscription } from "../../../wrapper/SubscriptionManager";
 export default function ProfileDropdown() {
   const [open, setOpen] = useState(false);
@@ -10,7 +10,7 @@ export default function ProfileDropdown() {
   const [profile, setProfile] = useState(null);
   const ref = useRef();
 const navigate = useNavigate();
-  // fetch profile (slug, image etc.)
+  // fetch profile 
   useEffect(() => {
     const fetchProfile = async () => {
       try {

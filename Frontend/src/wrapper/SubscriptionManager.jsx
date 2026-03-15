@@ -28,19 +28,19 @@ export const useSubscription = create(
         set({ isLoading: true });
         try {
           const token = localStorage.getItem('accessToken');
-          console.log('📡 Fetching subscription, token:', token ? '✅ exists' : '❌ NULL');
+          console.log('📡 Fetching subscription, token:', token ? ' exists' : ' NULL');
 
           const res = await fetch(`${API_BASE_URL}/subscriptions/my-subscription`, {
             headers: { Authorization: `Bearer ${token}` },
           });
           const data = await res.json();
-          console.log('📦 Raw API response:', data);
+          console.log(' Raw API response:', data);
 
           if (data.success && data.data) {
             const sub = data.data;
-            console.log('📋 sub.plan:', sub.plan);
-            console.log('📋 sub.status:', sub.status);
-            console.log('📋 sub.currentPeriodEnd:', sub.currentPeriodEnd);
+            console.log(' sub.plan:', sub.plan);
+            console.log(' sub.status:', sub.status);
+            console.log(' sub.currentPeriodEnd:', sub.currentPeriodEnd);
 
             set({
               plan:      sub.plan?.name?.toLowerCase() || 'free',
@@ -48,13 +48,13 @@ export const useSubscription = create(
               expiresAt: sub.currentPeriodEnd || null,
             });
 
-            console.log('✅ Zustand set to:', useSubscription.getState());
+            console.log(' Zustand set to:', useSubscription.getState());
           } else {
-            console.log('⚠️ No subscription data — setting free');
+            console.log(' No subscription data — setting free');
             set({ plan: 'free', status: null, expiresAt: null });
           }
         } catch (err) {
-          console.error('❌ Subscription fetch error:', err);
+          console.error(' Subscription fetch error:', err);
         } finally {
           set({ isLoading: false });
         }

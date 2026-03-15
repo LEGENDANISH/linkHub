@@ -94,7 +94,7 @@ const SubscriptionCancel = () => {
         {/* Reassurance */}
         <div className="mt-6 bg-blue-50 rounded-lg p-4">
           <p className="text-xs text-gray-600 text-center">
-            💡 <strong>Good to know:</strong> You can still use all features of the Free plan. 
+             <strong>Good to know:</strong> You can still use all features of the Free plan. 
             Upgrade anytime when you're ready!
           </p>
         </div>

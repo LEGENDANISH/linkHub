@@ -10,7 +10,6 @@ import { X, User, ArrowLeftRight, Plus, UserCircle, Zap, HelpCircle, BookOpen, M
 
 
 import axios from "axios";
-// AFTER
 import { useDesign, rehydrateDesignForUser } from "../middle/Design/DesignSelectionManager";
 import { useSelection, rehydrateLinksForUser } from "../middle/links/Selectionmanager";
 import { useNavigate } from "react-router-dom";
@@ -91,8 +90,8 @@ export default function LinkhubDashboard() {
   }, []);
 
   // ── Debug logs ───────────────────────────────────────────────────────────────
-  useEffect(() => { console.log("🎨 Design state changed:", design); }, [design]);
-  useEffect(() => { console.log("⚙️ Settings open:", showSettings); }, [showSettings]);
+  useEffect(() => { console.log(" Design state changed:", design); }, [design]);
+  useEffect(() => { console.log(" Settings open:", showSettings); }, [showSettings]);
   console.log(design.profileLayout);
 
   // ── Helpers ──────────────────────────────────────────────────────────────────

@@ -14,7 +14,7 @@ const ProfileImageSection = ({ state, updateDesign }) => {
       return;
     }
 
-    // 🔹 instant preview (same UX as before)
+    //  instant preview (same UX as before)
     const previewUrl = URL.createObjectURL(file);
     updateDesign("profileImage", previewUrl);
 
@@ -22,7 +22,7 @@ const ProfileImageSection = ({ state, updateDesign }) => {
       const token = localStorage.getItem("accessToken");
 
       const formData = new FormData();
-      formData.append("profileImage", file); // must match multer field
+      formData.append("profileImage", file); 
 
       const res = await axios.post(
         "http://localhost:5000/api/upload/profile-image",
@@ -41,7 +41,7 @@ const ProfileImageSection = ({ state, updateDesign }) => {
         throw new Error("No image URL returned");
       }
 
-      // 🔹 replace preview with real S3 URL
+      //  replace preview with real S3 URL
       updateDesign("profileImage", imageUrl);
 
     } catch (err) {
